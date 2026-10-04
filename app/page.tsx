@@ -33,6 +33,15 @@ const features = [
   },
 ];
 
+const steps = [
+  { title: "Choisis ta section", body: "Sélectionne ton niveau et la filière que tu prépares." },
+  { title: "Joue à des quiz", body: "Teste tes connaissances avec des questions ciblées." },
+  {
+    title: "Suis ta progression",
+    body: "Gagne des points, des badges et grimpe dans le classement.",
+  },
+];
+
 export default function Home() {
   return (
     <main className="flex-1">
@@ -54,6 +63,24 @@ export default function Home() {
           </div>
         </div>
         <SampleQuestion />
+      </section>
+
+      <section className="mx-auto grid w-full max-w-6xl gap-6 border-t border-ink/10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_2fr] lg:gap-12 lg:py-24">
+        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+          Notre mission : ta réussite aux examens d&apos;État
+        </h2>
+        <div className="max-w-2xl space-y-4 text-lg leading-relaxed text-ink/75">
+          <p>
+            Examplay a été conçu par des étudiants, pour des étudiants. Notre objectif est simple :
+            transformer les longues heures de révision en une expérience motivante et interactive.
+          </p>
+          <p>
+            Nous croyons qu&apos;apprendre peut être amusant. C&apos;est pourquoi nous avons créé
+            une plateforme de quiz, adaptée aux élèves de la 9e AF et aux séries du Nouveau
+            Secondaire 4, pour t&apos;aider à maîtriser tes matières et à aborder l&apos;examen avec
+            confiance.
+          </p>
+        </div>
       </section>
 
       <section className="bg-brand-soft">
@@ -87,6 +114,21 @@ export default function Home() {
             ))}
           </dl>
         </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8 lg:pt-24">
+        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+          Comment ça marche ?
+        </h2>
+        <ol className="mt-10 grid gap-10 md:grid-cols-3">
+          {steps.map((step, i) => (
+            <li key={step.title}>
+              <span className="font-display text-5xl font-extrabold text-brand">{i + 1}</span>
+              <h3 className="mt-3 font-display text-xl font-semibold">{step.title}</h3>
+              <p className="mt-2 leading-relaxed text-ink/70">{step.body}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
