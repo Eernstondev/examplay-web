@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #1746a2;
+  --color-brand-dark: #0b2559;
+  --color-brand-soft: #eef3fc;
+  --color-ink: #0b2559;
+  --color-success: #12784a;
+  --color-success-soft: #e9f6ef;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fcedec;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+/* Bouton du formulaire : bleu sur fond blanc, blanc sur le bandeau bleu */
+.waitlist-submit {
+  background: var(--color-brand);
+  color: #ffffff;
+}
+.waitlist-submit:hover:not(:disabled) {
+  background: var(--color-brand-dark);
+}
+.on-brand .waitlist-submit {
+  background: #ffffff;
+  color: var(--color-brand);
+}
+.on-brand .waitlist-submit:hover:not(:disabled) {
+  background: var(--color-brand-soft);
+}
+
+/* Contenu des pages légales */
+.legal {
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-ink) 85%, transparent);
+}
+.legal h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.legal p,
+.legal ul {
+  margin-bottom: 1rem;
+}
+.legal ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.legal a {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
