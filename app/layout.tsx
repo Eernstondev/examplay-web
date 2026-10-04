@@ -3,6 +3,7 @@ import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/instrument-sans";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { FooterGate } from "@/components/footer-gate";
 import { SiteFooter } from "@/components/site-footer";
 import { site } from "@/lib/site";
 
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <SiteHeader />
         {children}
-        <SiteFooter />
+        <FooterGate>
+          <SiteFooter />
+        </FooterGate>
       </body>
     </html>
   );

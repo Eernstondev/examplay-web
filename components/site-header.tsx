@@ -10,6 +10,9 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  // L'espace élève a sa propre barre.
+  if (pathname.startsWith("/dashboard")) return null;
+
   return (
     <header className="mx-auto w-full max-w-6xl px-5 py-4 sm:px-8 sm:py-5">
       <div className="flex items-center justify-between gap-6">

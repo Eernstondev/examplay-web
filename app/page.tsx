@@ -32,7 +32,7 @@ const features = [
 
 const container = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const cta =
-  "btn-sun flex h-14 items-center justify-center rounded-xl px-10 text-lg font-bold sm:w-auto";
+  "btn-sun flex h-13 items-center justify-center rounded-xl px-10 text-base font-bold sm:h-14 sm:text-lg";
 const h2 = "font-display text-[clamp(1.75rem,6vw,2.75rem)] font-bold leading-[1.1] tracking-tight";
 
 export default function Home() {
@@ -41,25 +41,25 @@ export default function Home() {
       {/* Hero : la carte de question déborde sous le bloc bleu sur mobile */}
       <section className="rounded-b-[2rem] bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
         <div
-          className={`${container} grid gap-10 pt-9 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20`}
+          className={`${container} grid gap-8 pt-6 sm:gap-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20`}
         >
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/25">
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold ring-1 sm:px-3.5 sm:py-1.5 sm:text-sm ring-white/25">
               <span className="size-2 animate-pulse rounded-full bg-sun" />
               App mobile : bientôt sur vos écrans
             </p>
-            <h1 className="mt-5 font-display text-[clamp(2.75rem,13.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
+            <h1 className="mt-4 font-display text-[clamp(2.125rem,10.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
               Apprendre,
               <br />
               Réviser,
               <br />
               Réussir.
             </h1>
-            <p className="mt-5 max-w-md text-[1.0625rem] leading-relaxed text-white/85 sm:text-lg">
+            <p className="mt-3 max-w-md leading-relaxed text-white/85 sm:mt-5 sm:text-lg">
               L&apos;app qui te prépare aux examens d&apos;État haïtiens, en NS4 et en 9e année
               fondamentale.
             </p>
-            <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div className="mt-5 flex flex-col gap-2 sm:mt-7 sm:flex-row sm:items-center sm:gap-6">
               <Link href="/commencer" className={cta}>
                 Commencer
               </Link>

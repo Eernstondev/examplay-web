@@ -1,9 +1,20 @@
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
-export type Account = { user: User; name: string; level?: string; department?: string };
+export type Account = {
+  user: User;
+  name: string;
+  level?: string;
+  department?: string;
+  points: number;
+  streak: number;
+};
 
 const text = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : undefined);
+const count = (...values: unknown[]) => {
+  const found = values.find((v) => typeof v === "number" && Number.isFinite(v));
+  return typeof found === "number" ? Math.max(0, Math.floor(found)) : 0;
+};
 
 // Lit le compte connecté. Les noms de colonnes de `profiles` ne sont pas encore
 // confirmés : on essaie les variantes courantes, puis les métadonnées du compte.
@@ -28,5 +39,7 @@ export async function getAccount(): Promise<Account | null> {
       "élève",
     level: text(profile.level) ?? text(profile.niveau) ?? text(meta.level),
     department: text(profile.department) ?? text(profile.departement) ?? text(meta.department),
+    points: count(profile.points, profile.total_points, profile.score, profile.xp),
+    streak: count(profile.streak, profile.current_streak, profile.streak_days),
   };
 }
