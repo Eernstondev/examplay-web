@@ -9,6 +9,8 @@
   --color-success-soft: #e9f6ef;
   --color-danger: #b3261e;
   --color-danger-soft: #fcedec;
+  --color-sun: #ffc93c;
+  --color-sun-dark: #d9a100;
   --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
 }
@@ -19,30 +21,40 @@ body {
   font-family: var(--font-sans);
 }
 
-:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 3px;
-  border-radius: 4px;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
-button:not(:disabled) {
-  cursor: pointer;
+/* Lignes de copie d'examen sur les fonds bleus */
+.paper {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 35px,
+    rgb(255 255 255 / 0.07) 35px 36px
+  );
 }
 
-/* Bouton du formulaire : bleu sur fond blanc, blanc sur le bandeau bleu */
-.waitlist-submit {
-  background: var(--color-brand);
-  color: #ffffff;
+/* Bouton principal : relief franc, s'enfonce au toucher */
+.btn-sun {
+  background: var(--color-sun);
+  color: var(--color-ink);
+  box-shadow: 0 4px 0 0 var(--color-sun-dark);
+  transition: transform 0.08s, box-shadow 0.08s;
 }
-.waitlist-submit:hover:not(:disabled) {
-  background: var(--color-brand-dark);
-}
-.on-brand .waitlist-submit {
-  background: #ffffff;
-  color: var(--color-brand);
-}
-.on-brand .waitlist-submit:hover:not(:disabled) {
-  background: var(--color-brand-soft);
+.btn-sun:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 var(--color-sun-dark);
 }
 
 /* Contenu des pages légales */
@@ -123,7 +135,11 @@ button:not(:disabled) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   * {
     transition: none !important;
+    animation: none !important;
   }
 }

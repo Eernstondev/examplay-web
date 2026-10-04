@@ -11,7 +11,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="mx-auto w-full max-w-6xl px-5 py-5 sm:px-8">
+    <header className="mx-auto w-full max-w-6xl px-5 py-4 sm:px-8 sm:py-5">
       <div className="flex items-center justify-between gap-6">
         <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
           <Image src="/logo.png" alt="" width={40} height={40} priority className="rounded-[10px]" />
@@ -44,7 +44,7 @@ export function SiteHeader() {
             aria-expanded={open}
             aria-controls="menu-mobile"
             onClick={() => setOpen((v) => !v)}
-            className="rounded-lg border border-ink/15 px-4 py-2.5 text-sm font-semibold xl:hidden"
+            className="min-h-11 rounded-lg border border-ink/15 px-4 text-sm font-semibold xl:hidden"
           >
             {open ? "Fermer" : "Menu"}
           </button>

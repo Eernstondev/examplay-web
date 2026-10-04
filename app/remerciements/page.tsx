@@ -36,21 +36,21 @@ export default function Page() {
       title="Gratitude et reconnaissance"
       lead="Examplay est le fruit d'une intelligence collective. Nous exprimons notre profonde gratitude à ceux qui bâtissent, jour après jour, ce projet d'excellence éducative."
     >
-      <ul className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
+      <ul className="grid gap-4 sm:grid-cols-2">
         {thanks.map((item) => (
-          <li key={item.title} className="border-t-2 border-brand pt-5">
+          <li key={item.title} className="rounded-3xl bg-brand-soft p-6 sm:p-7 sm:last:col-span-2">
             <h2 className="font-display text-xl font-semibold">{item.title}</h2>
-            <p className="mt-2 max-w-md leading-relaxed text-ink/70">{item.body}</p>
+            <p className="mt-2 max-w-xl leading-relaxed text-ink/70">{item.body}</p>
           </li>
         ))}
       </ul>
 
-      <figure className="mt-16 rounded-2xl bg-brand-soft px-6 py-10 sm:px-12 sm:py-14">
-        <blockquote className="max-w-3xl font-display text-2xl font-semibold leading-snug sm:text-3xl">
+      <figure className="paper mt-4 rounded-3xl bg-brand px-6 py-10 text-white sm:px-12 sm:py-14">
+        <blockquote className="max-w-3xl font-display text-[clamp(1.375rem,5.5vw,1.875rem)] font-semibold leading-snug">
           « La réussite scolaire est une destination que l&apos;on atteint ensemble. Merci
           d&apos;être une part essentielle de ce voyage. »
         </blockquote>
-        <figcaption className="mt-5 text-ink/70">L&apos;équipe URBVEC Atelier</figcaption>
+        <figcaption className="mt-5 text-white/75">L&apos;équipe URBVEC Atelier</figcaption>
       </figure>
 
       <p className="mt-10 text-ink/75">

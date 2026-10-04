@@ -1,16 +1,20 @@
 import { SampleQuestion } from "@/components/sample-question";
+import { StickyCta } from "@/components/sticky-cta";
 import { WaitlistForm } from "@/components/waitlist-form";
 
-const levels = [
+const tracks = [
+  { code: "SES", name: "Sciences économiques et sociales" },
+  { code: "SVT", name: "Sciences de la vie et de la Terre" },
+  { code: "LLA", name: "Lettres, langues et arts" },
+  { code: "SMP", name: "Sciences mathématiques et physiques" },
+];
+
+const steps = [
+  { title: "Choisis ta section", body: "Sélectionne ton niveau et la filière que tu prépares." },
+  { title: "Joue à des quiz", body: "Teste tes connaissances avec des questions ciblées." },
   {
-    name: "NS4",
-    detail: "Les quatre filières du bac haïtien.",
-    tracks: ["SES", "SVT", "LLA", "SMP"],
-  },
-  {
-    name: "9e année fondamentale",
-    detail: "Le programme de l'examen officiel de 9e AF.",
-    tracks: [],
+    title: "Suis ta progression",
+    body: "Gagne des points, des badges et grimpe dans le classement.",
   },
 ];
 
@@ -33,131 +37,152 @@ const features = [
   },
 ];
 
-const steps = [
-  { title: "Choisis ta section", body: "Sélectionne ton niveau et la filière que tu prépares." },
-  { title: "Joue à des quiz", body: "Teste tes connaissances avec des questions ciblées." },
-  {
-    title: "Suis ta progression",
-    body: "Gagne des points, des badges et grimpe dans le classement.",
-  },
-];
+const container = "mx-auto w-full max-w-6xl px-5 sm:px-8";
+const h2 = "font-display text-[clamp(1.75rem,6vw,2.75rem)] font-bold leading-[1.1] tracking-tight";
 
 export default function Home() {
   return (
     <main className="flex-1">
-      <section className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:pb-28 lg:pt-16">
-        <div>
-          <h1 className="font-display text-[clamp(3rem,9vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em] text-brand">
-            Apprendre,
-            <br />
-            Réviser,
-            <br />
-            Réussir.
-          </h1>
-          <p className="mt-7 max-w-md text-lg leading-relaxed text-ink/75">
-            Examplay est l&apos;app qui te prépare aux examens d&apos;État haïtiens, en NS4 et en
-            9e année fondamentale. Bientôt sur vos écrans.
-          </p>
-          <div className="mt-8">
-            <WaitlistForm id="email-hero" />
+      {/* Hero : la carte de question déborde sous le bloc bleu sur mobile */}
+      <section className="paper rounded-b-[2rem] bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
+        <div
+          className={`${container} grid gap-10 pt-9 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20`}
+        >
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/25">
+              <span className="size-2 animate-pulse rounded-full bg-sun" />
+              Bientôt sur vos écrans
+            </p>
+            <h1 className="mt-5 font-display text-[clamp(2.75rem,13.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
+              Apprendre,
+              <br />
+              Réviser,
+              <br />
+              Réussir.
+            </h1>
+            <p className="mt-5 max-w-md text-[1.0625rem] leading-relaxed text-white/85 sm:text-lg">
+              L&apos;app qui te prépare aux examens d&apos;État haïtiens, en NS4 et en 9e année
+              fondamentale.
+            </p>
+            <div data-hide-cta className="mt-7">
+              <WaitlistForm id="email-hero" />
+            </div>
+          </div>
+          <div className="relative z-10 -mb-16 lg:mb-0">
+            <SampleQuestion />
           </div>
         </div>
-        <SampleQuestion />
       </section>
 
-      <section className="mx-auto grid w-full max-w-6xl gap-6 border-t border-ink/10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_2fr] lg:gap-12 lg:py-24">
-        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Notre mission : ta réussite aux examens d&apos;État
-        </h2>
-        <div className="max-w-2xl space-y-4 text-lg leading-relaxed text-ink/75">
-          <p>
-            Examplay a été conçu par des étudiants, pour des étudiants. Notre objectif est simple :
-            transformer les longues heures de révision en une expérience motivante et interactive.
-          </p>
-          <p>
-            Nous croyons qu&apos;apprendre peut être amusant. C&apos;est pourquoi nous avons créé
-            une plateforme de quiz, adaptée aux élèves de la 9e AF et aux séries du Nouveau
-            Secondaire 4, pour t&apos;aider à maîtriser tes matières et à aborder l&apos;examen avec
-            confiance.
-          </p>
+      <section className={`${container} pb-16 pt-32 sm:pb-20 lg:py-28`}>
+        <div className="grid gap-5 lg:grid-cols-[1fr_1.2fr] lg:gap-14">
+          <h2 className={h2}>Conçu par des étudiants, pour des étudiants.</h2>
+          <div className="max-w-xl space-y-4 text-[1.0625rem] leading-relaxed text-ink/75 sm:text-lg">
+            <p>
+              Notre mission : ta réussite aux examens d&apos;État. On transforme les longues heures
+              de révision en une expérience motivante et interactive.
+            </p>
+            <p>
+              Nous croyons qu&apos;apprendre peut être amusant. Examplay est une plateforme de quiz
+              adaptée aux élèves de la 9e AF et aux séries du Nouveau Secondaire 4, pour
+              t&apos;aider à maîtriser tes matières et à aborder l&apos;examen avec confiance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className={`${container} pb-16 sm:pb-20 lg:pb-28`}>
+        <h2 className={h2}>Pour quels examens&nbsp;?</h2>
+        <div className="mt-7 grid gap-4 lg:mt-10 lg:grid-cols-[1.4fr_1fr]">
+          <div className="rounded-3xl bg-brand-soft p-6 sm:p-8">
+            <h3 className="font-display text-3xl font-bold">NS4</h3>
+            <p className="mt-1 text-ink/70">Les quatre filières du bac haïtien.</p>
+            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+              {tracks.map((track) => (
+                <li key={track.code} className="flex items-center gap-3 rounded-2xl bg-white p-3">
+                  <span className="grid h-11 w-14 shrink-0 place-items-center rounded-xl bg-brand text-sm font-bold text-white">
+                    {track.code}
+                  </span>
+                  <span className="text-sm font-medium leading-snug">{track.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex flex-col justify-between gap-8 rounded-3xl bg-ink p-6 text-white sm:p-8">
+            <h3 className="font-display text-3xl font-bold leading-tight">
+              9e année
+              <br />
+              fondamentale
+            </h3>
+            <p className="text-white/75">Le programme de l&apos;examen officiel de 9e AF.</p>
+          </div>
         </div>
       </section>
 
       <section className="bg-brand-soft">
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_2fr] lg:py-24">
-          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Pour quels examens&nbsp;?
-          </h2>
-          <dl className="divide-y divide-ink/10 border-y border-ink/10">
-            {levels.map((level) => (
-              <div
-                key={level.name}
-                className="flex flex-col gap-3 py-6 sm:flex-row sm:items-center sm:justify-between"
+        <div className={`${container} py-16 sm:py-20 lg:py-28`}>
+          <h2 className={h2}>Comment ça marche&nbsp;?</h2>
+          <ol className="mt-8 grid gap-0 md:mt-12 md:grid-cols-3 md:gap-8">
+            {steps.map((step, i) => (
+              <li
+                key={step.title}
+                className="relative flex gap-4 pb-8 last:pb-0 md:block md:pb-0"
               >
-                <div>
-                  <dt className="font-display text-2xl font-semibold">{level.name}</dt>
-                  <dd className="mt-1 text-ink/70">{level.detail}</dd>
-                </div>
-                {level.tracks.length > 0 && (
-                  <ul className="flex flex-wrap gap-2">
-                    {level.tracks.map((track) => (
-                      <li
-                        key={track}
-                        className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-brand"
-                      >
-                        {track}
-                      </li>
-                    ))}
-                  </ul>
+                {/* Trait qui relie les étapes : vertical sur mobile, horizontal sur desktop */}
+                {i < steps.length - 1 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute bottom-0 left-6 top-12 w-0.5 -translate-x-1/2 bg-brand/25 md:bottom-auto md:left-16 md:right-[-2rem] md:top-6 md:h-0.5 md:w-auto md:translate-x-0"
+                  />
                 )}
-              </div>
+                <span className="relative grid size-12 shrink-0 place-items-center rounded-full bg-brand font-display text-xl font-bold text-white">
+                  {i + 1}
+                </span>
+                <div className="md:mt-5">
+                  <h3 className="font-display text-xl font-semibold">{step.title}</h3>
+                  <p className="mt-1.5 leading-relaxed text-ink/70">{step.body}</p>
+                </div>
+              </li>
             ))}
-          </dl>
+          </ol>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8 lg:pt-24">
-        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Comment ça marche ?
-        </h2>
-        <ol className="mt-10 grid gap-10 md:grid-cols-3">
-          {steps.map((step, i) => (
-            <li key={step.title}>
-              <span className="font-display text-5xl font-extrabold text-brand">{i + 1}</span>
-              <h3 className="mt-3 font-display text-xl font-semibold">{step.title}</h3>
-              <p className="mt-2 leading-relaxed text-ink/70">{step.body}</p>
-            </li>
-          ))}
-        </ol>
+      <section className={`${container} py-16 sm:py-20 lg:py-28`}>
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-14">
+          <h2 className={`${h2} lg:sticky lg:top-8 lg:self-start`}>
+            Ce que tu trouveras dans l&apos;app
+          </h2>
+          <ul className="divide-y divide-ink/10 border-y border-ink/10">
+            {features.map((feature) => (
+              <li key={feature.title} className="py-6 sm:py-7">
+                <h3 className="font-display text-xl font-semibold sm:text-2xl">{feature.title}</h3>
+                <p className="mt-2 max-w-lg leading-relaxed text-ink/70">{feature.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
-        <h2 className="max-w-xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Ce que tu trouveras dans l&apos;app
-        </h2>
-        <ul className="mt-10 grid gap-x-12 gap-y-10 sm:grid-cols-2">
-          {features.map((feature) => (
-            <li key={feature.title} className="border-t-2 border-brand pt-5">
-              <h3 className="font-display text-xl font-semibold">{feature.title}</h3>
-              <p className="mt-2 max-w-md leading-relaxed text-ink/70">{feature.body}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section id="inscription" className="on-brand scroll-mt-8 bg-brand text-white">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-16 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:py-20">
-          <div>
-            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              Sois prévenu dès la sortie
-            </h2>
-            <p className="mt-3 max-w-md leading-relaxed text-white/80">
-              Laisse ton e-mail. Tu recevras un seul message, le jour où l&apos;app est disponible.
+      <section
+        id="inscription"
+        data-hide-cta
+        className="paper scroll-mt-4 bg-brand text-white sm:mx-4 sm:mb-4 sm:rounded-[2.5rem] lg:mx-6 lg:mb-6"
+      >
+        <div
+          className={`${container} flex flex-col gap-7 py-14 sm:py-16 lg:flex-row lg:items-center lg:justify-between lg:gap-14 lg:py-20`}
+        >
+          <div className="max-w-md">
+            <h2 className={h2}>Sois prévenu dès la sortie</h2>
+            <p className="mt-3 text-[1.0625rem] leading-relaxed text-white/85">
+              Laisse ton e-mail et sois parmi les premiers à réviser avec Examplay.
             </p>
           </div>
           <WaitlistForm id="email-footer" />
         </div>
       </section>
+
+      <StickyCta />
     </main>
   );
 }
