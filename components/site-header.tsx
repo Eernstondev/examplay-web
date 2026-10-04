@@ -33,11 +33,11 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Link
-            href="/#inscription"
+            href="/commencer"
             onClick={() => setOpen(false)}
             className="hidden whitespace-nowrap rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark sm:block"
           >
-            Me prévenir au lancement
+            Commencer
           </Link>
           <button
             type="button"
@@ -69,11 +69,11 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            href="/#inscription"
+            href="/commencer"
             onClick={() => setOpen(false)}
             className="mt-4 rounded-lg bg-brand px-4 py-3 text-center font-semibold text-white sm:hidden"
           >
-            Me prévenir au lancement
+            Commencer
           </Link>
         </nav>
       )}

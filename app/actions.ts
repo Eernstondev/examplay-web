@@ -1,52 +1,111 @@
 "use server";
 
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { contactSubjects } from "@/lib/contact";
-import { createSupabaseClient } from "@/lib/supabase";
-
-export type WaitlistState = {
-  status: "idle" | "success" | "error";
-  message: string;
-};
+import { departments, findLevel } from "@/lib/levels";
+import { createClient } from "@/lib/supabase/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export async function joinWaitlist(
-  _prev: WaitlistState,
-  formData: FormData,
-): Promise<WaitlistState> {
-  const success: WaitlistState = {
-    status: "success",
-    message: "C'est noté. On t'écrit dès que l'app est disponible.",
-  };
+export type AuthState = {
+  status: "idle" | "error" | "confirm";
+  message: string;
+  values: { name?: string; email: string; department?: string };
+};
 
-  // Champ piège : rempli uniquement par les robots.
-  if (formData.get("website")) return success;
-
+export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get("email") ?? "")
     .trim()
     .toLowerCase();
+  const password = String(formData.get("password") ?? "");
+  const fail = (message: string): AuthState => ({ status: "error", message, values: { email } });
 
-  if (email.length > 254 || !EMAIL_RE.test(email)) {
+  if (!EMAIL_RE.test(email) || !password) {
+    return fail("Entre ton adresse e-mail et ton mot de passe.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    if (error.code === "email_not_confirmed") {
+      return fail("Confirme d'abord ton adresse : ouvre le lien reçu par e-mail.");
+    }
+    if (error.code === "invalid_credentials") {
+      return fail("E-mail ou mot de passe incorrect.");
+    }
+    console.error("signIn failed:", error.code, error.message);
+    return fail("La connexion a échoué. Réessaie dans un instant.");
+  }
+
+  redirect("/dashboard");
+}
+
+export async function signUp(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const values = {
+    name: String(formData.get("name") ?? "").trim(),
+    email: String(formData.get("email") ?? "")
+      .trim()
+      .toLowerCase(),
+    department: String(formData.get("department") ?? ""),
+  };
+  const password = String(formData.get("password") ?? "");
+  const level = findLevel(String(formData.get("level") ?? ""));
+  const fail = (message: string): AuthState => ({ status: "error", message, values });
+
+  if (!level) redirect("/commencer");
+  if (values.name.length < 2 || values.name.length > 80) return fail("Entre ton nom complet.");
+  if (values.email.length > 254 || !EMAIL_RE.test(values.email)) {
+    return fail("Cette adresse e-mail n'est pas valide.");
+  }
+  if (!(departments as readonly string[]).includes(values.department)) {
+    return fail("Choisis ton département.");
+  }
+  if (password.length < 8) return fail("Le mot de passe doit contenir au moins 8 caractères.");
+  if (formData.get("terms") !== "on") {
+    return fail("Accepte les conditions d'utilisation pour créer ton compte.");
+  }
+
+  const origin = (await headers()).get("origin") ?? "";
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signUp({
+    email: values.email,
+    password,
+    options: {
+      emailRedirectTo: `${origin}/auth/callback`,
+      // Métadonnées du compte : niveau et département, fixés à l'inscription.
+      data: { full_name: values.name, level: level.value, department: values.department },
+    },
+  });
+
+  if (error) {
+    if (error.code === "user_already_exists") {
+      return fail("Un compte existe déjà avec cette adresse. Connecte-toi.");
+    }
+    if (error.code === "weak_password") {
+      return fail("Ce mot de passe est trop faible. Choisis-en un plus long.");
+    }
+    console.error("signUp failed:", error.code, error.message);
+    return fail("Le compte n'a pas pu être créé. Réessaie dans un instant.");
+  }
+
+  // Confirmation par e-mail activée : pas encore de session.
+  if (!data.session) {
     return {
-      status: "error",
-      message: "Cette adresse e-mail n'est pas valide. Vérifie-la et réessaie.",
+      status: "confirm",
+      message: `Compte créé. Ouvre le lien envoyé à ${values.email} pour l'activer.`,
+      values,
     };
   }
 
-  const { error } = await createSupabaseClient()
-    .from("waitlist")
-    .insert({ email });
+  redirect("/dashboard");
+}
 
-  // 23505 = e-mail déjà inscrit : même réponse, sans révéler l'inscription.
-  if (error && error.code !== "23505") {
-    console.error("waitlist insert failed:", error.code, error.message);
-    return {
-      status: "error",
-      message: "L'inscription n'a pas pu être enregistrée. Réessaie dans un instant.",
-    };
-  }
-
-  return success;
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/");
 }
 
 export type ContactState = {
@@ -89,7 +148,8 @@ export async function sendContactRequest(
     return fail("Le message doit contenir entre 10 et 4000 caractères.");
   }
 
-  const { error } = await createSupabaseClient().from("contact_requests").insert(values);
+  const supabase = await createClient();
+  const { error } = await supabase.from("contact_requests").insert(values);
 
   if (error) {
     console.error("contact insert failed:", error.code, error.message);

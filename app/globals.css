@@ -36,15 +36,6 @@ body {
   }
 }
 
-/* Lignes de copie d'examen sur les fonds bleus */
-.paper {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 35px,
-    rgb(255 255 255 / 0.07) 35px 36px
-  );
-}
-
 /* Bouton principal : relief franc, s'enfonce au toucher */
 .btn-sun {
   background: var(--color-sun);

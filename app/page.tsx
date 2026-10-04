@@ -1,13 +1,6 @@
 import { SampleQuestion } from "@/components/sample-question";
-import { StickyCta } from "@/components/sticky-cta";
-import { WaitlistForm } from "@/components/waitlist-form";
-
-const tracks = [
-  { code: "SES", name: "Sciences économiques et sociales" },
-  { code: "SVT", name: "Sciences de la vie et de la Terre" },
-  { code: "LLA", name: "Lettres, langues et arts" },
-  { code: "SMP", name: "Sciences mathématiques et physiques" },
-];
+import Link from "next/link";
+import { ns4Tracks } from "@/lib/levels";
 
 const steps = [
   { title: "Choisis ta section", body: "Sélectionne ton niveau et la filière que tu prépares." },
@@ -38,20 +31,22 @@ const features = [
 ];
 
 const container = "mx-auto w-full max-w-6xl px-5 sm:px-8";
+const cta =
+  "btn-sun flex h-14 items-center justify-center rounded-xl px-10 text-lg font-bold sm:w-auto";
 const h2 = "font-display text-[clamp(1.75rem,6vw,2.75rem)] font-bold leading-[1.1] tracking-tight";
 
 export default function Home() {
   return (
     <main className="flex-1">
       {/* Hero : la carte de question déborde sous le bloc bleu sur mobile */}
-      <section className="paper rounded-b-[2rem] bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
+      <section className="rounded-b-[2rem] bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
         <div
           className={`${container} grid gap-10 pt-9 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20`}
         >
           <div>
             <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/25">
               <span className="size-2 animate-pulse rounded-full bg-sun" />
-              Bientôt sur vos écrans
+              App mobile : bientôt sur vos écrans
             </p>
             <h1 className="mt-5 font-display text-[clamp(2.75rem,13.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
               Apprendre,
@@ -64,8 +59,16 @@ export default function Home() {
               L&apos;app qui te prépare aux examens d&apos;État haïtiens, en NS4 et en 9e année
               fondamentale.
             </p>
-            <div data-hide-cta className="mt-7">
-              <WaitlistForm id="email-hero" />
+            <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <Link href="/commencer" className={cta}>
+                Commencer
+              </Link>
+              <Link
+                href="/connexion"
+                className="py-2 text-center font-semibold underline underline-offset-4 sm:text-left"
+              >
+                J&apos;ai déjà un compte
+              </Link>
             </div>
           </div>
           <div className="relative z-10 -mb-16 lg:mb-0">
@@ -98,7 +101,7 @@ export default function Home() {
             <h3 className="font-display text-3xl font-bold">NS4</h3>
             <p className="mt-1 text-ink/70">Les quatre filières du bac haïtien.</p>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
-              {tracks.map((track) => (
+              {ns4Tracks.map((track) => (
                 <li key={track.code} className="flex items-center gap-3 rounded-2xl bg-white p-3">
                   <span className="grid h-11 w-14 shrink-0 place-items-center rounded-xl bg-brand text-sm font-bold text-white">
                     {track.code}
@@ -164,25 +167,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="inscription"
-        data-hide-cta
-        className="paper scroll-mt-4 bg-brand text-white sm:mx-4 sm:mb-4 sm:rounded-[2.5rem] lg:mx-6 lg:mb-6"
-      >
+      <section className="bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
         <div
           className={`${container} flex flex-col gap-7 py-14 sm:py-16 lg:flex-row lg:items-center lg:justify-between lg:gap-14 lg:py-20`}
         >
           <div className="max-w-md">
-            <h2 className={h2}>Sois prévenu dès la sortie</h2>
+            <h2 className={h2}>Prêt à réviser ?</h2>
             <p className="mt-3 text-[1.0625rem] leading-relaxed text-white/85">
-              Laisse ton e-mail et sois parmi les premiers à réviser avec Examplay.
+              Choisis ta section, crée ton compte et retrouve ton tableau de bord.
             </p>
           </div>
-          <WaitlistForm id="email-footer" />
+          <Link href="/commencer" className={cta}>
+            Commencer
+          </Link>
         </div>
       </section>
-
-      <StickyCta />
     </main>
   );
 }

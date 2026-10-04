@@ -45,7 +45,7 @@ export default function Page() {
         ))}
       </ul>
 
-      <figure className="paper mt-4 rounded-3xl bg-brand px-6 py-10 text-white sm:px-12 sm:py-14">
+      <figure className="mt-4 rounded-3xl bg-brand px-6 py-10 text-white sm:px-12 sm:py-14">
         <blockquote className="max-w-3xl font-display text-[clamp(1.375rem,5.5vw,1.875rem)] font-semibold leading-snug">
           « La réussite scolaire est une destination que l&apos;on atteint ensemble. Merci
           d&apos;être une part essentielle de ce voyage. »
