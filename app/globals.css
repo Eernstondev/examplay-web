@@ -71,6 +71,32 @@ button:not(:disabled) {
   text-underline-offset: 3px;
 }
 
+.legal .table-wrap {
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+.legal table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.legal th,
+.legal td {
+  padding: 0.75rem 1rem 0.75rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  text-align: left;
+  vertical-align: top;
+}
+.legal th {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.legal .updated {
+  font-size: 0.875rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
