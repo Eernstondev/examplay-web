@@ -1,39 +1,19 @@
-// `value` est la valeur enregistrée dans le compte (format de la politique de
-// confidentialité : « NS4-SVT », « 9e »). À aligner sur l'app mobile si elle diffère.
-export const levels = [
-  { slug: "9e", value: "9e", label: "9e année fondamentale", short: "9e AF" },
-  { slug: "ns4-ses", value: "NS4-SES", label: "NS4, série SES", short: "SES" },
-  { slug: "ns4-svt", value: "NS4-SVT", label: "NS4, série SVT", short: "SVT" },
-  { slug: "ns4-lla", value: "NS4-LLA", label: "NS4, série LLA", short: "LLA" },
-  { slug: "ns4-smp", value: "NS4-SMP", label: "NS4, série SMP", short: "SMP" },
-] as const;
+import { DEPARTMENTS, LEVELS, type LevelId } from "@/lib/content";
 
-export type Level = (typeof levels)[number];
+// Parcours d'inscription : les identifiants sont ceux de l'app mobile.
+export const ns4Tracks = LEVELS.filter((l) => l.id !== "9e").map((l) => ({
+  slug: l.id,
+  code: l.label.replace("NS4-", ""),
+  name: l.description,
+}));
 
-export const ns4Tracks = [
-  { slug: "ns4-ses", code: "SES", name: "Sciences économiques et sociales" },
-  { slug: "ns4-svt", code: "SVT", name: "Sciences de la vie et de la Terre" },
-  { slug: "ns4-lla", code: "LLA", name: "Lettres, langues et arts" },
-  { slug: "ns4-smp", code: "SMP", name: "Sciences mathématiques et physiques" },
-] as const;
+export const departments = DEPARTMENTS;
 
-export const departments = [
-  "Ouest",
-  "Sud",
-  "Nord",
-  "Nippes",
-  "Grand'Anse",
-  "Sud-Est",
-  "Nord-Ouest",
-  "Artibonite",
-  "Centre",
-  "Nord-Est",
-] as const;
-
-export function findLevel(slug: string | undefined): Level | undefined {
-  return levels.find((l) => l.slug === slug);
-}
-
-export function levelLabel(value: string | undefined): string | undefined {
-  return levels.find((l) => l.value === value)?.label ?? value;
+export function findLevel(slug: string | undefined) {
+  const level = LEVELS.find((l) => l.id === slug);
+  if (!level) return undefined;
+  return {
+    slug: level.id as LevelId,
+    label: level.id === "9e" ? "9e année fondamentale" : `NS4, série ${level.label.slice(4)}`,
+  };
 }

@@ -59,10 +59,10 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (values.email.length > 254 || !EMAIL_RE.test(values.email)) {
     return fail("Cette adresse e-mail n'est pas valide.");
   }
-  if (!(departments as readonly string[]).includes(values.department)) {
+  if (!departments.includes(values.department)) {
     return fail("Choisis ton département.");
   }
-  if (password.length < 8) return fail("Le mot de passe doit contenir au moins 8 caractères.");
+  if (password.length < 6) return fail("Le mot de passe doit contenir au moins 6 caractères.");
   if (formData.get("terms") !== "on") {
     return fail("Accepte les conditions d'utilisation pour créer ton compte.");
   }
@@ -74,8 +74,8 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
-      // Métadonnées du compte : niveau et département, fixés à l'inscription.
-      data: { full_name: values.name, level: level.value, department: values.department },
+      // Mêmes clés que l'app mobile : le trigger handle_new_user crée le profil avec.
+      data: { name: values.name, level: level.slug, department: values.department },
     },
   });
 

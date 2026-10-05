@@ -124,13 +124,13 @@ export function SignUpForm({ level }: { level: string }) {
           name="password"
           type="password"
           required
-          minLength={8}
+          minLength={6}
           autoComplete="new-password"
           aria-describedby="password-hint"
           className={field}
         />
         <span id="password-hint" className="mt-1.5 block text-sm font-normal text-ink/60">
-          8 caractères minimum.
+          6 caractères minimum.
         </span>
       </label>
       <label className="flex items-start gap-3 text-sm leading-relaxed">
