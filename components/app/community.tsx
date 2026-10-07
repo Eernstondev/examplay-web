@@ -18,7 +18,10 @@ import {
 import type { DuelSummary } from "@/lib/stats";
 import { createClient } from "@/lib/supabase/client";
 
-type Tab = "online" | "search" | "duels";
+type Tab = "online" | "search" | "friends" | "duels";
+type Friend = { id: string; name: string };
+type FriendRequest = { id: string; from_id: string; name: string };
+type FriendRank = { user_id: string; name: string; points: number; is_me: boolean };
 type Found = { id: string; name: string };
 type Active = { id: string; opp: string; subject: string };
 type Props = {
@@ -31,6 +34,7 @@ type Props = {
 const tabs: { id: Tab; label: string }[] = [
   { id: "online", label: "En ligne" },
   { id: "search", label: "Rechercher" },
+  { id: "friends", label: "Amis" },
   { id: "duels", label: "Duels" },
 ];
 
@@ -44,6 +48,10 @@ export function Community({ me, subjects, points, history }: Props) {
   const [query, setQuery] = useState("");
   const [found, setFound] = useState<Found[]>([]);
   const [active, setActive] = useState<Active[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const [ranking, setRanking] = useState<FriendRank[]>([]);
+  const [invited, setInvited] = useState<Record<string, boolean>>({});
 
   useEffect(() => onPresence(setPlayers), []);
 
@@ -98,6 +106,47 @@ export function Community({ me, subjects, points, history }: Props) {
     return () => clearTimeout(timer);
   }, [loadActive]);
 
+  const loadFriends = useCallback(async () => {
+    const supabase = createClient();
+    const [f, r, l] = await Promise.all([
+      supabase.rpc("list_friends"),
+      supabase.rpc("list_friend_requests"),
+      supabase.rpc("friends_leaderboard"),
+    ]);
+    setFriends((f.data as Friend[] | null) ?? []);
+    setRequests((r.data as FriendRequest[] | null) ?? []);
+    setRanking(
+      ((l.data as FriendRank[] | null) ?? [])
+        .map((x) => ({ ...x, points: Number(x.points) }))
+        .sort((a, b) => b.points - a.points),
+    );
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(loadFriends, 0);
+    return () => clearTimeout(timer);
+  }, [loadFriends]);
+
+  const addFriend = async (id: string) => {
+    setError("");
+    const { error: rpcError } = await createClient().rpc("send_friend_request", { p_addressee: id });
+    if (rpcError) return setError("La demande d'ami n'a pas pu être envoyée (déjà amis ou demande en cours).");
+    setInvited((s) => ({ ...s, [id]: true }));
+  };
+
+  const answerRequest = async (id: string, accept: boolean) => {
+    await createClient().rpc("respond_friend_request", { p_id: id, p_accept: accept });
+    loadFriends();
+  };
+
+  const removeFriend = async (id: string, name: string) => {
+    if (!window.confirm(`Retirer ${name} de tes amis ?`)) return;
+    await createClient().rpc("remove_friend", { p_other: id });
+    loadFriends();
+  };
+
+  const friendIds = useMemo(() => new Set(friends.map((f) => f.id)), [friends]);
+
   const sorted = useMemo(
     () => [...players].sort((a, b) => (points[b.id]?.points ?? 0) - (points[a.id]?.points ?? 0)),
     [players, points],
@@ -139,6 +188,16 @@ export function Community({ me, subjects, points, history }: Props) {
           </p>
         )}
       </div>
+      {!friendIds.has(p.id) && (
+        <button
+          type="button"
+          disabled={invited[p.id]}
+          onClick={() => addFriend(p.id)}
+          className="h-11 shrink-0 rounded-xl px-3 text-sm font-bold text-brand ring-1 ring-ink/15 disabled:text-ink/50"
+        >
+          {invited[p.id] ? "Demandé" : "Ajouter"}
+        </button>
+      )}
       <button
         type="button"
         disabled={status[p.id] === "sent"}
@@ -152,7 +211,7 @@ export function Community({ me, subjects, points, history }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div role="tablist" aria-label="Communauté" className="grid grid-cols-3 gap-1 rounded-2xl bg-white p-1 ring-1 ring-ink/10">
+      <div role="tablist" aria-label="Communauté" className="grid grid-cols-4 gap-1 rounded-2xl bg-white p-1 ring-1 ring-ink/10">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -160,9 +219,12 @@ export function Community({ me, subjects, points, history }: Props) {
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`h-11 rounded-xl text-sm font-bold ${tab === t.id ? "bg-brand text-white" : "text-ink/70"}`}
+            className={`relative h-11 rounded-xl text-[0.8125rem] font-bold sm:text-sm ${tab === t.id ? "bg-brand text-white" : "text-ink/70"}`}
           >
             {t.label}
+            {t.id === "friends" && requests.length > 0 && (
+              <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-danger" />
+            )}
           </button>
         ))}
       </div>
@@ -229,6 +291,79 @@ export function Community({ me, subjects, points, history }: Props) {
             <ul className="mt-4 grid gap-2.5">{found.map(playerRow)}</ul>
           ) : (
             query.trim().length >= 2 && <p className="mt-8 text-center text-ink/70">Aucun élève trouvé.</p>
+          )}
+        </div>
+      )}
+
+      {tab === "friends" && (
+        <div className="mt-5">
+          {requests.length > 0 && (
+            <>
+              <h2 className="font-display text-lg font-bold">Demandes reçues</h2>
+              <ul className="mb-7 mt-3 grid gap-2.5">
+                {requests.map((r) => (
+                  <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink/10">
+                    <p className="min-w-0 flex-1 basis-32 truncate font-semibold">{r.name}</p>
+                    <button type="button" onClick={() => answerRequest(r.id, false)} className="h-11 rounded-xl px-4 text-sm font-bold ring-1 ring-ink/15">
+                      Refuser
+                    </button>
+                    <button type="button" onClick={() => answerRequest(r.id, true)} className="h-11 rounded-xl bg-brand px-4 text-sm font-bold text-white">
+                      Accepter
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          <h2 className="font-display text-lg font-bold">Mes amis ({friends.length})</h2>
+          {friends.length ? (
+            <ul className="mt-3 grid gap-2.5">
+              {friends.map((f) => (
+                <li key={f.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink/10">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand">
+                    {f.name.charAt(0).toUpperCase()}
+                  </span>
+                  <p className="min-w-0 flex-1 basis-24 truncate font-semibold">{f.name}</p>
+                  <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-bold text-danger ring-1 ring-ink/15">
+                    Retirer
+                  </button>
+                  <button
+                    type="button"
+                    disabled={status[f.id] === "sent"}
+                    onClick={() => challenge(f.id)}
+                    className="h-11 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
+                  >
+                    {status[f.id] === "sent" ? "Envoyé" : "Défier"}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-ink/70">
+              Tu n&apos;as pas encore d&apos;amis. Ajoute un élève depuis « En ligne » ou « Rechercher ».
+            </p>
+          )}
+
+          {ranking.length > 1 && (
+            <>
+              <h2 className="mt-7 font-display text-lg font-bold">Classement entre amis</h2>
+              <ol className="mt-3 grid gap-2">
+                {ranking.map((r, i) => (
+                  <li
+                    key={r.user_id}
+                    className={`flex items-center gap-3 rounded-2xl bg-white p-3 ${r.is_me ? "ring-2 ring-brand" : "ring-1 ring-ink/10"}`}
+                  >
+                    <span className="w-8 shrink-0 text-center font-display text-lg font-bold">{i + 1}</span>
+                    <p className="min-w-0 flex-1 truncate font-semibold">
+                      {r.name}
+                      {r.is_me && <span className="ml-2 text-sm font-bold text-brand">Toi</span>}
+                    </p>
+                    <span className="shrink-0 font-semibold tabular-nums">{r.points} pts</span>
+                  </li>
+                ))}
+              </ol>
+            </>
           )}
         </div>
       )}

@@ -22,11 +22,11 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims vérifie le jeton sans appel réseau quand le projet utilise des clés de
+  // signature asymétriques ; sinon il interroge le serveur d'authentification.
+  const { data } = await supabase.auth.getClaims();
 
-  if (!user) {
+  if (!data?.claims) {
     const url = request.nextUrl.clone();
     url.pathname = "/connexion";
     url.search = "";
@@ -36,4 +36,4 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/dashboard/:path*"] };
+export const config = { matcher: ["/dashboard/:path*", "/admin/:path*", "/contribuer/:path*"] };

@@ -21,6 +21,11 @@ const collected = [
     "Faire fonctionner les duels, le classement et le parrainage",
   ],
   [
+    "Signalements et contributions",
+    "Questions signalées, motif et précision donnée ; pour les enseignants et experts : questions, corrections et cours proposés",
+    "Corriger le contenu, relire les propositions avant publication",
+  ],
+  [
     "Appareil",
     "Jeton de notification push, nom de l'appareil, date de dernière connexion",
     "Envoyer des rappels de révision, sécuriser le compte (appareils connus)",
@@ -37,6 +42,11 @@ const providers = [
     "Supabase",
     "Hébergement de la base de données et authentification",
     "Toutes les données de compte et d'usage",
+  ],
+  [
+    "Vercel",
+    "Hébergement du site web",
+    "Données techniques de connexion (adresse IP, type de navigateur)",
   ],
   [
     "Expo / EAS",
@@ -81,7 +91,7 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
 export default function Page() {
   return (
     <LegalPage title="Politique de confidentialité">
-      <p className="updated">Dernière mise à jour : 1er octobre 2026</p>
+      <p className="updated">Dernière mise à jour : 5 octobre 2026</p>
       <p>
         Examplay est une application de préparation aux examens d&apos;État (NS4 et 9e année
         fondamentale) destinée aux élèves haïtiens, éditée depuis Haïti.
@@ -89,7 +99,7 @@ export default function Page() {
       <p>
         Cette politique de confidentialité explique quelles données Examplay collecte, pourquoi, et
         comment les élèves ou leurs parents peuvent les contrôler. Elle s&apos;applique à
-        l&apos;application mobile Examplay (Android et iOS) et à tout site associé.
+        l&apos;application mobile Examplay (Android et iOS) et au site web Examplay.
       </p>
       <p>
         En créant un compte, l&apos;utilisateur (ou le parent/tuteur d&apos;un élève mineur) accepte
@@ -127,13 +137,60 @@ export default function Page() {
           détecter les usages anormaux (triche, comptes multiples) pour garder un classement juste ;
         </li>
         <li>
-          améliorer le contenu pédagogique (quelles matières et chapitres sont les plus difficiles).
+          améliorer le contenu pédagogique (quelles matières et chapitres sont les plus difficiles) ;
+        </li>
+        <li>
+          traiter les signalements de questions et relire les propositions des contributeurs avant
+          leur publication ;
+        </li>
+        <li>
+          choisir les publicités affichées sur le site selon le département et le niveau (voir
+          « Publicité » ci-dessous).
         </li>
       </ul>
+      <p>Examplay ne vend aucune donnée personnelle à un tiers.</p>
+
+      <h2>Signalements et contributions</h2>
       <p>
-        Examplay n&apos;utilise jamais les données pour de la publicité ciblée et ne vend aucune
-        donnée personnelle à un tiers.
+        Un élève peut signaler une question (mauvaise réponse, erreur dans l&apos;énoncé, question
+        incompréhensible, problème technique, contenu inapproprié). Le signalement est lié à son
+        compte et n&apos;est visible que par l&apos;équipe Examplay, qui s&apos;en sert uniquement
+        pour corriger le contenu.
       </p>
+      <p>
+        Les enseignants et experts autorisés peuvent proposer des questions, des corrections et des
+        cours. Chaque proposition est liée au compte de son auteur et relue par l&apos;équipe avant
+        publication. Le contenu publié n&apos;affiche pas le nom de son auteur aux élèves.
+      </p>
+
+      <h2>Publicité</h2>
+      <p>
+        Examplay est gratuit pour les élèves. Pour financer le service, le site web peut afficher
+        des publicités, toujours signalées par la mention « Publicité ».
+      </p>
+      <ul>
+        <li>
+          Les publicités sont choisies, validées et mises en ligne par Examplay. Aucune régie
+          publicitaire extérieure n&apos;intervient et aucun traceur publicitaire tiers n&apos;est
+          installé.
+        </li>
+        <li>
+          Le ciblage se limite à deux informations du compte : le département et le niveau (9e ou
+          NS4). Les résultats, les réponses, le nom et l&apos;email ne servent jamais à choisir une
+          publicité.
+        </li>
+        <li>
+          Aucune donnée personnelle n&apos;est transmise aux annonceurs. Examplay compte seulement
+          le nombre total de clics sur chaque publicité, sans l&apos;associer à un élève.
+        </li>
+        <li>
+          Une publicité peut être fermée après quelques secondes grâce au bouton prévu à cet effet.
+        </li>
+        <li>
+          Un clic sur une publicité ouvre le site de l&apos;annonceur, qui applique ses propres
+          règles de confidentialité.
+        </li>
+      </ul>
 
       <h2>Partage avec des tiers</h2>
       <p>
@@ -158,7 +215,9 @@ export default function Page() {
       <ul>
         <li>aucune date de naissance exacte n&apos;est demandée à l&apos;inscription ;</li>
         <li>
-          aucun contenu publicitaire, ciblé ou non, n&apos;est affiché dans l&apos;application ;
+          les publicités affichées sont sélectionnées par Examplay et adaptées à un public
+          scolaire : aucune publicité pour l&apos;alcool, le tabac, les jeux d&apos;argent ou tout
+          contenu réservé aux adultes ;
         </li>
         <li>
           les échanges entre élèves se limitent aux duels et demandes d&apos;amis liés à la révision

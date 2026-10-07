@@ -4,12 +4,16 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { signOut } from "@/app/actions";
 import { RealtimeHub } from "@/components/app/realtime-hub";
+import { isAdmin, isContributor } from "@/lib/admin";
 import { getAccount } from "@/lib/data";
 import { site } from "@/lib/site";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const account = await getAccount();
   if (!account) redirect("/connexion");
+  // Le compte admin n'a pas d'espace élève.
+  if (await isAdmin()) redirect("/admin");
+  const contributor = await isContributor();
 
   return (
     <div className="flex flex-1 flex-col bg-brand-soft">
@@ -25,6 +29,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           <span className="font-display text-xl font-bold tracking-tight">{site.name}</span>
         </Link>
         <div className="flex items-center gap-1.5">
+          {contributor && (
+            <Link href="/contribuer" className="grid min-h-11 place-items-center rounded-lg px-3 text-sm font-semibold text-brand">
+              Contribuer
+            </Link>
+          )}
           <form action={signOut}>
             <button
               type="submit"

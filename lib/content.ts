@@ -91,3 +91,8 @@ export const DEPARTMENTS = [
   "Artibonite", "Grand'Anse", "Centre", "Nippes", "Nord",
   "Nord-Est", "Nord-Ouest", "Ouest", "Sud", "Sud-Est",
 ];
+
+// Toutes les matières, tous niveaux confondus (zone admin).
+export const ALL_SUBJECTS: { id: string; label: string }[] = Array.from(
+  new Set(Object.values(SERIES).flatMap((s) => s.ids)),
+).map((id) => ({ id, label: id.endsWith("9e") ? `${NAMES[id]} (9e)` : `${NAMES[id]} (NS4)` }));

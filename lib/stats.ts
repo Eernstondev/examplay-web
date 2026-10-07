@@ -51,3 +51,15 @@ export function haitiTime(ts: number): { day: string; hour: number; weekend: boo
     weekend: parts.weekday === "Sat" || parts.weekday === "Sun",
   };
 }
+
+// Quiz rapide : la matière disponible où l'élève est le moins avancé (coefficient ×2 d'abord).
+export function recommendSubject(
+  subjects: Subject[],
+  results: Result[],
+  counts: Record<string, number>,
+): Subject | undefined {
+  return subjects
+    .filter((s) => (counts[s.id] ?? 0) > 0)
+    .map((s) => ({ s, p: subjectProgress(results, s.id) }))
+    .sort((a, b) => a.p - b.p || Number(b.s.heavy) - Number(a.s.heavy))[0]?.s;
+}

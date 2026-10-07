@@ -11,10 +11,8 @@ const tile =
 
 export default async function Page() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) redirect("/dashboard");
+  const { data: session } = await supabase.auth.getClaims();
+  if (session?.claims) redirect("/dashboard");
 
   return (
     <AuthShell wide title="Choisis ta section" lead="Quel examen prépares-tu cette année ?">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/actions";
+import { DeleteAccount } from "@/components/app/delete-account";
 import { SubHeader } from "@/components/app/ui";
 import { levelLabel } from "@/lib/content";
 import { getAccount, getReferralCount } from "@/lib/data";
@@ -79,6 +81,16 @@ export default async function Page() {
         </section>
       )}
 
+      <Link
+        href="/contribuer"
+        className="mt-5 block rounded-3xl bg-white p-5 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
+      >
+        <span className="font-display text-lg font-semibold">Espace enseignants et experts</span>
+        <span className="mt-1 block text-sm leading-relaxed text-ink/65">
+          Tu es enseignant ou expert ? Demande l&apos;accès pour proposer des questions, des corrections et des cours.
+        </span>
+      </Link>
+
       <form action={signOut} className="mt-6">
         <button
           type="submit"
@@ -87,6 +99,8 @@ export default async function Page() {
           Se déconnecter
         </button>
       </form>
+
+      <DeleteAccount />
     </>
   );
 }

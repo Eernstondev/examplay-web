@@ -72,21 +72,26 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
   useEffect(() => {
     if (!subjectId || seed === undefined) return;
     let alive = true;
-    let query = createClient()
-      .from("questions")
-      .select("question, choices, answer")
-      .eq("type", "qcm")
-      .eq("active", true);
-    if (subjectId !== "mixte") query = query.eq("subject_id", subjectId);
-    query.order("id", { ascending: true }).then(({ data }) => {
+    (async () => {
+      const supabase = createClient();
+      // Même liste ordonnée que l'app, mais réduite aux identifiants : le tirage reste identique.
+      let ids = supabase.from("questions").select("id").eq("type", "qcm").eq("active", true);
+      if (subjectId !== "mixte") ids = ids.eq("subject_id", subjectId);
+      const { data: pool } = await ids.order("id", { ascending: true });
+      const picked = pickSeeded((pool ?? []).map((r) => r.id as string), seed, 5);
+      const { data } = picked.length
+        ? await supabase.from("questions").select("id, question, choices, answer").in("id", picked)
+        : { data: [] };
       if (!alive) return;
-      const pool: Qcm[] = (data ?? []).map((r) => ({
-        q: r.question as string,
-        choices: r.choices as string[],
-        answer: r.answer as number,
-      }));
-      setRawQs(pickSeeded(pool, seed, 5));
-    });
+      const byId = new Map((data ?? []).map((r) => [r.id as string, r]));
+      // `in` ne garantit pas l'ordre : on remet les questions dans l'ordre du tirage.
+      setRawQs(
+        picked.flatMap((id) => {
+          const r = byId.get(id);
+          return r ? [{ q: r.question as string, choices: r.choices as string[], answer: r.answer as number }] : [];
+        }),
+      );
+    })();
     return () => {
       alive = false;
     };

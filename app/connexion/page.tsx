@@ -9,12 +9,10 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = { title: "Connexion" };
 
 export default async function Page({ searchParams }: PageProps<"/connexion">) {
-  const { niveau, erreur } = await searchParams;
+  const { niveau, erreur, reset } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) redirect("/dashboard");
+  const { data: session } = await supabase.auth.getClaims();
+  if (session?.claims) redirect("/dashboard");
 
   const level = findLevel(typeof niveau === "string" ? niveau : undefined);
   const signUpHref = level ? `/inscription?niveau=${level.slug}` : "/commencer";
@@ -26,6 +24,7 @@ export default async function Page({ searchParams }: PageProps<"/connexion">) {
     >
       <div className="rounded-3xl bg-white p-5 ring-1 ring-ink/10 sm:p-7">
         <SignInForm
+          success={reset === "ok" ? "Mot de passe modifié. Connecte-toi avec le nouveau." : undefined}
           notice={
             erreur === "lien"
               ? "Ce lien de confirmation n'est plus valide. Connecte-toi ou recrée ton compte."

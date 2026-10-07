@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ReportQuestion } from "@/components/app/report-question";
 import { Countdown, ProgressBar, choiceClass, primaryButton, secondaryButton } from "@/components/app/ui";
 import { isAnswerClose } from "@/lib/fuzzy";
 import { shuffle } from "@/lib/seeded";
@@ -11,6 +12,7 @@ export type QuizMode = "quiz" | "exam" | "short" | "essay";
 type QType = "qcm" | "short_answer" | "essay";
 
 type Question = {
+  id: string;
   q: string;
   type: QType;
   choices: string[];
@@ -33,12 +35,31 @@ type DetailedAnswer = {
   isCorrect: boolean;
 };
 
+type PickedRow = {
+  id: string;
+  type: QType;
+  question: string;
+  choices: string[] | null;
+  answer: number | null;
+  answer_text: string | null;
+  explain: string | null;
+  chapter_title: string | null;
+};
+
 const TIME_FOR_TYPE: Record<QType, number> = { qcm: 20, short_answer: 45, essay: 90 };
 const WANTED: Record<QuizMode, QType> = { quiz: "qcm", exam: "qcm", short: "short_answer", essay: "essay" };
 
-type Props = { subject: string; subjectName: string; mode: QuizMode; level: string; backHref: string };
+type Props = {
+  subject: string;
+  subjectName: string;
+  mode: QuizMode;
+  level: string;
+  backHref: string;
+  // Titre du chapitre choisi (« Général » = questions sans chapitre) ; absent = toute la matière.
+  chapter?: string;
+};
 
-export function QuizPlayer({ subject, subjectName, mode, level, backHref }: Props) {
+export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter }: Props) {
   const [pool, setPool] = useState<Question[] | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
@@ -49,6 +70,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref }: Prop
   const [done, setDone] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [round, setRound] = useState(0);
   const startedAt = useRef(0);
 
   const pick = (all: Question[]) => {
@@ -61,36 +83,63 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref }: Prop
     let alive = true;
     (async () => {
       const supabase = createClient();
-      const [qRes, cRes] = await Promise.all([
-        supabase
-          .from("questions")
-          .select("chapter_id, type, question, choices, answer, answer_text, explain")
-          .eq("subject_id", subject)
-          .eq("active", true)
-          .eq("type", WANTED[mode])
-          .order("id", { ascending: true }),
-        supabase.from("chapters").select("id, title").eq("subject_id", subject),
-      ]);
+      let list: Question[];
+
+      if (mode === "quiz") {
+        // Quiz rapide : le serveur tire 5 questions au hasard, rien d'autre n'est téléchargé.
+        const { data } = await supabase.rpc("pick_questions", {
+          p_subject: subject,
+          p_type: "qcm",
+          p_chapter: chapter ?? null,
+          p_limit: 5,
+        });
+        list = ((data as PickedRow[] | null) ?? []).map((r) => ({
+          id: r.id,
+          q: r.question,
+          type: r.type,
+          choices: r.choices ?? [],
+          answer: r.answer ?? 0,
+          answerText: r.answer_text ?? "",
+          explain: r.explain ?? "",
+          chapterTitle: r.chapter_title,
+        }));
+      } else {
+        // Simulation, réponse courte, rédaction : toutes les questions du type sont jouées.
+        const [qRes, cRes] = await Promise.all([
+          supabase
+            .from("questions")
+            .select("id, chapter_id, type, question, choices, answer, answer_text, explain")
+            .eq("subject_id", subject)
+            .eq("active", true)
+            .eq("type", WANTED[mode])
+            .order("id", { ascending: true }),
+          supabase.from("chapters").select("id, title").eq("subject_id", subject),
+        ]);
+        const titles = new Map((cRes.data ?? []).map((c) => [c.id as string, c.title as string]));
+        list = (qRes.data ?? [])
+          .map((r) => ({
+            id: r.id as string,
+            q: r.question as string,
+            type: r.type as QType,
+            choices: (r.choices as string[] | null) ?? [],
+            answer: (r.answer as number | null) ?? 0,
+            answerText: (r.answer_text as string | null) ?? "",
+            explain: (r.explain as string | null) ?? "",
+            chapterTitle: r.chapter_id ? (titles.get(r.chapter_id) ?? null) : null,
+          }))
+          .filter((q) => !chapter || (q.chapterTitle ?? "Général") === chapter);
+      }
+
       if (!alive) return;
-      const titles = new Map((cRes.data ?? []).map((c) => [c.id as string, c.title as string]));
-      const list: Question[] = (qRes.data ?? []).map((r) => ({
-        q: r.question,
-        type: r.type,
-        choices: (r.choices as string[] | null) ?? [],
-        answer: r.answer ?? 0,
-        answerText: r.answer_text ?? "",
-        explain: r.explain ?? "",
-        chapterTitle: r.chapter_id ? (titles.get(r.chapter_id) ?? null) : null,
-      }));
       setPool(list);
       pick(list);
     })();
     return () => {
       alive = false;
     };
-    // pick ne dépend que du mode, déjà dans la liste.
+    // pick ne dépend que du mode, déjà dans la liste ; `round` relance un tirage serveur.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject, mode]);
+  }, [subject, mode, chapter, round]);
 
   const save = async (all: DetailedAnswer[]) => {
     const supabase = createClient();
@@ -151,7 +200,11 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref }: Prop
   };
 
   const restart = () => {
-    if (pool) pick(pool);
+    if (mode === "quiz") {
+      // Nouveau tirage côté serveur.
+      setPool(null);
+      setRound((r) => r + 1);
+    } else if (pool) pick(pool);
     setIdx(0);
     setSelected(null);
     setTyped("");
@@ -169,7 +222,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref }: Prop
       <div className="py-12 text-center">
         <p className="text-ink/75">Aucune question de ce type pour cette matière pour le moment.</p>
         <Link href={backHref} className={`${secondaryButton} mx-auto mt-6 max-w-xs`}>
-          Choisir une autre matière
+          Retour
         </Link>
       </div>
     );
@@ -374,6 +427,8 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref }: Prop
             </button>
           ))}
       </div>
+
+      <ReportQuestion key={q.id} questionId={q.id} />
     </div>
   );
 }

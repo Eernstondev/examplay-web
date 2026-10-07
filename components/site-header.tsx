@@ -11,7 +11,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   // L'espace élève a sa propre barre.
-  if (pathname.startsWith("/dashboard")) return null;
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/contribuer")) return null;
 
   return (
     <header className="mx-auto w-full max-w-6xl px-5 py-4 sm:px-8 sm:py-5">

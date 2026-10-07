@@ -12,27 +12,56 @@ export type Account = {
   referralCode: string | null;
 };
 
-// Compte connecté, lu une seule fois par requête.
-export const getAccount = cache(async (): Promise<Account | null> => {
+type Context = {
+  id: string;
+  email: string | null;
+  name: string | null;
+  level: string | null;
+  department: string | null;
+  referral_code: string | null;
+  is_admin: boolean;
+  is_contributor: boolean;
+};
+
+// Profil et rôles du compte connecté en un seul aller-retour, une fois par requête.
+// Le serveur Supabase vérifie le jeton de session à cet appel.
+export const getContext = cache(async (): Promise<Context | null> => {
   const supabase = await createClient();
+  const { data, error } = await supabase.rpc("my_context");
+  if (!error) return (data as Context | null) ?? null;
+
+  // Fonction my_context absente ou session invalide : ancien chemin, plus lent.
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
-
-  const { data } = await supabase
-    .from("profiles")
-    .select("name,level,department,referral_code")
-    .eq("id", user.id)
-    .maybeSingle();
-
+  const [profile, admin, contributor] = await Promise.all([
+    supabase.from("profiles").select("name,level,department,referral_code").eq("id", user.id).maybeSingle(),
+    supabase.rpc("is_admin"),
+    supabase.rpc("is_contributor"),
+  ]);
   return {
     id: user.id,
-    email: user.email ?? "",
-    name: data?.name || user.user_metadata?.name || "élève",
-    level: resolveLevel(data?.level),
-    department: data?.department ?? "Ouest",
-    referralCode: data?.referral_code ?? null,
+    email: user.email ?? null,
+    name: profile.data?.name || user.user_metadata?.name || null,
+    level: profile.data?.level ?? null,
+    department: profile.data?.department ?? null,
+    referral_code: profile.data?.referral_code ?? null,
+    is_admin: admin.data === true,
+    is_contributor: contributor.data === true,
+  };
+});
+
+export const getAccount = cache(async (): Promise<Account | null> => {
+  const context = await getContext();
+  if (!context) return null;
+  return {
+    id: context.id,
+    email: context.email ?? "",
+    name: context.name || "élève",
+    level: resolveLevel(context.level),
+    department: context.department ?? "Ouest",
+    referralCode: context.referral_code,
   };
 });
 

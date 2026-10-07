@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { contactSubjects } from "@/lib/contact";
 import { departments, findLevel } from "@/lib/levels";
 import { createClient } from "@/lib/supabase/server";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -32,6 +33,9 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     if (error.code === "email_not_confirmed") {
       return fail("Confirme d'abord ton adresse : ouvre le lien reçu par e-mail.");
     }
+    if (error.code === "user_banned") {
+      return fail("Ce compte est suspendu. Écris-nous si tu penses que c'est une erreur.");
+    }
     if (error.code === "invalid_credentials") {
       return fail("E-mail ou mot de passe incorrect.");
     }
@@ -39,7 +43,8 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     return fail("La connexion a échoué. Réessaie dans un instant.");
   }
 
-  redirect("/dashboard");
+  const { data: admin } = await supabase.rpc("is_admin");
+  redirect(admin === true ? "/admin" : "/dashboard");
 }
 
 export async function signUp(_prev: AuthState, formData: FormData): Promise<AuthState> {
@@ -66,6 +71,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (formData.get("terms") !== "on") {
     return fail("Accepte les conditions d'utilisation pour créer ton compte.");
   }
+  if (!(await verifyTurnstile(formData))) return fail(TURNSTILE_ERROR);
 
   const origin = (await headers()).get("origin") ?? "";
   const supabase = await createClient();
@@ -100,6 +106,65 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   redirect("/dashboard");
+}
+
+export type ResetState = {
+  step: "email" | "code";
+  email: string;
+  error: string;
+};
+
+// Même parcours que l'app mobile : un code reçu par e-mail, puis le nouveau mot de passe.
+export async function requestReset(_prev: ResetState, formData: FormData): Promise<ResetState> {
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+  if (!EMAIL_RE.test(email)) return { step: "email", email, error: "Entre ton adresse e-mail." };
+  if (!(await verifyTurnstile(formData))) return { step: "email", email, error: TURNSTILE_ERROR };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  if (error?.status === 429) {
+    return { step: "email", email, error: "Trop de tentatives. Réessaie dans quelques minutes." };
+  }
+  // Même réponse que le compte existe ou non, pour ne pas révéler les adresses inscrites.
+  return { step: "code", email, error: "" };
+}
+
+export async function confirmReset(_prev: ResetState, formData: FormData): Promise<ResetState> {
+  const email = String(formData.get("email") ?? "");
+  const code = String(formData.get("code") ?? "").replace(/\s/g, "");
+  const password = String(formData.get("password") ?? "");
+  const fail = (error: string): ResetState => ({ step: "code", email, error });
+
+  if (!/^\d{6,10}$/.test(code)) return fail("Entre le code reçu par e-mail.");
+  if (password.length < 6) return fail("Le mot de passe doit contenir au moins 6 caractères.");
+
+  const supabase = await createClient();
+  const verified = await supabase.auth.verifyOtp({ email, token: code, type: "recovery" });
+  if (verified.error) return fail("Code invalide ou expiré.");
+
+  const updated = await supabase.auth.updateUser({ password });
+  await supabase.auth.signOut();
+  if (updated.error) return fail("Ce mot de passe n'a pas été accepté. Choisis-en un autre.");
+
+  redirect("/connexion?reset=ok");
+}
+
+export type DeleteState = { error: string };
+
+export async function deleteAccount(_prev: DeleteState, formData: FormData): Promise<DeleteState> {
+  if (String(formData.get("confirm") ?? "").trim().toUpperCase() !== "SUPPRIMER") {
+    return { error: "Écris SUPPRIMER pour confirmer." };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("delete_my_account");
+  if (error) {
+    console.error("delete_my_account failed:", error.code, error.message);
+    return { error: "Le compte n'a pas pu être supprimé. Réessaie dans un instant." };
+  }
+  await supabase.auth.signOut();
+  redirect("/");
 }
 
 export async function signOut() {
@@ -147,6 +212,7 @@ export async function sendContactRequest(
   if (values.message.length < 10 || values.message.length > 4000) {
     return fail("Le message doit contenir entre 10 et 4000 caractères.");
   }
+  if (!(await verifyTurnstile(formData))) return fail(TURNSTILE_ERROR);
 
   const supabase = await createClient();
   const { error } = await supabase.from("contact_requests").insert(values);

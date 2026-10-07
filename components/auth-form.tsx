@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signIn, signUp, type AuthState } from "@/app/actions";
+import { Turnstile } from "@/components/turnstile";
 import { departments } from "@/lib/levels";
 
 const initialState: AuthState = { status: "idle", message: "", values: { email: "" } };
@@ -22,11 +23,16 @@ function ErrorMessage({ state }: { state: AuthState }) {
   );
 }
 
-export function SignInForm({ notice }: { notice?: string }) {
+export function SignInForm({ notice, success }: { notice?: string; success?: string }) {
   const [state, action, pending] = useActionState(signIn, initialState);
 
   return (
     <form action={action} noValidate className="grid gap-4">
+      {success && state.status === "idle" && (
+        <p role="status" className="rounded-xl bg-success-soft px-4 py-3 text-sm font-semibold text-success">
+          {success}
+        </p>
+      )}
       {notice && state.status === "idle" && (
         <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
           {notice}
@@ -58,6 +64,9 @@ export function SignInForm({ notice }: { notice?: string }) {
       <button type="submit" disabled={pending} className={submit}>
         {pending ? "Connexion…" : "Se connecter"}
       </button>
+      <Link href="/mot-de-passe-oublie" className="justify-self-center py-1 text-sm font-semibold text-brand underline underline-offset-4">
+        Mot de passe oublié ?
+      </Link>
     </form>
   );
 }
@@ -147,6 +156,7 @@ export function SignUpForm({ level }: { level: string }) {
           .
         </span>
       </label>
+      <Turnstile resetKey={state} />
       <ErrorMessage state={state} />
       <button type="submit" disabled={pending} className={submit}>
         {pending ? "Création du compte…" : "Créer mon compte"}

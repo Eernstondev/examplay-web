@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { sendContactRequest, type ContactState } from "@/app/actions";
+import { Turnstile } from "@/components/turnstile";
 import { contactSubjects } from "@/lib/contact";
 
 const initialState: ContactState = {
@@ -78,6 +79,7 @@ export function ContactForm() {
       </label>
       {/* Champ piège anti-robots */}
       <input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      <Turnstile resetKey={state} />
       {state.status === "error" && (
         <p role="alert" className="text-sm font-medium text-danger">
           {state.message}

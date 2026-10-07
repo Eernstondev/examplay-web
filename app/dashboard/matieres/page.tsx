@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdSlot } from "@/components/ad-slot";
 import { ProgressBar, SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount, getQuestionCounts, getResults } from "@/lib/data";
@@ -50,9 +51,9 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
           const count = counts[s.id] ?? 0;
           const progress = subjectProgress(results, s.id);
           const href =
-            mode.id === "flash"
-              ? `/dashboard/flashcards?subject=${s.id}`
-              : `/dashboard/quiz?subject=${s.id}&mode=${mode.id}`;
+            mode.id === "exam"
+              ? `/dashboard/quiz?subject=${s.id}&mode=exam`
+              : `/dashboard/chapitres?subject=${s.id}&mode=${mode.id}`;
           const body = (
             <>
               <div className="flex items-baseline justify-between gap-3">
@@ -88,6 +89,12 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
           );
         })}
       </ul>
+
+      <AdSlot
+        placement="matieres"
+        target={{ department: account.department, level: account.level }}
+        className="mt-7"
+      />
     </>
   );
 }

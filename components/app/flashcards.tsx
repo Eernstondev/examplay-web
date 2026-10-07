@@ -2,15 +2,25 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ReportQuestion } from "@/components/app/report-question";
 import { ProgressBar, primaryButton, secondaryButton } from "@/components/app/ui";
-import { shuffle } from "@/lib/seeded";
 import { createClient } from "@/lib/supabase/client";
 
-type Card = { q: string; answer: string; explain: string };
+type Card = { id: string; q: string; answer: string; explain: string };
 const SERIES_SIZE = 20;
+type PickedRow = {
+  id: string;
+  type: string;
+  question: string;
+  choices: string[] | null;
+  answer: number | null;
+  answer_text: string | null;
+  explain: string | null;
+};
 
-export function Flashcards({ subject }: { subject: string }) {
-  const [pool, setPool] = useState<Card[] | null>(null);
+export function Flashcards({ subject, chapter }: { subject: string; chapter?: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [round, setRound] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
   const [idx, setIdx] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -19,31 +29,26 @@ export function Flashcards({ subject }: { subject: string }) {
 
   useEffect(() => {
     let alive = true;
+    // Le serveur tire la série au hasard : seules ces fiches sont téléchargées.
     createClient()
-      .from("questions")
-      .select("type, question, choices, answer, answer_text, explain")
-      .eq("subject_id", subject)
-      .eq("active", true)
-      .order("id", { ascending: true })
+      .rpc("pick_questions", { p_subject: subject, p_type: null, p_chapter: chapter ?? null, p_limit: SERIES_SIZE })
       .then(({ data }) => {
         if (!alive) return;
-        const list: Card[] = (data ?? [])
+        const list: Card[] = ((data as PickedRow[] | null) ?? [])
           .map((r) => ({
-            q: r.question as string,
-            answer:
-              r.type === "qcm"
-                ? ((r.choices as string[] | null)?.[r.answer ?? 0] ?? "")
-                : ((r.answer_text as string | null) ?? ""),
-            explain: (r.explain as string | null) ?? "",
+            id: r.id,
+            q: r.question,
+            answer: r.type === "qcm" ? (r.choices?.[r.answer ?? 0] ?? "") : (r.answer_text ?? ""),
+            explain: r.explain ?? "",
           }))
           .filter((c) => c.answer);
-        setPool(list);
-        setCards(shuffle(list).slice(0, SERIES_SIZE));
+        setCards(list);
+        setLoaded(true);
       });
     return () => {
       alive = false;
     };
-  }, [subject]);
+  }, [subject, chapter, round]);
 
   const next = (wasKnown: boolean) => {
     if (wasKnown) setKnown((k) => k + 1);
@@ -53,14 +58,15 @@ export function Flashcards({ subject }: { subject: string }) {
   };
 
   const restart = () => {
-    if (pool) setCards(shuffle(pool).slice(0, SERIES_SIZE));
+    setLoaded(false);
+    setRound((r) => r + 1);
     setIdx(0);
     setKnown(0);
     setFlipped(false);
     setFinished(false);
   };
 
-  if (pool === null) return <p className="py-16 text-center text-ink/70">Chargement des fiches…</p>;
+  if (!loaded) return <p className="py-16 text-center text-ink/70">Chargement des fiches…</p>;
   if (!cards.length) {
     return <p className="py-12 text-center text-ink/75">Aucune fiche pour cette matière pour le moment.</p>;
   }
@@ -123,6 +129,8 @@ export function Flashcards({ subject }: { subject: string }) {
           Je savais
         </button>
       </div>
+
+      <ReportQuestion key={card.id} questionId={card.id} />
     </div>
   );
 }

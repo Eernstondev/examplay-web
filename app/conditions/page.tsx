@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Conditions générales d'utilisation
 export default function Page() {
   return (
     <LegalPage title="Conditions générales d'utilisation">
-      <p className="updated">Dernière mise à jour : 1er octobre 2026</p>
+      <p className="updated">Dernière mise à jour : 5 octobre 2026</p>
 
       <h2>Objet</h2>
       <p>
@@ -66,6 +66,19 @@ export default function Page() {
         Il est interdit de copier, redistribuer ou revendre le contenu d&apos;Examplay sans
         autorisation écrite préalable. Le nom et le logo Examplay ne peuvent pas être utilisés sans
         accord.
+      </p>
+
+      <h2>Signalements et contributions</h2>
+      <p>
+        Le signalement d&apos;une question sert à améliorer le contenu : il doit être sincère. Les
+        signalements abusifs ou répétés sans raison peuvent entraîner la suspension du compte.
+      </p>
+      <p>
+        Les enseignants et experts autorisés peuvent proposer des questions, des corrections et des
+        cours. En proposant un contenu, le contributeur garantit qu&apos;il en est l&apos;auteur ou
+        qu&apos;il a le droit de le partager, et autorise Examplay à le relire, le modifier et le
+        publier gratuitement sur le site et dans l&apos;application. Examplay reste libre
+        d&apos;accepter, de modifier ou de refuser toute proposition.
       </p>
 
       <h2>Limitation de responsabilité</h2>

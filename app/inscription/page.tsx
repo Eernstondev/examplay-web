@@ -14,10 +14,8 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
   if (!level) redirect("/commencer");
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) redirect("/dashboard");
+  const { data: session } = await supabase.auth.getClaims();
+  if (session?.claims) redirect("/dashboard");
 
   return (
     <AuthShell

@@ -1,5 +1,6 @@
 import { SampleQuestion } from "@/components/sample-question";
 import Link from "next/link";
+import { AdSlot } from "@/components/ad-slot";
 import { ns4Tracks } from "@/lib/levels";
 
 const steps = [
@@ -29,6 +30,9 @@ const features = [
     body: "Chaque score est recalculé à partir de tes vraies réponses. Ce que tu vois, c'est ton niveau réel.",
   },
 ];
+
+// Page mise en cache ; la zone admin la rafraîchit quand une publicité change.
+export const revalidate = 300;
 
 const container = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const cta =
@@ -121,6 +125,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <AdSlot placement="home" className={`${container} pb-16 sm:pb-20`} />
 
       <section className="bg-brand-soft">
         <div className={`${container} py-16 sm:py-20 lg:py-28`}>
