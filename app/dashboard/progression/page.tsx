@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdSlot } from "@/components/ad-slot";
 import { ProgressBar, SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount, getResults } from "@/lib/data";
@@ -103,6 +104,12 @@ export default async function Page() {
           </Link>
         </p>
       )}
+
+      <AdSlot
+        placement="progression"
+        target={{ department: account.department, level: account.level }}
+        className="mt-7"
+      />
     </>
   );
 }

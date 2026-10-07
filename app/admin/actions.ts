@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
 import { parseQuestion } from "@/lib/question-parse";
 import { ALL_SUBJECTS, DEPARTMENTS } from "@/lib/content";
-import { AD_AUDIENCES, AD_PLACEMENTS, MEDIA_PREFIX, PARTNER_CATEGORIES, safeUrl } from "@/lib/media";
+import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS, MEDIA_PREFIX, PARTNER_CATEGORIES, safeUrl } from "@/lib/media";
 import { createClient } from "@/lib/supabase/server";
 
 export type QuestionState = { error: string };
@@ -119,6 +119,7 @@ export async function saveAd(_prev: FormState, formData: FormData): Promise<Form
   const title = text(formData, "title");
   const image = text(formData, "image_url");
   const mediaType = text(formData, "media_type") === "video" ? "video" : "image";
+  const displayMode = text(formData, "display_mode");
   const link = optionalUrl(formData, "link_url");
   const placements = formData.getAll("placements").map(String);
   const departments = formData.getAll("departments").map(String);
@@ -131,6 +132,7 @@ export async function saveAd(_prev: FormState, formData: FormData): Promise<Form
   if (/\.(mp4|webm)$/.test(image) !== (mediaType === "video")) {
     return { error: "Le fichier ne correspond pas au type de média. Renvoie-le." };
   }
+  if (!AD_DISPLAY_MODES.some((m) => m.id === displayMode)) return { error: "Choisis un format d'affichage." };
   if (link === false) return { error: "Le lien n'est pas valide : il doit commencer par https://" };
   if (!placements.length || placements.some((p) => !AD_PLACEMENTS.some((x) => x.id === p))) {
     return { error: "Choisis au moins un emplacement." };
@@ -148,6 +150,7 @@ export async function saveAd(_prev: FormState, formData: FormData): Promise<Form
     title,
     image_url: image,
     media_type: mediaType,
+    display_mode: displayMode,
     link_url: link,
     placements,
     departments,

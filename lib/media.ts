@@ -11,7 +11,20 @@ export const AD_PLACEMENTS = [
   { id: "home", label: "Page d'accueil (visiteurs)" },
   { id: "dashboard", label: "Tableau de bord élève" },
   { id: "matieres", label: "Choix de la matière" },
+  { id: "avant_quiz", label: "Avant un quiz" },
+  { id: "apres_quiz", label: "Après un quiz (résultat)" },
+  { id: "duel", label: "Page des duels" },
+  { id: "classement", label: "Classement" },
+  { id: "progression", label: "Progression" },
 ] as const;
+
+export const AD_DISPLAY_MODES = [
+  { id: "banner", label: "Bannière (dans la page)" },
+  { id: "fullscreen", label: "Plein écran (par-dessus tout, à fermer)" },
+  { id: "carre", label: "Carré (petite carte)" },
+] as const;
+
+export type AdDisplayMode = (typeof AD_DISPLAY_MODES)[number]["id"];
 
 export const AD_AUDIENCES = [
   { id: "all", label: "Tous les élèves" },

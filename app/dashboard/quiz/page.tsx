@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { AdSlot } from "@/components/ad-slot";
 import { QuizPlayer, type QuizMode } from "@/components/app/quiz-player";
 import { SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
@@ -24,6 +25,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/quiz"
     ? recommendSubject(subjects, ...(await Promise.all([getResults(), getQuestionCounts()])))
     : subjects.find((s) => s.id === params.subject);
   if (!subject) redirect(`/dashboard/matieres?mode=${mode}`);
+  const target = { department: account.department, level: account.level };
   const chapter = typeof params.chapter === "string" && params.chapter ? params.chapter : undefined;
   // La simulation porte sur toute la matière : pas d'étape « chapitre ».
   const backHref = recommended
@@ -44,6 +46,8 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/quiz"
         level={account.level}
         backHref={backHref}
         chapter={mode === "exam" ? undefined : chapter}
+        beforeAd={<AdSlot placement="avant_quiz" target={target} className="mb-5" />}
+        afterAd={<AdSlot placement="apres_quiz" target={target} className="mt-6" />}
       />
     </>
   );

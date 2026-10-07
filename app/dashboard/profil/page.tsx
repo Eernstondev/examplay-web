@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { signOut } from "@/app/actions";
 import { DeleteAccount } from "@/components/app/delete-account";
 import { SubHeader } from "@/components/app/ui";
+import { PushToggle } from "@/components/push-toggle";
 import { levelLabel } from "@/lib/content";
 import { getAccount, getReferralCount } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
@@ -80,6 +81,8 @@ export default async function Page() {
           </p>
         </section>
       )}
+
+      <PushToggle />
 
       <Link
         href="/contribuer"

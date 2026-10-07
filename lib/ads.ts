@@ -1,4 +1,4 @@
-import type { AdPlacement } from "@/lib/media";
+import type { AdDisplayMode, AdPlacement } from "@/lib/media";
 import { createPublicClient } from "@/lib/supabase/public";
 
 export type Ad = {
@@ -7,6 +7,7 @@ export type Ad = {
   image_url: string;
   link_url: string | null;
   media_type: "image" | "video";
+  display_mode: AdDisplayMode;
 };
 type Target = { department: string; level: string };
 
@@ -15,7 +16,7 @@ type Target = { department: string; level: string };
 export async function pickAd(placement: AdPlacement, target?: Target): Promise<Ad | null> {
   const { data } = await createPublicClient()
     .from("ads")
-    .select("id, title, image_url, link_url, media_type, departments, audience")
+    .select("id, title, image_url, link_url, media_type, display_mode, departments, audience")
     .contains("placements", [placement]);
 
   const group = target ? (target.level === "9e" ? "9e" : "ns4") : null;
@@ -35,5 +36,6 @@ export async function pickAd(placement: AdPlacement, target?: Target): Promise<A
     image_url: ad.image_url,
     link_url: ad.link_url,
     media_type: ad.media_type === "video" ? "video" : "image",
+    display_mode: ad.display_mode === "fullscreen" || ad.display_mode === "carre" ? ad.display_mode : "banner",
   };
 }

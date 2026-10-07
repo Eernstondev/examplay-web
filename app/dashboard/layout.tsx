@@ -4,7 +4,10 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { signOut } from "@/app/actions";
 import { RealtimeHub } from "@/components/app/realtime-hub";
+import { NotificationBell } from "@/components/notification-bell";
+import { OfflineSync } from "@/components/offline-sync";
 import { isAdmin, isContributor } from "@/lib/admin";
+import { getSubjects } from "@/lib/content";
 import { getAccount } from "@/lib/data";
 import { site } from "@/lib/site";
 
@@ -17,6 +20,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   return (
     <div className="flex flex-1 flex-col bg-brand-soft">
+      <OfflineSync
+        userId={account.id}
+        level={account.level}
+        subjects={getSubjects(account.level).map((s) => ({ id: s.id, name: s.name }))}
+      />
       <RealtimeHub
         id={account.id}
         name={account.name}
@@ -34,6 +42,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               Contribuer
             </Link>
           )}
+          <NotificationBell userId={account.id} />
           <form action={signOut}>
             <button
               type="submit"

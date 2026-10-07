@@ -5,13 +5,14 @@ import { useActionState } from "react";
 import { saveAd, type FormState } from "@/app/admin/actions";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { DEPARTMENTS } from "@/lib/content";
-import { AD_AUDIENCES, AD_PLACEMENTS } from "@/lib/media";
+import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS } from "@/lib/media";
 
 export type AdValues = {
   id?: string;
   title: string;
   image_url: string;
   media_type: string;
+  display_mode: string;
   link_url: string;
   placements: string[];
   departments: string[];
@@ -53,6 +54,20 @@ export function AdForm({ values }: { values: AdValues }) {
         <input name="link_url" type="url" inputMode="url" placeholder="https://" defaultValue={values.link_url} className={field} />
         <span className="mt-1 block text-sm font-normal text-ink/60">
           Site, page Facebook, Instagram, WhatsApp… Sans lien, la publicité s&apos;affiche sans être cliquable.
+        </span>
+      </label>
+
+      <label className={label}>
+        Format d&apos;affichage
+        <select name="display_mode" defaultValue={values.display_mode} className={field}>
+          {AD_DISPLAY_MODES.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+        <span className="mt-1 block text-sm font-normal text-ink/60">
+          Plein écran recouvre toute la page (comme une interstitielle) ; l&apos;élève doit la fermer pour continuer.
         </span>
       </label>
 

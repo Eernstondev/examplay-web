@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ReportQuestion } from "@/components/app/report-question";
 import { Countdown, ProgressBar, choiceClass, primaryButton, secondaryButton } from "@/components/app/ui";
 import { isAnswerClose } from "@/lib/fuzzy";
+import { addToBank, enqueueResult, getUid, pickFromBank, toOfflineQuestion } from "@/lib/offline";
 import { shuffle } from "@/lib/seeded";
 import { createClient } from "@/lib/supabase/client";
 
@@ -57,9 +58,12 @@ type Props = {
   backHref: string;
   // Titre du chapitre choisi (« Général » = questions sans chapitre) ; absent = toute la matière.
   chapter?: string;
+  // Publicités rendues côté serveur : avant la première question, et sur l'écran de résultat.
+  beforeAd?: ReactNode;
+  afterAd?: ReactNode;
 };
 
-export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter }: Props) {
+export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter, beforeAd, afterAd }: Props) {
   const [pool, setPool] = useState<Question[] | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
@@ -69,6 +73,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
   const [answers, setAnswers] = useState<DetailedAnswer[]>([]);
   const [done, setDone] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [savedOffline, setSavedOffline] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [round, setRound] = useState(0);
   const startedAt = useRef(0);
@@ -77,6 +82,11 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
     const shuffled = shuffle(all);
     setQuestions(mode === "quiz" ? shuffled.slice(0, 5) : shuffled);
     startedAt.current = Date.now();
+    // Pour mesurer le décrochage (quiz commencés vs terminés). Les fiches ont leur
+    // propre composant (flashcards.tsx), jamais rendu ici.
+    if (all.length) {
+      createClient().from("events").insert({ kind: "quiz_start", subject_id: subject }).then(() => {});
+    }
   };
 
   useEffect(() => {
@@ -87,22 +97,31 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
 
       if (mode === "quiz") {
         // Quiz rapide : le serveur tire 5 questions au hasard, rien d'autre n'est téléchargé.
-        const { data } = await supabase.rpc("pick_questions", {
+        const { data, error } = await supabase.rpc("pick_questions", {
           p_subject: subject,
           p_type: "qcm",
           p_chapter: chapter ?? null,
           p_limit: 5,
         });
-        list = ((data as PickedRow[] | null) ?? []).map((r) => ({
-          id: r.id,
-          q: r.question,
-          type: r.type,
-          choices: r.choices ?? [],
-          answer: r.answer ?? 0,
-          answerText: r.answer_text ?? "",
-          explain: r.explain ?? "",
-          chapterTitle: r.chapter_title,
-        }));
+        if (error) {
+          console.error("pick_questions failed:", error.code, error.message);
+          // Sans réseau : questions déjà téléchargées sur le téléphone.
+          list = pickFromBank(subject, 5, chapter);
+        } else {
+          const rows = (data as PickedRow[] | null) ?? [];
+          list = rows.map((r) => ({
+            id: r.id,
+            q: r.question,
+            type: r.type,
+            choices: r.choices ?? [],
+            answer: r.answer ?? 0,
+            answerText: r.answer_text ?? "",
+            explain: r.explain ?? "",
+            chapterTitle: r.chapter_title,
+          }));
+          // On garde ces questions pour pouvoir rejouer hors connexion.
+          addToBank(subject, { name: subjectName, level }, rows.filter((r) => r.type === "qcm").map(toOfflineQuestion));
+        }
       } else {
         // Simulation, réponse courte, rédaction : toutes les questions du type sont jouées.
         const [qRes, cRes] = await Promise.all([
@@ -115,19 +134,24 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
             .order("id", { ascending: true }),
           supabase.from("chapters").select("id, title").eq("subject_id", subject),
         ]);
-        const titles = new Map((cRes.data ?? []).map((c) => [c.id as string, c.title as string]));
-        list = (qRes.data ?? [])
-          .map((r) => ({
-            id: r.id as string,
-            q: r.question as string,
-            type: r.type as QType,
-            choices: (r.choices as string[] | null) ?? [],
-            answer: (r.answer as number | null) ?? 0,
-            answerText: (r.answer_text as string | null) ?? "",
-            explain: (r.explain as string | null) ?? "",
-            chapterTitle: r.chapter_id ? (titles.get(r.chapter_id) ?? null) : null,
-          }))
-          .filter((q) => !chapter || (q.chapterTitle ?? "Général") === chapter);
+        if (qRes.error) {
+          console.error("questions query failed:", qRes.error.code, qRes.error.message);
+          list = [];
+        } else {
+          const titles = new Map((cRes.data ?? []).map((c) => [c.id as string, c.title as string]));
+          list = (qRes.data ?? [])
+            .map((r) => ({
+              id: r.id as string,
+              q: r.question as string,
+              type: r.type as QType,
+              choices: (r.choices as string[] | null) ?? [],
+              answer: (r.answer as number | null) ?? 0,
+              answerText: (r.answer_text as string | null) ?? "",
+              explain: (r.explain as string | null) ?? "",
+              chapterTitle: r.chapter_id ? (titles.get(r.chapter_id) ?? null) : null,
+            }))
+            .filter((q) => !chapter || (q.chapterTitle ?? "Général") === chapter);
+        }
       }
 
       if (!alive) return;
@@ -144,28 +168,36 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
   const save = async (all: DetailedAnswer[]) => {
     const supabase = createClient();
     const correct = all.filter((a) => a.isCorrect).length;
+    const row = {
+      id: crypto.randomUUID(),
+      level,
+      subject_id: subject,
+      subject_name: subjectName,
+      mode,
+      correct,
+      total: all.length,
+      answers: all,
+      duration_sec: Math.round((Date.now() - startedAt.current) / 1000),
+    };
+    const attempts = all.map((a, i) => ({
+      subject_id: subject,
+      skill: "concepts",
+      correct: a.isCorrect,
+      chapter: questions[i]?.chapterTitle ?? null,
+      subject_name: subjectName,
+    }));
     const [result] = await Promise.all([
-      supabase.from("results").insert({
-        id: crypto.randomUUID(),
-        level,
-        subject_id: subject,
-        subject_name: subjectName,
-        mode,
-        correct,
-        total: all.length,
-        answers: all,
-        duration_sec: Math.round((Date.now() - startedAt.current) / 1000),
-      }),
-      supabase.from("attempts").insert(
-        all.map((a, i) => ({
-          subject_id: subject,
-          skill: "concepts",
-          correct: a.isCorrect,
-          chapter: questions[i]?.chapterTitle ?? null,
-          subject_name: subjectName,
-        })),
-      ),
+      supabase.from("results").insert(row),
+      supabase.from("attempts").insert(attempts),
     ]);
+    // status 0 = la requête n'a pas pu partir (pas de réseau) : on garde le résultat
+    // sur le téléphone, il est envoyé dès que la connexion revient (même id = sans doublon).
+    const uid = getUid();
+    if (result.error && result.status === 0 && uid) {
+      enqueueResult({ id: row.id, userId: uid, result: row, attempts });
+      setSavedOffline(true);
+      return;
+    }
     setSaveError(!!result.error);
   };
 
@@ -212,6 +244,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
     setAnswers([]);
     setDone(false);
     setSaveError(false);
+    setSavedOffline(false);
     setShowReview(false);
   };
 
@@ -286,6 +319,12 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
             Ce résultat n&apos;a pas pu être enregistré. Vérifie ta connexion.
           </p>
         )}
+        {savedOffline && (
+          <p className="mt-4 rounded-xl bg-white px-4 py-3 text-sm font-semibold ring-1 ring-ink/10">
+            Pas de connexion : ton résultat est gardé sur ton téléphone et sera envoyé dès que tu seras en ligne.
+          </p>
+        )}
+        {afterAd}
         <div className="mt-8 grid gap-3">
           {mode === "exam" && (
             <button type="button" onClick={() => setShowReview(true)} className={primaryButton}>
@@ -309,6 +348,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
 
   return (
     <div className="mx-auto max-w-2xl">
+      {idx === 0 && answers.length === 0 && beforeAd}
       <div className="flex items-center gap-3">
         <div className="flex-1">
           <ProgressBar value={(idx / questions.length) * 100} />
@@ -317,7 +357,8 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
           {idx + 1} / {questions.length}
         </span>
         {mode === "quiz" && q.type === "qcm" && selected === null && (
-          <Countdown key={idx} seconds={TIME_FOR_TYPE.qcm} onExpire={() => setSelected(-1)} />
+          // +6 s sur la première question : la publicité d'avant-quiz peut recouvrir l'écran quelques secondes.
+          <Countdown key={idx} seconds={TIME_FOR_TYPE.qcm + (idx === 0 ? 6 : 0)} onExpire={() => setSelected(-1)} />
         )}
       </div>
 

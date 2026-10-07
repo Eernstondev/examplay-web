@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { AdSlot } from "@/components/ad-slot";
 import { SubHeader } from "@/components/app/ui";
 import { getAccount, getLeaderboard } from "@/lib/data";
 
@@ -70,6 +71,12 @@ export default async function Page() {
       ) : (
         <p className="mt-8 text-center text-ink/70">Le classement n&apos;a pas pu être chargé.</p>
       )}
+
+      <AdSlot
+        placement="classement"
+        target={{ department: account.department, level: account.level }}
+        className="mt-7"
+      />
     </>
   );
 }

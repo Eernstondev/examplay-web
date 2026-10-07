@@ -30,6 +30,7 @@ const modes = [
   { title: "Par matière", body: "Choisis ta matière et ton mode", href: "/dashboard/matieres" },
   { title: "Mode examen", body: "Simulation sans correction avant la fin", href: "/dashboard/matieres?mode=exam" },
   { title: "Révision Smart", body: "Fiches à retourner", href: "/dashboard/matieres?mode=flash" },
+  { title: "Cours", body: "Les cours publiés par les contributeurs", href: "/dashboard/cours" },
   { title: "Communauté et duels", body: "Élèves en ligne, défis, historique", href: "/dashboard/communaute" },
 ];
 
