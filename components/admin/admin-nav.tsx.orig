@@ -13,7 +13,6 @@ const links = [
   { href: "/admin/publicites", label: "Publicités" },
   { href: "/admin/utilisateurs", label: "Utilisateurs" },
   { href: "/admin/contributeurs", label: "Contributeurs" },
-  { href: "/admin/inscriptions", label: "Inscriptions" },
   { href: "/admin/messages", label: "Messages" },
 ];
 

@@ -27,6 +27,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     "/admin/signalements": Number(pending?.reports ?? 0),
     "/admin/propositions": Number(pending?.submissions ?? 0),
     "/admin/contributeurs": Number(pending?.applications ?? 0),
+    "/admin/inscriptions": Number(pending?.enrollments ?? 0),
     "/admin/messages": Number(pending?.contacts_7d ?? 0),
   };
 
