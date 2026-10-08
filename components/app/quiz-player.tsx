@@ -61,9 +61,12 @@ type Props = {
   // Publicités rendues côté serveur : avant la première question, et sur l'écran de résultat.
   beforeAd?: ReactNode;
   afterAd?: ReactNode;
+  // Partage WhatsApp du résultat : lien d'inscription et code de parrainage de l'élève.
+  shareUrl?: string;
+  referralCode?: string | null;
 };
 
-export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter, beforeAd, afterAd }: Props) {
+export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter, beforeAd, afterAd, shareUrl, referralCode }: Props) {
   const [pool, setPool] = useState<Question[] | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
@@ -334,6 +337,19 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
           <button type="button" onClick={restart} className={mode === "exam" ? secondaryButton : primaryButton}>
             Rejouer
           </button>
+          {shareUrl && (
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(
+                `J'ai eu ${correct}/${answers.length} en ${subjectName} sur Examplay. Prépare l'examen d'État avec moi : ${shareUrl}` +
+                  (referralCode ? `\nMon code de parrainage : ${referralCode}` : ""),
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={secondaryButton}
+            >
+              Partager sur WhatsApp
+            </a>
+          )}
           <Link href="/dashboard" className={secondaryButton}>
             Retour au tableau de bord
           </Link>

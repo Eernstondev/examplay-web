@@ -46,7 +46,12 @@ const providers = [
   [
     "Vercel",
     "Hébergement du site web",
-    "Données techniques de connexion (adresse IP, type de navigateur)",
+    "Données techniques de connexion (adresse IP, type de navigateur) et statistiques de visite anonymes",
+  ],
+  [
+    "Sentry",
+    "Détection des erreurs et des plantages pour les corriger",
+    "Rapport technique d'erreur (page, navigateur) ; aucun nom, email ni résultat",
   ],
   [
     "Expo / EAS",

@@ -63,3 +63,13 @@ export function recommendSubject(
     .map((s) => ({ s, p: subjectProgress(results, s.id) }))
     .sort((a, b) => a.p - b.p || Number(b.s.heavy) - Number(a.s.heavy))[0]?.s;
 }
+
+// Objectif du jour : nombre de questions à faire (jour calendaire d'Haïti).
+export const DAILY_GOAL = 10;
+
+const haitiDay = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Port-au-Prince" });
+
+export function questionsToday(results: Result[], now = Date.now()): number {
+  const today = haitiDay.format(now);
+  return results.reduce((n, r) => (haitiDay.format(r.date) === today ? n + r.total : n), 0);
+}

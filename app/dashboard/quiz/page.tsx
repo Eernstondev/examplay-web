@@ -5,6 +5,7 @@ import { QuizPlayer, type QuizMode } from "@/components/app/quiz-player";
 import { SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount, getQuestionCounts, getResults } from "@/lib/data";
+import { site } from "@/lib/site";
 import { recommendSubject } from "@/lib/stats";
 
 export const metadata: Metadata = { title: "Quiz" };
@@ -48,6 +49,8 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/quiz"
         chapter={mode === "exam" ? undefined : chapter}
         beforeAd={<AdSlot placement="avant_quiz" target={target} className="mb-5" />}
         afterAd={<AdSlot placement="apres_quiz" target={target} className="mt-6" />}
+        shareUrl={`${site.url}/commencer`}
+        referralCode={account.referralCode}
       />
     </>
   );

@@ -15,7 +15,7 @@ import {
   getStreak,
   type Account,
 } from "@/lib/data";
-import { globalProgress } from "@/lib/stats";
+import { DAILY_GOAL, globalProgress, questionsToday } from "@/lib/stats";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
 
@@ -34,25 +34,45 @@ const modes = [
 ];
 
 async function StreakCard() {
-  const streak = await getStreak();
+  const [streak, results] = await Promise.all([getStreak(), getResults()]);
   const days = streak.streak;
+  const done = questionsToday(results);
+  const reached = done >= DAILY_GOAL;
+  const atRisk = days > 0 && !streak.activeToday;
   return (
-    <section
-      aria-label="Série de jours"
-      className="mt-6 flex items-center gap-4 rounded-3xl bg-brand p-5 text-white sm:gap-6 sm:p-7"
-    >
-      <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun font-display text-3xl font-extrabold text-sun-ink sm:size-20 sm:text-4xl">
-        {days}
-      </span>
-      <div>
-        <h2 className="font-display text-xl font-bold leading-snug sm:text-2xl">
-          {days > 0 ? `${days} jour${days > 1 ? "s" : ""} de suite` : "Commence une série aujourd'hui !"}
-        </h2>
-        <p className="mt-1 text-sm leading-relaxed text-white/80 sm:text-base">
-          {days > 0 && !streak.activeToday
-            ? "Fais un quiz aujourd'hui pour garder ta série."
-            : "Continue ta série pour débloquer des badges."}
-        </p>
+    <section aria-label="Série de jours" className="mt-6 rounded-3xl bg-brand p-5 text-white sm:p-7">
+      <div className="flex items-center gap-4 sm:gap-6">
+        <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun font-display text-3xl font-extrabold text-sun-ink sm:size-20 sm:text-4xl">
+          {days}
+        </span>
+        <div>
+          <h2 className="font-display text-xl font-bold leading-snug sm:text-2xl">
+            {days > 0 ? `${days} jour${days > 1 ? "s" : ""} de suite` : "Commence une série aujourd'hui !"}
+          </h2>
+          <p className="mt-1 text-sm leading-relaxed text-white/80 sm:text-base">
+            {atRisk
+              ? "Ta série s'arrête ce soir : fais un quiz pour la garder."
+              : "Continue ta série pour débloquer des badges."}
+          </p>
+        </div>
+      </div>
+      <div className="mt-4">
+        <div className="flex items-baseline justify-between text-sm font-semibold">
+          <span>{reached ? "Objectif du jour atteint" : "Objectif du jour"}</span>
+          <span className="tabular-nums text-white/85">
+            {Math.min(done, DAILY_GOAL)} / {DAILY_GOAL} questions
+          </span>
+        </div>
+        <div
+          role="progressbar"
+          aria-label="Objectif du jour"
+          aria-valuemin={0}
+          aria-valuemax={DAILY_GOAL}
+          aria-valuenow={Math.min(done, DAILY_GOAL)}
+          className="mt-2 h-2.5 overflow-hidden rounded-full bg-white/20"
+        >
+          <div className="h-full rounded-full bg-sun" style={{ width: `${Math.min(100, (done / DAILY_GOAL) * 100)}%` }} />
+        </div>
       </div>
     </section>
   );
@@ -147,7 +167,7 @@ export default async function Page() {
         Série : <strong className="font-semibold text-ink">{levelLabel(account.level)}</strong>
       </p>
 
-      <Suspense fallback={<div className={`${skeleton} mt-6 h-[6.5rem] bg-brand/25 sm:h-[8.5rem]`} />}>
+      <Suspense fallback={<div className={`${skeleton} mt-6 h-[9.5rem] bg-brand/25 sm:h-[11rem]`} />}>
         <StreakCard />
       </Suspense>
 
