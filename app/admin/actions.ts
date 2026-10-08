@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
 import { parseQuestion } from "@/lib/question-parse";
 import { ALL_SUBJECTS, DEPARTMENTS } from "@/lib/content";
-import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS, MEDIA_PREFIX, PARTNER_CATEGORIES, safeUrl } from "@/lib/media";
+import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS, AD_SURFACES, MEDIA_PREFIX, PARTNER_CATEGORIES, safeUrl } from "@/lib/media";
 import { createClient } from "@/lib/supabase/server";
 
 export type QuestionState = { error: string };
@@ -121,6 +121,7 @@ export async function saveAd(_prev: FormState, formData: FormData): Promise<Form
   const mediaType = text(formData, "media_type") === "video" ? "video" : "image";
   const displayMode = text(formData, "display_mode");
   const link = optionalUrl(formData, "link_url");
+  const surfaces = formData.getAll("surfaces").map(String);
   const placements = formData.getAll("placements").map(String);
   const departments = formData.getAll("departments").map(String);
   const audience = text(formData, "audience");
@@ -134,6 +135,9 @@ export async function saveAd(_prev: FormState, formData: FormData): Promise<Form
   }
   if (!AD_DISPLAY_MODES.some((m) => m.id === displayMode)) return { error: "Choisis un format d'affichage." };
   if (link === false) return { error: "Le lien n'est pas valide : il doit commencer par https://" };
+  if (!surfaces.length || surfaces.some((s) => !AD_SURFACES.some((x) => x.id === s))) {
+    return { error: "Choisis où afficher la publicité : site, application, ou les deux." };
+  }
   if (!placements.length || placements.some((p) => !AD_PLACEMENTS.some((x) => x.id === p))) {
     return { error: "Choisis au moins un emplacement." };
   }
@@ -152,6 +156,7 @@ export async function saveAd(_prev: FormState, formData: FormData): Promise<Form
     media_type: mediaType,
     display_mode: displayMode,
     link_url: link,
+    surfaces,
     placements,
     departments,
     audience,

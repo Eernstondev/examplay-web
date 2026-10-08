@@ -17,7 +17,8 @@ export async function pickAd(placement: AdPlacement, target?: Target): Promise<A
   const { data } = await createPublicClient()
     .from("ads")
     .select("id, title, image_url, link_url, media_type, display_mode, departments, audience")
-    .contains("placements", [placement]);
+    .contains("placements", [placement])
+    .contains("surfaces", ["web"]);
 
   const group = target ? (target.level === "9e" ? "9e" : "ns4") : null;
   const eligible = (data ?? []).filter((ad) => {

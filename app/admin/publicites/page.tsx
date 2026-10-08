@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { deleteAd } from "@/app/admin/actions";
-import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS } from "@/lib/media";
+import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS, AD_SURFACES } from "@/lib/media";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Publicités" };
@@ -17,7 +17,7 @@ export default async function Page() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("ads")
-    .select("id, title, image_url, media_type, display_mode, link_url, placements, departments, audience, starts_on, ends_on, active, clicks, impressions")
+    .select("id, title, image_url, media_type, display_mode, link_url, surfaces, placements, departments, audience, starts_on, ends_on, active, clicks, impressions")
     .order("created_at", { ascending: false });
   const ads = data ?? [];
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Port-au-Prince" }).format(new Date());
@@ -52,6 +52,14 @@ export default async function Page() {
                   <div>
                     <dt className="inline font-semibold text-ink">Format : </dt>
                     <dd className="inline">{AD_DISPLAY_MODES.find((m) => m.id === ad.display_mode)?.label ?? ad.display_mode}</dd>
+                  </div>
+                  <div>
+                    <dt className="inline font-semibold text-ink">Sur : </dt>
+                    <dd className="inline">
+                      {(ad.surfaces as string[])
+                        .map((s) => AD_SURFACES.find((x) => x.id === s)?.label ?? s)
+                        .join(" + ")}
+                    </dd>
                   </div>
                   <div>
                     <dt className="inline font-semibold text-ink">Où : </dt>

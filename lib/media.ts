@@ -18,6 +18,11 @@ export const AD_PLACEMENTS = [
   { id: "progression", label: "Progression" },
 ] as const;
 
+export const AD_SURFACES = [
+  { id: "web", label: "Site web" },
+  { id: "app", label: "Application mobile" },
+] as const;
+
 export const AD_DISPLAY_MODES = [
   { id: "banner", label: "Bannière (dans la page)" },
   { id: "fullscreen", label: "Plein écran (par-dessus tout, à fermer)" },

@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { saveAd, type FormState } from "@/app/admin/actions";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { DEPARTMENTS } from "@/lib/content";
-import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS } from "@/lib/media";
+import { AD_AUDIENCES, AD_DISPLAY_MODES, AD_PLACEMENTS, AD_SURFACES } from "@/lib/media";
 
 export type AdValues = {
   id?: string;
@@ -14,6 +14,7 @@ export type AdValues = {
   media_type: string;
   display_mode: string;
   link_url: string;
+  surfaces: string[];
   placements: string[];
   departments: string[];
   audience: string;
@@ -68,8 +69,23 @@ export function AdForm({ values }: { values: AdValues }) {
         </select>
         <span className="mt-1 block text-sm font-normal text-ink/60">
           Plein écran recouvre toute la page (comme une interstitielle) ; l&apos;élève doit la fermer pour continuer.
+          Dans l&apos;application, elle occupe tout l&apos;écran du téléphone : prévois une image verticale
+          (1080 × 1920 px), sinon les bords seront rognés.
         </span>
       </label>
+
+      <fieldset>
+        <legend className="text-sm font-semibold">Sur quoi l&apos;afficher</legend>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          {AD_SURFACES.map((s) => (
+            <label key={s.id} className={check}>
+              <input type="checkbox" name="surfaces" value={s.id} defaultChecked={values.surfaces.includes(s.id)} className="size-5 accent-brand" />
+              {s.label}
+            </label>
+          ))}
+        </div>
+        <p className="mt-2 text-sm text-ink/60">Coche les deux pour l&apos;afficher partout.</p>
+      </fieldset>
 
       <fieldset>
         <legend className="text-sm font-semibold">Où l&apos;afficher</legend>
