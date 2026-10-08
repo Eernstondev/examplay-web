@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import type { QuestionState } from "@/app/admin/actions";
 import { applyAsContributor } from "@/app/contribuer/actions";
 
-const field = "mt-1.5 w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base font-normal";
+const field = "mt-1.5 w-full rounded-xl border border-ink/20 bg-surface px-4 py-3 text-base font-normal";
 const label = "block text-sm font-semibold";
 
 export function ApplicationForm() {
@@ -25,7 +25,7 @@ export function ApplicationForm() {
         <textarea name="message" rows={3} maxLength={1000} className={field} />
       </label>
       {state.error && (
-        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
           {state.error}
         </p>
       )}

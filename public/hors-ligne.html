@@ -4,26 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1746a2">
+<meta name="color-scheme" content="light dark">
 <title>Hors connexion · Examplay</title>
 <style>
-  :root { --brand:#1746a2; --soft:#eef3fc; --ink:#0b2559; --ok:#12784a; --ok-soft:#e9f6ef; --ko:#b3261e; --ko-soft:#fcedec; --sun:#ffc93c; --sun-dark:#d9a100; }
+  :root { --brand:#1746a2; --soft:#eef3fc; --ink:#0b2559; --ok:#12784a; --ok-soft:#e9f6ef; --ko:#b3261e; --ko-soft:#fcedec; --sun:#ffc93c; --sun-dark:#d9a100; --sun-ink:#0b2559; --surface:#fff; --fg:#0b2559; --line:rgba(11,37,89,.1); --line-strong:rgba(11,37,89,.15); --text:rgba(11,37,89,.8); --muted:rgba(11,37,89,.6); --brand-fg:#1746a2; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --soft:#0a1020; --surface:#121a2e; --ink:#e8eefb; --fg:#e8eefb; --brand:#2858b8; --brand-fg:#8db1ff; --ok:#178552; --ok-soft:#0f2a20; --ko:#c93a33; --ko-soft:#321716; --line:rgba(232,238,251,.1); --line-strong:rgba(232,238,251,.15); --text:rgba(232,238,251,.8); --muted:rgba(232,238,251,.6); color-scheme: dark; } }
+  :root[data-theme="dark"] { --soft:#0a1020; --surface:#121a2e; --ink:#e8eefb; --fg:#e8eefb; --brand:#2858b8; --brand-fg:#8db1ff; --ok:#178552; --ok-soft:#0f2a20; --ko:#c93a33; --ko-soft:#321716; --line:rgba(232,238,251,.1); --line-strong:rgba(232,238,251,.15); --text:rgba(232,238,251,.8); --muted:rgba(232,238,251,.6); color-scheme: dark; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--soft); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.45; }
   main { max-width: 640px; margin: 0 auto; padding: 24px 20px calc(40px + env(safe-area-inset-bottom)); }
   h1 { font-size: 1.6rem; margin: 0 0 4px; }
-  p { margin: 0 0 12px; color: rgba(11,37,89,.8); }
-  .card { background: #fff; border-radius: 20px; padding: 18px; box-shadow: 0 0 0 1px rgba(11,37,89,.1); margin-bottom: 12px; }
-  button, a.btn { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 12px 16px; border: 0; border-radius: 14px; font: inherit; font-weight: 700; text-align: left; text-decoration: none; cursor: pointer; background: #fff; color: var(--ink); box-shadow: 0 0 0 1px rgba(11,37,89,.15); margin-bottom: 8px; }
-  button.primary, a.primary { background: var(--sun); box-shadow: 0 4px 0 0 var(--sun-dark); justify-content: center; }
+  p { margin: 0 0 12px; color: var(--text); }
+  .card { background: var(--surface); border-radius: 20px; padding: 18px; box-shadow: 0 0 0 1px var(--line); margin-bottom: 12px; }
+  button, a.btn { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 12px 16px; border: 0; border-radius: 14px; font: inherit; font-weight: 700; text-align: left; text-decoration: none; cursor: pointer; background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line-strong); margin-bottom: 8px; }
+  button.primary, a.primary { background: var(--sun); color: var(--sun-ink); box-shadow: 0 4px 0 0 var(--sun-dark); justify-content: center; }
   button.right { background: var(--ok-soft); box-shadow: 0 0 0 2px var(--ok); }
   button.wrong { background: var(--ko-soft); box-shadow: 0 0 0 2px var(--ko); }
   button:disabled { cursor: default; }
-  .count { font-weight: 600; font-size: .85rem; color: rgba(11,37,89,.6); }
-  .score { font-size: 4rem; font-weight: 800; color: var(--brand); line-height: 1; margin: 12px 0; text-align: center; }
-  .note { font-size: .9rem; border-radius: 12px; padding: 10px 14px; background: #fff; box-shadow: 0 0 0 1px rgba(11,37,89,.1); }
-  .bar { height: 8px; border-radius: 99px; background: rgba(11,37,89,.1); overflow: hidden; margin-bottom: 16px; }
+  .count { font-weight: 600; font-size: .85rem; color: var(--muted); }
+  .score { font-size: 4rem; font-weight: 800; color: var(--brand-fg); line-height: 1; margin: 12px 0; text-align: center; }
+  .note { font-size: .9rem; border-radius: 12px; padding: 10px 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
+  .bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; margin-bottom: 16px; }
   .bar > i { display: block; height: 100%; background: var(--brand); }
 </style>
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body>
 <main>

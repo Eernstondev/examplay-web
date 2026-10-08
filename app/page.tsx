@@ -106,7 +106,7 @@ export default function Home() {
             <p className="mt-1 text-ink/70">Les quatre filières du bac haïtien.</p>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {ns4Tracks.map((track) => (
-                <li key={track.code} className="flex items-center gap-3 rounded-2xl bg-white p-3">
+                <li key={track.code} className="flex items-center gap-3 rounded-2xl bg-surface p-3">
                   <span className="grid h-11 w-14 shrink-0 place-items-center rounded-xl bg-brand text-sm font-bold text-white">
                     {track.code}
                   </span>
@@ -115,7 +115,7 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col justify-between gap-8 rounded-3xl bg-ink p-6 text-white sm:p-8">
+          <div className="flex flex-col justify-between gap-8 rounded-3xl bg-navy p-6 text-white sm:p-8">
             <h3 className="font-display text-3xl font-bold leading-tight">
               9e année
               <br />

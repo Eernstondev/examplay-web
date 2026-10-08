@@ -38,7 +38,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/signaleme
             key={f.id}
             href={`/admin/signalements?status=${f.id}`}
             aria-current={f.id === status ? "page" : undefined}
-            className="grid h-11 place-items-center rounded-full bg-white px-4 text-sm font-bold text-ink/70 ring-1 ring-ink/10 aria-[current=page]:bg-brand aria-[current=page]:text-white"
+            className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-bold text-ink/70 ring-1 ring-ink/10 aria-[current=page]:bg-brand aria-[current=page]:text-white"
           >
             {f.label}
           </Link>
@@ -51,9 +51,9 @@ export default async function Page({ searchParams }: PageProps<"/admin/signaleme
             const question = first(r.question as Joined<{ id: string; question: string; subject_id: string }>);
             const reporter = first(r.reporter as Joined<{ name: string }>);
             return (
-              <li key={r.id} className="rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+              <li key={r.id} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/60">
-                  <span className="rounded-full bg-danger-soft px-2.5 py-1 text-xs font-bold text-danger">
+                  <span className="rounded-full bg-danger-soft px-2.5 py-1 text-xs font-bold text-danger-fg">
                     {REPORT_REASONS.find((x) => x.id === r.reason)?.label ?? r.reason}
                   </span>
                   <span>{ALL_SUBJECTS.find((s) => s.id === question?.subject_id)?.label}</span>

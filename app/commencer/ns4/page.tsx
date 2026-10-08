@@ -13,7 +13,7 @@ export default function Page() {
           <li key={track.slug}>
             <Link
               href={`/connexion?niveau=${track.slug}`}
-              className="flex min-h-20 items-center gap-4 rounded-2xl bg-white p-4 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
+              className="flex min-h-20 items-center gap-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
             >
               <span className="grid h-12 w-16 shrink-0 place-items-center rounded-xl bg-brand font-display text-lg font-bold text-white">
                 {track.code}
@@ -24,7 +24,7 @@ export default function Page() {
         ))}
       </ul>
       <p className="mt-7">
-        <Link href="/commencer" className="font-semibold text-brand underline underline-offset-4">
+        <Link href="/commencer" className="font-semibold text-brand-fg underline underline-offset-4">
           Retour au choix du niveau
         </Link>
       </p>

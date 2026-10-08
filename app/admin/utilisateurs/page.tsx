@@ -48,10 +48,10 @@ export default async function Page({ searchParams }: PageProps<"/admin/utilisate
             name="q"
             defaultValue={search}
             placeholder="Nom ou e-mail"
-            className="h-12 w-full rounded-xl border border-ink/20 bg-white px-4 text-base font-normal"
+            className="h-12 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base font-normal"
           />
         </label>
-        <button type="submit" className="h-12 rounded-xl bg-ink px-5 font-bold text-white">
+        <button type="submit" className="h-12 rounded-xl bg-navy px-5 font-bold text-white">
           Rechercher
         </button>
       </form>
@@ -61,7 +61,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/utilisate
       </p>
 
       {rows.length ? (
-        <div className="mt-3 overflow-x-auto rounded-3xl bg-white ring-1 ring-ink/10">
+        <div className="mt-3 overflow-x-auto rounded-3xl bg-surface ring-1 ring-ink/10">
           <table className="w-full min-w-[54rem] text-left text-sm">
             <thead className="text-ink/60">
               <tr>
@@ -77,7 +77,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/utilisate
                 <tr key={u.id} className="border-t border-ink/10">
                   <th scope="row" className="px-4 py-3 font-semibold">
                     {u.name || "(sans nom)"}
-                    {u.suspended && <span className="ml-2 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-bold text-danger">Suspendu</span>}
+                    {u.suspended && <span className="ml-2 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-bold text-danger-fg">Suspendu</span>}
                   </th>
                   <td className="px-4 py-3">{u.email}</td>
                   <td className="px-4 py-3">{levelLabel(u.level)}</td>
@@ -90,7 +90,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/utilisate
                       <input type="hidden" name="suspended" value={String(!u.suspended)} />
                       <button
                         type="submit"
-                        className={`h-10 rounded-lg px-3 text-sm font-bold ring-1 ring-ink/15 ${u.suspended ? "text-brand" : "text-danger"}`}
+                        className={`h-10 rounded-lg px-3 text-sm font-bold ring-1 ring-ink/15 ${u.suspended ? "text-brand-fg" : "text-danger-fg"}`}
                       >
                         {u.suspended ? "Réactiver" : "Suspendre"}
                       </button>
@@ -108,7 +108,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/utilisate
       {pages > 1 && (
         <nav aria-label="Pagination" className="mt-5 flex items-center justify-between gap-3">
           {page > 1 ? (
-            <Link href={link(page - 1)} className="grid h-11 place-items-center rounded-xl bg-white px-4 text-sm font-bold ring-1 ring-ink/15">
+            <Link href={link(page - 1)} className="grid h-11 place-items-center rounded-xl bg-surface px-4 text-sm font-bold ring-1 ring-ink/15">
               Précédent
             </Link>
           ) : (
@@ -118,7 +118,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/utilisate
             Page {page} sur {pages}
           </span>
           {page < pages ? (
-            <Link href={link(page + 1)} className="grid h-11 place-items-center rounded-xl bg-white px-4 text-sm font-bold ring-1 ring-ink/15">
+            <Link href={link(page + 1)} className="grid h-11 place-items-center rounded-xl bg-surface px-4 text-sm font-bold ring-1 ring-ink/15">
               Suivant
             </Link>
           ) : (

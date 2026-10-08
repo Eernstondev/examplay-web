@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { ThemeButton } from "@/components/theme-toggle";
 import { navLinks, site } from "@/lib/site";
 
 export function SiteHeader() {
@@ -27,7 +28,7 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               aria-current={pathname === link.href ? "page" : undefined}
-              className="whitespace-nowrap text-sm font-medium text-ink/70 hover:text-brand aria-[current=page]:text-brand"
+              className="whitespace-nowrap text-sm font-medium text-ink/70 hover:text-brand-fg aria-[current=page]:text-brand-fg"
             >
               {link.label}
             </Link>
@@ -35,6 +36,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeButton />
           <Link
             href="/commencer"
             onClick={() => setOpen(false)}
@@ -66,7 +68,7 @@ export function SiteHeader() {
               href={link.href}
               onClick={() => setOpen(false)}
               aria-current={pathname === link.href ? "page" : undefined}
-              className="border-b border-ink/10 py-3.5 font-medium aria-[current=page]:text-brand"
+              className="border-b border-ink/10 py-3.5 font-medium aria-[current=page]:text-brand-fg"
             >
               {link.label}
             </Link>

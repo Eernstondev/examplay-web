@@ -32,7 +32,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="flex flex-1 flex-col bg-brand-soft">
-      <header className="border-b border-ink/10 bg-white">
+      <header className="border-b border-ink/10 bg-surface">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
           <Link href="/admin" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="" width={36} height={36} priority className="rounded-[9px]" />
@@ -40,7 +40,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </Link>
           <div className="flex items-center gap-1">
             <form action={signOut}>
-              <button type="submit" className="min-h-11 px-3 text-sm font-semibold text-ink/70 hover:text-brand">
+              <button type="submit" className="min-h-11 px-3 text-sm font-semibold text-ink/70 hover:text-brand-fg">
                 Se déconnecter
               </button>
             </form>

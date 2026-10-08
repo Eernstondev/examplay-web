@@ -9,7 +9,7 @@ import { departments } from "@/lib/levels";
 const initialState: AuthState = { status: "idle", message: "", values: { email: "" } };
 
 const field =
-  "mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-white px-4 text-base text-ink placeholder:text-ink/40";
+  "mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base text-ink placeholder:text-ink/40";
 const label = "block text-sm font-semibold";
 const submit =
   "h-13 w-full rounded-xl bg-brand text-base font-bold text-white hover:bg-brand-dark disabled:opacity-60";
@@ -17,7 +17,7 @@ const submit =
 function ErrorMessage({ state }: { state: AuthState }) {
   if (state.status !== "error") return null;
   return (
-    <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+    <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
       {state.message}
     </p>
   );
@@ -29,12 +29,12 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
   return (
     <form action={action} noValidate className="grid gap-4">
       {success && state.status === "idle" && (
-        <p role="status" className="rounded-xl bg-success-soft px-4 py-3 text-sm font-semibold text-success">
+        <p role="status" className="rounded-xl bg-success-soft px-4 py-3 text-sm font-semibold text-success-fg">
           {success}
         </p>
       )}
       {notice && state.status === "idle" && (
-        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
           {notice}
         </p>
       )}
@@ -64,7 +64,7 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
       <button type="submit" disabled={pending} className={submit}>
         {pending ? "Connexion…" : "Se connecter"}
       </button>
-      <Link href="/mot-de-passe-oublie" className="justify-self-center py-1 text-sm font-semibold text-brand underline underline-offset-4">
+      <Link href="/mot-de-passe-oublie" className="justify-self-center py-1 text-sm font-semibold text-brand-fg underline underline-offset-4">
         Mot de passe oublié ?
       </Link>
     </form>
@@ -76,7 +76,7 @@ export function SignUpForm({ level }: { level: string }) {
 
   if (state.status === "confirm") {
     return (
-      <p role="status" className="rounded-xl bg-success-soft px-4 py-4 font-semibold text-success">
+      <p role="status" className="rounded-xl bg-success-soft px-4 py-4 font-semibold text-success-fg">
         {state.message}
       </p>
     );
@@ -146,11 +146,11 @@ export function SignUpForm({ level }: { level: string }) {
         <input type="checkbox" name="terms" required className="mt-0.5 size-5 shrink-0 accent-brand" />
         <span>
           J&apos;accepte les{" "}
-          <Link href="/conditions" target="_blank" className="font-semibold text-brand underline underline-offset-2">
+          <Link href="/conditions" target="_blank" className="font-semibold text-brand-fg underline underline-offset-2">
             conditions d&apos;utilisation
           </Link>{" "}
           et la{" "}
-          <Link href="/confidentialite" target="_blank" className="font-semibold text-brand underline underline-offset-2">
+          <Link href="/confidentialite" target="_blank" className="font-semibold text-brand-fg underline underline-offset-2">
             politique de confidentialité
           </Link>
           .

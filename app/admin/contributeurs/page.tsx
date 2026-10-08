@@ -29,7 +29,7 @@ export default async function Page() {
           <h2 className="font-display text-xl font-bold">Demandes d&apos;accès ({applications.length})</h2>
           <ul className="mt-3 grid gap-3">
             {applications.map((a) => (
-              <li key={a.user_id} className="rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+              <li key={a.user_id} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
                 <p className="font-semibold">
                   {a.name || "(sans nom)"} · <span className="font-normal text-ink/70">{a.email}</span>
                 </p>
@@ -42,7 +42,7 @@ export default async function Page() {
                   <button type="submit" name="decision" value="approve" className="h-11 rounded-xl bg-success px-4 text-sm font-bold text-white">
                     Donner l&apos;accès
                   </button>
-                  <button type="submit" name="decision" value="reject" className="h-11 rounded-xl px-4 text-sm font-bold text-danger ring-1 ring-ink/15">
+                  <button type="submit" name="decision" value="reject" className="h-11 rounded-xl px-4 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
                     Refuser
                   </button>
                 </form>
@@ -57,7 +57,7 @@ export default async function Page() {
       {rows.length ? (
         <ul className="mt-5 grid gap-2">
           {rows.map((c) => (
-            <li key={c.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+            <li key={c.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
               <div className="min-w-0 flex-1 basis-56">
                 <p className="truncate font-semibold">{c.name || "(sans nom)"}</p>
                 <p className="truncate text-sm text-ink/60">{c.email}</p>
@@ -67,7 +67,7 @@ export default async function Page() {
               </p>
               <form action={removeContributor}>
                 <input type="hidden" name="id" value={c.id} />
-                <button type="submit" className="h-11 rounded-xl px-4 text-sm font-bold text-danger ring-1 ring-ink/15">
+                <button type="submit" className="h-11 rounded-xl px-4 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
                   Retirer l&apos;accès
                 </button>
               </form>

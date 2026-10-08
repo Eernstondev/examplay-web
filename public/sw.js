@@ -1,6 +1,6 @@
 // Service worker Examplay : page hors-ligne, cache des fichiers statiques, notifications push.
 // Aucune page connectée (/dashboard...) n'est mise en cache : pas de données d'élève sur l'appareil.
-const CACHE = "examplay-static-v1";
+const CACHE = "examplay-static-v2";
 const OFFLINE_URL = "/hors-ligne.html";
 const PRECACHE = [OFFLINE_URL, "/logo.png"];
 

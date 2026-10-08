@@ -11,12 +11,61 @@
   --color-danger-soft: #fcedec;
   --color-sun: #ffc93c;
   --color-sun-dark: #d9a100;
+  --color-sun-ink: #0b2559;
+  --color-page: #ffffff;
+  --color-surface: #ffffff;
+  --color-navy: #0b2559;
+  --color-brand-fg: #1746a2;
+  --color-success-fg: #12784a;
+  --color-danger-fg: #b3261e;
   --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Thème sombre : même variables, valeurs différentes.
+   Suit le système tant qu'aucun choix n'est fait ; data-theme force clair ou sombre. */
+:root {
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-page: #0a1020;
+    --color-surface: #121a2e;
+    --color-ink: #e8eefb;
+    --color-navy: #263f78;
+    --color-brand: #2858b8;
+    --color-brand-dark: #214a9c;
+    --color-brand-soft: #172646;
+    --color-brand-fg: #8db1ff;
+    --color-success: #178552;
+    --color-success-soft: #0f2a20;
+    --color-success-fg: #4fd69b;
+    --color-danger: #c93a33;
+    --color-danger-soft: #321716;
+    --color-danger-fg: #ff8a82;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-page: #0a1020;
+  --color-surface: #121a2e;
+  --color-ink: #e8eefb;
+  --color-navy: #263f78;
+  --color-brand: #2858b8;
+  --color-brand-dark: #214a9c;
+  --color-brand-soft: #172646;
+  --color-brand-fg: #8db1ff;
+  --color-success: #178552;
+  --color-success-soft: #0f2a20;
+  --color-success-fg: #4fd69b;
+  --color-danger: #c93a33;
+  --color-danger-soft: #321716;
+  --color-danger-fg: #ff8a82;
+}
+
 body {
-  background: #ffffff;
+  background: var(--color-page);
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
@@ -39,7 +88,7 @@ body {
 /* Bouton principal : relief franc, s'enfonce au toucher */
 .btn-sun {
   background: var(--color-sun);
-  color: var(--color-ink);
+  color: var(--color-sun-ink);
   box-shadow: 0 4px 0 0 var(--color-sun-dark);
   transition: transform 0.08s, box-shadow 0.08s;
 }
@@ -69,7 +118,7 @@ body {
   padding-left: 1.25rem;
 }
 .legal a {
-  color: var(--color-brand);
+  color: var(--color-brand-fg);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -120,7 +169,7 @@ body {
   color: var(--color-ink);
 }
 .prose-block a {
-  color: var(--color-brand);
+  color: var(--color-brand-fg);
   text-decoration: underline;
   text-underline-offset: 3px;
 }

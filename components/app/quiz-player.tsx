@@ -266,7 +266,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
       <div>
         <ol className="grid gap-4">
           {answers.map((a, i) => (
-            <li key={i} className="rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+            <li key={i} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
               <p className="text-sm font-semibold text-ink/60">Question {i + 1}</p>
               <p className="mt-1 font-display text-lg font-semibold leading-snug">{a.q}</p>
               {a.type === "qcm" ? (
@@ -286,7 +286,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
               ) : (
                 <p className="mt-3 rounded-xl bg-brand-soft p-3">Ta réponse : {a.givenText || "(aucune)"}</p>
               )}
-              <p className={`mt-3 font-semibold ${a.isCorrect ? "text-success" : "text-danger"}`}>
+              <p className={`mt-3 font-semibold ${a.isCorrect ? "text-success-fg" : "text-danger-fg"}`}>
                 {a.given === -1 ? "Temps écoulé" : a.isCorrect ? "Bonne réponse" : "Mauvaise réponse"}
               </p>
               {a.correctText && <p className="mt-1 text-ink/75">Réponse attendue : {a.correctText}</p>}
@@ -308,19 +308,19 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
       p >= 80 ? "Excellent travail !" : p >= 50 ? "Bien joué, continue comme ça." : "Courage, révise et réessaie.";
     return (
       <div className="mx-auto max-w-md py-6 text-center">
-        <p className="font-display text-[clamp(4rem,22vw,6.5rem)] font-extrabold leading-none text-brand">{p}%</p>
+        <p className="font-display text-[clamp(4rem,22vw,6.5rem)] font-extrabold leading-none text-brand-fg">{p}%</p>
         <p className="mt-3 font-display text-2xl font-bold">
           {correct} / {answers.length}
         </p>
         <p className="mt-2 text-ink/75">{message}</p>
         <p className="mt-1 text-sm text-ink/60">+ {correct * 10} points au classement</p>
         {saveError && (
-          <p role="alert" className="mt-4 rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+          <p role="alert" className="mt-4 rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
             Ce résultat n&apos;a pas pu être enregistré. Vérifie ta connexion.
           </p>
         )}
         {savedOffline && (
-          <p className="mt-4 rounded-xl bg-white px-4 py-3 text-sm font-semibold ring-1 ring-ink/10">
+          <p className="mt-4 rounded-xl bg-surface px-4 py-3 text-sm font-semibold ring-1 ring-ink/10">
             Pas de connexion : ton résultat est gardé sur ton téléphone et sera envoyé dès que tu seras en ligne.
           </p>
         )}
@@ -384,7 +384,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
                   onClick={() => setSelected(i)}
                   className={choiceClass(state)}
                 >
-                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-bold text-brand">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-bold text-brand-fg">
                     {String.fromCharCode(65 + i)}
                   </span>
                   <span className="min-w-0 flex-1">{c}</span>
@@ -402,13 +402,13 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
               onChange={(e) => setTyped(e.target.value)}
               readOnly={revealed}
               rows={q.type === "essay" ? 8 : 2}
-              className="mt-1.5 w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base font-normal"
+              className="mt-1.5 w-full rounded-xl border border-ink/20 bg-surface px-4 py-3 text-base font-normal"
             />
           </label>
           {revealed && (
-            <div className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+            <div className="mt-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
               {q.type === "short_answer" && (
-                <p className={`font-semibold ${shortOk ? "text-success" : "text-danger"}`}>
+                <p className={`font-semibold ${shortOk ? "text-success-fg" : "text-danger-fg"}`}>
                   {shortOk ? "Bonne réponse" : "Pas tout à fait"}
                 </p>
               )}
@@ -423,8 +423,8 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
       )}
 
       {feedback && (
-        <div aria-live="polite" className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
-          <p className={`font-semibold ${selected === q.answer ? "text-success" : "text-danger"}`}>
+        <div aria-live="polite" className="mt-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+          <p className={`font-semibold ${selected === q.answer ? "text-success-fg" : "text-danger-fg"}`}>
             {selected === -1 ? "Temps écoulé" : selected === q.answer ? "Bonne réponse" : "Mauvaise réponse"}
           </p>
           {q.explain && <p className="mt-1 text-ink/75">{q.explain}</p>}

@@ -89,7 +89,7 @@ export function NotificationBell({ userId }: { userId: string }) {
         type="button"
         onClick={onOpen}
         aria-label={unread ? `Notifications, ${unread} non lues` : "Notifications"}
-        className="relative grid size-11 place-items-center rounded-full text-ink/70 hover:bg-white hover:text-brand"
+        className="relative grid size-11 place-items-center rounded-full text-ink/70 hover:bg-surface hover:text-brand-fg"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -102,7 +102,7 @@ export function NotificationBell({ userId }: { userId: string }) {
         )}
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[90vw] rounded-2xl bg-white p-2 shadow-xl ring-1 ring-ink/10">
+        <div className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[90vw] rounded-2xl bg-surface p-2 shadow-xl ring-1 ring-ink/10">
           {items.length === 0 ? (
             <p className="p-4 text-center text-sm text-ink/60">Aucune notification pour le moment.</p>
           ) : (

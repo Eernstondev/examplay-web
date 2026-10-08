@@ -28,7 +28,7 @@ export function AdminNav({ counts = {} }: { counts?: Record<string, number> }) {
               <Link
                 href={link.href}
                 aria-current={current ? "page" : undefined}
-                className="grid h-11 place-items-center whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-semibold text-ink/65 hover:text-brand aria-[current=page]:border-brand aria-[current=page]:text-brand"
+                className="grid h-11 place-items-center whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-semibold text-ink/65 hover:text-brand-fg aria-[current=page]:border-brand aria-[current=page]:text-brand-fg"
               >
                 <span>
                   {link.label}

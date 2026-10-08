@@ -54,20 +54,20 @@ export default async function Page() {
         <ul className="mt-6 grid gap-2 sm:grid-cols-2">
           {todo.map((t) => (
             <li key={t.href}>
-              <Link href={t.href} className="flex items-center justify-between gap-3 rounded-2xl bg-ink p-4 text-white">
+              <Link href={t.href} className="flex items-center justify-between gap-3 rounded-2xl bg-navy p-4 text-white">
                 <span className="font-semibold">{t.label}</span>
-                <span className="rounded-full bg-sun px-3 py-1 font-display text-lg font-bold text-ink">{t.n}</span>
+                <span className="rounded-full bg-sun px-3 py-1 font-display text-lg font-bold text-sun-ink">{t.n}</span>
               </Link>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-6 rounded-2xl bg-white p-4 text-ink/70 ring-1 ring-ink/10">Rien à traiter pour le moment.</p>
+        <p className="mt-6 rounded-2xl bg-surface p-4 text-ink/70 ring-1 ring-ink/10">Rien à traiter pour le moment.</p>
       )}
 
       <dl className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+          <div key={c.label} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
             <dt className="text-sm font-semibold text-ink/60">{c.label}</dt>
             <dd className="mt-1 font-display text-4xl font-extrabold leading-none">{c.value}</dd>
             {c.note && <dd className="mt-2 text-sm text-ink/60">{c.note}</dd>}
@@ -80,7 +80,7 @@ export default async function Page() {
           { title: "Élèves par série", rows: sorted(stats.by_level).map(([k, v]) => [levelLabel(k), v] as const) },
           { title: "Élèves par département", rows: sorted(stats.by_department) },
         ].map((block) => (
-          <section key={block.title} className="rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+          <section key={block.title} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
             <h2 className="font-display text-lg font-bold">{block.title}</h2>
             <ul className="mt-3 grid gap-2.5">
               {block.rows.map(([name, n]) => (

@@ -71,7 +71,7 @@ export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
         playsInline
         controls
         preload="none"
-        className={`${frame} bg-ink`}
+        className={`${frame} bg-navy`}
       />
     ) : ad.link_url ? (
       <a href={href} target="_blank" rel="sponsored noopener" className="block">
@@ -88,7 +88,7 @@ export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
       type="button"
       onClick={() => setClosed(true)}
       aria-label="Fermer la publicité"
-      className="absolute right-2 top-2 grid size-11 place-items-center rounded-full bg-ink/80 text-white backdrop-blur hover:bg-ink"
+      className="absolute right-2 top-2 grid size-11 place-items-center rounded-full bg-ink/80 text-white backdrop-blur hover:bg-navy"
     >
       <svg viewBox="0 0 20 20" aria-hidden="true" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
         <path d="M5 5l10 10M15 5 5 15" />

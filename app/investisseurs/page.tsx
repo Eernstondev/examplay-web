@@ -128,7 +128,7 @@ export default function Page() {
           <h2 className="font-display text-2xl font-semibold tracking-tight">Contactez-nous</h2>
           <p className="mt-3 leading-relaxed text-ink/70">
             Notre équipe stratégique vous répondra sous 48 h. Ou par e-mail :{" "}
-            <a href={`mailto:${site.email}`} className="text-brand underline underline-offset-4">
+            <a href={`mailto:${site.email}`} className="text-brand-fg underline underline-offset-4">
               {site.email}
             </a>
           </p>

@@ -116,7 +116,7 @@ export function RealtimeHub({ id, name, department, level }: Me) {
         <div
           key={notice.id}
           role="alert"
-          className="rounded-2xl bg-ink p-4 text-white shadow-[0_20px_40px_-16px_rgba(11,37,89,0.6)]"
+          className="rounded-2xl bg-navy p-4 text-white shadow-[0_20px_40px_-16px_rgba(11,37,89,0.6)]"
         >
           <p className="font-display text-lg font-bold leading-snug">{notice.title}</p>
           <p className="text-sm text-white/75">{notice.subtitle}</p>
@@ -125,7 +125,7 @@ export function RealtimeHub({ id, name, department, level }: Me) {
               <button
                 type="button"
                 onClick={() => respond(notice, true)}
-                className="h-11 rounded-xl bg-sun font-bold text-ink"
+                className="h-11 rounded-xl bg-sun font-bold text-sun-ink"
               >
                 Accepter
               </button>

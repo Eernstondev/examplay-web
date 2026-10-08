@@ -201,7 +201,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
   };
 
   const scoreboard = (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-3xl bg-ink p-5 text-white">
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-3xl bg-navy p-5 text-white">
       <div>
         <p className="text-sm text-white/70">Toi</p>
         <p className="font-display text-4xl font-extrabold">{myScore}</p>
@@ -281,7 +281,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
           </button>
         )}
         {message && (
-          <p role="alert" className="mt-3 text-center text-sm font-semibold text-danger">
+          <p role="alert" className="mt-3 text-center text-sm font-semibold text-danger-fg">
             {message}
           </p>
         )}
@@ -318,7 +318,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
           return (
             <li key={`${idx}-${i}`}>
               <button type="button" disabled={sel !== null} onClick={() => pick(i)} className={choiceClass(stateClass)}>
-                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-bold text-brand">
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-bold text-brand-fg">
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span className="min-w-0 flex-1">{c}</span>
@@ -327,7 +327,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
           );
         })}
       </ul>
-      <button type="button" onClick={leave} className="mt-6 min-h-11 text-sm font-semibold text-danger underline underline-offset-4">
+      <button type="button" onClick={leave} className="mt-6 min-h-11 text-sm font-semibold text-danger-fg underline underline-offset-4">
         Quitter le duel
       </button>
     </div>

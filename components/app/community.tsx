@@ -176,8 +176,8 @@ export function Community({ me, subjects, points, history }: Props) {
   };
 
   const playerRow = (p: { id: string; name: string }) => (
-    <li key={p.id} className="flex items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink/10">
-      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand">
+    <li key={p.id} className="flex items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
+      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
         {p.name.charAt(0).toUpperCase()}
       </span>
       <div className="min-w-0 flex-1">
@@ -193,7 +193,7 @@ export function Community({ me, subjects, points, history }: Props) {
           type="button"
           disabled={invited[p.id]}
           onClick={() => addFriend(p.id)}
-          className="h-11 shrink-0 rounded-xl px-3 text-sm font-bold text-brand ring-1 ring-ink/15 disabled:text-ink/50"
+          className="h-11 shrink-0 rounded-xl px-3 text-sm font-bold text-brand-fg ring-1 ring-ink/15 disabled:text-ink/50"
         >
           {invited[p.id] ? "Demandé" : "Ajouter"}
         </button>
@@ -211,7 +211,7 @@ export function Community({ me, subjects, points, history }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div role="tablist" aria-label="Communauté" className="grid grid-cols-4 gap-1 rounded-2xl bg-white p-1 ring-1 ring-ink/10">
+      <div role="tablist" aria-label="Communauté" className="grid grid-cols-4 gap-1 rounded-2xl bg-surface p-1 ring-1 ring-ink/10">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -235,7 +235,7 @@ export function Community({ me, subjects, points, history }: Props) {
           <select
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-white px-4 text-base font-normal"
+            className="mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base font-normal"
           >
             {subjects.map((s) => (
               <option key={s.value} value={s.value}>
@@ -247,14 +247,14 @@ export function Community({ me, subjects, points, history }: Props) {
       )}
 
       {error && (
-        <p role="alert" className="mt-4 rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+        <p role="alert" className="mt-4 rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
           {error}
         </p>
       )}
 
       {tab === "online" && (
         <div className="mt-5">
-          <label className="flex items-center justify-between gap-4 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+          <label className="flex items-center justify-between gap-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
             <span>
               <span className="block font-semibold">Apparaître en ligne</span>
               <span className="block text-sm text-ink/60">Les élèves de ton département peuvent te défier.</span>
@@ -284,7 +284,7 @@ export function Community({ me, subjects, points, history }: Props) {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-white px-4 text-base font-normal"
+              className="mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base font-normal"
             />
           </label>
           {found.length > 0 ? (
@@ -302,7 +302,7 @@ export function Community({ me, subjects, points, history }: Props) {
               <h2 className="font-display text-lg font-bold">Demandes reçues</h2>
               <ul className="mb-7 mt-3 grid gap-2.5">
                 {requests.map((r) => (
-                  <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink/10">
+                  <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
                     <p className="min-w-0 flex-1 basis-32 truncate font-semibold">{r.name}</p>
                     <button type="button" onClick={() => answerRequest(r.id, false)} className="h-11 rounded-xl px-4 text-sm font-bold ring-1 ring-ink/15">
                       Refuser
@@ -320,12 +320,12 @@ export function Community({ me, subjects, points, history }: Props) {
           {friends.length ? (
             <ul className="mt-3 grid gap-2.5">
               {friends.map((f) => (
-                <li key={f.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink/10">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand">
+                <li key={f.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
                     {f.name.charAt(0).toUpperCase()}
                   </span>
                   <p className="min-w-0 flex-1 basis-24 truncate font-semibold">{f.name}</p>
-                  <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-bold text-danger ring-1 ring-ink/15">
+                  <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
                     Retirer
                   </button>
                   <button
@@ -352,12 +352,12 @@ export function Community({ me, subjects, points, history }: Props) {
                 {ranking.map((r, i) => (
                   <li
                     key={r.user_id}
-                    className={`flex items-center gap-3 rounded-2xl bg-white p-3 ${r.is_me ? "ring-2 ring-brand" : "ring-1 ring-ink/10"}`}
+                    className={`flex items-center gap-3 rounded-2xl bg-surface p-3 ${r.is_me ? "ring-2 ring-brand" : "ring-1 ring-ink/10"}`}
                   >
                     <span className="w-8 shrink-0 text-center font-display text-lg font-bold">{i + 1}</span>
                     <p className="min-w-0 flex-1 truncate font-semibold">
                       {r.name}
-                      {r.is_me && <span className="ml-2 text-sm font-bold text-brand">Toi</span>}
+                      {r.is_me && <span className="ml-2 text-sm font-bold text-brand-fg">Toi</span>}
                     </p>
                     <span className="shrink-0 font-semibold tabular-nums">{r.points} pts</span>
                   </li>
@@ -375,7 +375,7 @@ export function Community({ me, subjects, points, history }: Props) {
               <h2 className="font-display text-lg font-bold">En cours</h2>
               <ul className="mt-3 grid gap-2.5">
                 {active.map((d) => (
-                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
                     <div className="min-w-0">
                       <p className="truncate font-semibold">Contre {d.opp}</p>
                       <p className="text-sm text-ink/60">{d.subject}</p>
@@ -393,9 +393,9 @@ export function Community({ me, subjects, points, history }: Props) {
             <ul className="mt-3 grid gap-2.5">
               {history.map((d) => {
                 const outcome = d.me > d.them ? "Victoire" : d.me < d.them ? "Défaite" : "Nul";
-                const tone = d.me > d.them ? "text-success" : d.me < d.them ? "text-danger" : "text-ink/60";
+                const tone = d.me > d.them ? "text-success-fg" : d.me < d.them ? "text-danger-fg" : "text-ink/60";
                 return (
-                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
                     <div className="min-w-0">
                       <p className="truncate font-semibold">Contre {d.opp}</p>
                       <p className="text-sm text-ink/60">{d.subject}</p>

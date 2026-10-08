@@ -61,7 +61,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/chapi
           </li>
           {rows.map((c) => (
             <li key={c.title}>
-              <Link href={href(c.title)} className={`${row} bg-white ring-1 ring-ink/10 hover:ring-2 hover:ring-brand`}>
+              <Link href={href(c.title)} className={`${row} bg-surface ring-1 ring-ink/10 hover:ring-2 hover:ring-brand`}>
                 <span className="font-semibold leading-snug">{c.title}</span>
                 <span className="shrink-0 text-sm text-ink/60">{c.count}</span>
               </Link>

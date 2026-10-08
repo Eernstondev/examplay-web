@@ -55,7 +55,7 @@ export default function Page() {
 
       <p className="mt-10 text-ink/75">
         Vous souhaitez contribuer ?{" "}
-        <Link href="/contact" className="font-semibold text-brand underline underline-offset-4">
+        <Link href="/contact" className="font-semibold text-brand-fg underline underline-offset-4">
           Rejoignez l&apos;aventure
         </Link>
       </p>

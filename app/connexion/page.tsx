@@ -22,7 +22,7 @@ export default async function Page({ searchParams }: PageProps<"/connexion">) {
       title="Connexion"
       lead={level ? `Section choisie : ${level.label}.` : "Content de te revoir."}
     >
-      <div className="rounded-3xl bg-white p-5 ring-1 ring-ink/10 sm:p-7">
+      <div className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10 sm:p-7">
         <SignInForm
           success={reset === "ok" ? "Mot de passe modifié. Connecte-toi avec le nouveau." : undefined}
           notice={
@@ -34,7 +34,7 @@ export default async function Page({ searchParams }: PageProps<"/connexion">) {
       </div>
       <p className="mt-6 text-ink/75">
         Pas encore de compte ?{" "}
-        <Link href={signUpHref} className="font-semibold text-brand underline underline-offset-4">
+        <Link href={signUpHref} className="font-semibold text-brand-fg underline underline-offset-4">
           Inscris-toi
         </Link>
       </p>

@@ -5,6 +5,7 @@ import { signOut } from "@/app/actions";
 import { DeleteAccount } from "@/components/app/delete-account";
 import { SubHeader } from "@/components/app/ui";
 import { PushToggle } from "@/components/push-toggle";
+import { ThemeSwitch } from "@/components/theme-toggle";
 import { levelLabel } from "@/lib/content";
 import { getAccount, getReferralCount } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
@@ -43,7 +44,7 @@ export default async function Page() {
   return (
     <>
       <SubHeader title="Mon profil" />
-      <section className="flex items-center gap-4 rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+      <section className="flex items-center gap-4 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
         <span className="grid size-16 shrink-0 place-items-center rounded-full bg-brand font-display text-2xl font-bold text-white">
           {account.name.charAt(0).toUpperCase()}
         </span>
@@ -61,7 +62,7 @@ export default async function Page() {
 
       <dl className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3">
         {rows.map(([label, value]) => (
-          <div key={label} className="rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+          <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
             <dt className="text-sm font-semibold text-ink/60">{label}</dt>
             <dd className="mt-1 font-display text-2xl font-bold">{Number(value ?? 0)}</dd>
           </div>
@@ -82,11 +83,13 @@ export default async function Page() {
         </section>
       )}
 
+      <ThemeSwitch />
+
       <PushToggle />
 
       <Link
         href="/contribuer"
-        className="mt-5 block rounded-3xl bg-white p-5 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
+        className="mt-5 block rounded-3xl bg-surface p-5 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
       >
         <span className="font-display text-lg font-semibold">Espace enseignants et experts</span>
         <span className="mt-1 block text-sm leading-relaxed text-ink/65">
@@ -97,7 +100,7 @@ export default async function Page() {
       <form action={signOut} className="mt-6">
         <button
           type="submit"
-          className="h-13 w-full rounded-xl bg-white font-bold text-danger ring-1 ring-ink/15 sm:w-auto sm:px-8"
+          className="h-13 w-full rounded-xl bg-surface font-bold text-danger-fg ring-1 ring-ink/15 sm:w-auto sm:px-8"
         >
           Se déconnecter
         </button>

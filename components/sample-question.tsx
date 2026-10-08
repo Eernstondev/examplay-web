@@ -18,9 +18,9 @@ export function SampleQuestion() {
   const answered = picked !== null;
 
   return (
-    <div className="rounded-3xl bg-white p-5 text-ink shadow-[0_30px_60px_-30px_rgba(11,37,89,0.55)] ring-1 ring-ink/10 sm:p-7">
+    <div className="rounded-3xl bg-surface p-5 text-ink shadow-[0_30px_60px_-30px_rgba(11,37,89,0.55)] ring-1 ring-ink/10 sm:p-7">
       <div className="flex items-center justify-between gap-3 text-sm font-semibold">
-        <span className="text-brand">{question.subject}</span>
+        <span className="text-brand-fg">{question.subject}</span>
         <span className="text-ink/50">Essaie une question</span>
       </div>
       <h2 className="mt-3 font-display text-xl font-semibold leading-snug sm:text-2xl">
@@ -39,7 +39,7 @@ export function SampleQuestion() {
                 ? "border-danger bg-danger-soft"
                 : "border-ink/10 text-ink/45";
           const badge = !answered
-            ? "bg-brand-soft text-brand"
+            ? "bg-brand-soft text-brand-fg"
             : isAnswer
               ? "bg-success text-white"
               : isPicked
@@ -77,7 +77,7 @@ export function SampleQuestion() {
             <button
               type="button"
               onClick={() => setPicked(null)}
-              className="mt-1 min-h-11 font-semibold text-brand underline underline-offset-4"
+              className="mt-1 min-h-11 font-semibold text-brand-fg underline underline-offset-4"
             >
               Rejouer la question
             </button>

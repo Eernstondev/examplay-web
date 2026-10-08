@@ -38,7 +38,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         </Link>
         <div className="flex items-center gap-1.5">
           {contributor && (
-            <Link href="/contribuer" className="grid min-h-11 place-items-center rounded-lg px-3 text-sm font-semibold text-brand">
+            <Link href="/contribuer" className="grid min-h-11 place-items-center rounded-lg px-3 text-sm font-semibold text-brand-fg">
               Contribuer
             </Link>
           )}
@@ -46,7 +46,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           <form action={signOut}>
             <button
               type="submit"
-              className="min-h-11 rounded-lg px-3 text-sm font-semibold text-ink/70 hover:text-brand"
+              className="min-h-11 rounded-lg px-3 text-sm font-semibold text-ink/70 hover:text-brand-fg"
             >
               Se déconnecter
             </button>

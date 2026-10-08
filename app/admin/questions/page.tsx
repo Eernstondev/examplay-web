@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Questions" };
 
 const PAGE_SIZE = 30;
 const one = (v: string | string[] | undefined) => (typeof v === "string" ? v : "");
-const field = "mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-white px-3 text-base font-normal";
+const field = "mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-surface px-3 text-base font-normal";
 
 export default async function Page({ searchParams }: PageProps<"/admin/questions">) {
   const params = await searchParams;
@@ -50,7 +50,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/questions
         </Link>
       </div>
 
-      <form className="mt-5 grid gap-3 rounded-3xl bg-white p-4 ring-1 ring-ink/10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr_auto] lg:items-end">
+      <form className="mt-5 grid gap-3 rounded-3xl bg-surface p-4 ring-1 ring-ink/10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr_auto] lg:items-end">
         <label className="block text-sm font-semibold">
           Matière
           <select name="subject" defaultValue={subject.id} className={field}>
@@ -84,7 +84,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/questions
           Rechercher dans l&apos;énoncé
           <input type="search" name="q" defaultValue={search} className={field} />
         </label>
-        <button type="submit" className="h-12 rounded-xl bg-ink px-5 font-bold text-white">
+        <button type="submit" className="h-12 rounded-xl bg-navy px-5 font-bold text-white">
           Filtrer
         </button>
       </form>
@@ -96,7 +96,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/questions
       {data?.length ? (
         <ul className="mt-3 grid gap-2">
           {data.map((q) => (
-            <li key={q.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+            <li key={q.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
               <div className="min-w-0 flex-1 basis-64">
                 <p className={`line-clamp-2 font-semibold leading-snug ${q.active ? "" : "text-ink/45"}`}>
                   {q.question}
@@ -115,7 +115,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/questions
               </form>
               <Link
                 href={`/admin/questions/${q.id}`}
-                className="grid h-11 place-items-center rounded-xl bg-brand-soft px-4 text-sm font-bold text-brand"
+                className="grid h-11 place-items-center rounded-xl bg-brand-soft px-4 text-sm font-bold text-brand-fg"
               >
                 Modifier
               </Link>
@@ -129,7 +129,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/questions
       {pages > 1 && (
         <nav aria-label="Pagination" className="mt-5 flex items-center justify-between gap-3">
           {page > 1 ? (
-            <Link href={link(page - 1)} className="grid h-11 place-items-center rounded-xl bg-white px-4 text-sm font-bold ring-1 ring-ink/15">
+            <Link href={link(page - 1)} className="grid h-11 place-items-center rounded-xl bg-surface px-4 text-sm font-bold ring-1 ring-ink/15">
               Précédent
             </Link>
           ) : (
@@ -139,7 +139,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/questions
             Page {page} sur {pages}
           </span>
           {page < pages ? (
-            <Link href={link(page + 1)} className="grid h-11 place-items-center rounded-xl bg-white px-4 text-sm font-bold ring-1 ring-ink/15">
+            <Link href={link(page + 1)} className="grid h-11 place-items-center rounded-xl bg-surface px-4 text-sm font-bold ring-1 ring-ink/15">
               Suivant
             </Link>
           ) : (

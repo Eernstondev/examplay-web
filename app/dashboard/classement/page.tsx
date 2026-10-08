@@ -50,14 +50,14 @@ export default async function Page() {
               <li
                 key={p.id}
                 className={`flex items-center gap-3 rounded-2xl p-3 ${
-                  p.me ? "bg-white ring-2 ring-brand" : "bg-white ring-1 ring-ink/10"
+                  p.me ? "bg-surface ring-2 ring-brand" : "bg-surface ring-1 ring-ink/10"
                 }`}
               >
                 <span className="w-9 shrink-0 text-center font-display text-lg font-bold tabular-nums">{p.rank}</span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold">
                     {p.name}
-                    {p.me && <span className="ml-2 text-sm font-bold text-brand">Toi</span>}
+                    {p.me && <span className="ml-2 text-sm font-bold text-brand-fg">Toi</span>}
                   </p>
                 </div>
                 {m && (

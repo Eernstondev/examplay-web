@@ -12,7 +12,7 @@ const initialState: ContactState = {
 };
 
 const field =
-  "mt-1.5 w-full rounded-lg border border-ink/20 bg-white px-4 py-3 text-ink placeholder:text-ink/40";
+  "mt-1.5 w-full rounded-lg border border-ink/20 bg-surface px-4 py-3 text-ink placeholder:text-ink/40";
 
 export function ContactForm() {
   const [state, action, pending] = useActionState(sendContactRequest, initialState);
@@ -81,7 +81,7 @@ export function ContactForm() {
       <input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <Turnstile resetKey={state} />
       {state.status === "error" && (
-        <p role="alert" className="text-sm font-medium text-danger">
+        <p role="alert" className="text-sm font-medium text-danger-fg">
           {state.message}
         </p>
       )}

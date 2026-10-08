@@ -36,7 +36,7 @@ export default async function Page({ params }: PageProps<"/admin/propositions/[i
         Proposition de {author?.name ?? "un contributeur"}. Ta version remplace la sienne au moment de la
         publication.
         {s.note && (
-          <span className="mt-2 block rounded-xl bg-white px-3 py-2 text-sm ring-1 ring-ink/10">
+          <span className="mt-2 block rounded-xl bg-surface px-3 py-2 text-sm ring-1 ring-ink/10">
             <strong>Son mot :</strong> {s.note}
           </span>
         )}

@@ -19,7 +19,7 @@ import { globalProgress } from "@/lib/stats";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
 
-const card = "block rounded-3xl bg-white p-5 ring-1 ring-ink/10 transition-transform active:scale-[0.98]";
+const card = "block rounded-3xl bg-surface p-5 ring-1 ring-ink/10 transition-transform active:scale-[0.98]";
 const cardTitle = "text-sm font-semibold text-ink/60";
 const cardValue = "mt-1.5 font-display text-2xl font-bold leading-tight";
 
@@ -41,7 +41,7 @@ async function StreakCard() {
       aria-label="Série de jours"
       className="mt-6 flex items-center gap-4 rounded-3xl bg-brand p-5 text-white sm:gap-6 sm:p-7"
     >
-      <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun font-display text-3xl font-extrabold text-ink sm:size-20 sm:text-4xl">
+      <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun font-display text-3xl font-extrabold text-sun-ink sm:size-20 sm:text-4xl">
         {days}
       </span>
       <div>
@@ -161,7 +161,7 @@ export default async function Page() {
               <Link
                 href={mode.href}
                 className={`flex h-full min-h-28 flex-col justify-between gap-3 rounded-3xl p-4 transition-transform active:scale-[0.98] sm:p-5 ${
-                  i === 0 ? "bg-ink text-white" : "bg-white ring-1 ring-ink/10"
+                  i === 0 ? "bg-navy text-white" : "bg-surface ring-1 ring-ink/10"
                 }`}
               >
                 <span className="font-display text-lg font-semibold leading-tight">{mode.title}</span>
@@ -190,7 +190,7 @@ export default async function Page() {
           fallback={
             <ul aria-hidden="true" className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
               {[0, 1, 2, 3].map((i) => (
-                <li key={i} className={`${skeleton} h-24 bg-white/70`} />
+                <li key={i} className={`${skeleton} h-24 bg-surface/70`} />
               ))}
             </ul>
           }

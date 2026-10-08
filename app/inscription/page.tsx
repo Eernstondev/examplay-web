@@ -23,13 +23,13 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
       lead={
         <>
           Section choisie : <strong className="text-ink">{level.label}</strong>.{" "}
-          <Link href="/commencer" className="font-semibold text-brand underline underline-offset-4">
+          <Link href="/commencer" className="font-semibold text-brand-fg underline underline-offset-4">
             Changer
           </Link>
         </>
       }
     >
-      <div className="rounded-3xl bg-white p-5 ring-1 ring-ink/10 sm:p-7">
+      <div className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10 sm:p-7">
         <SignUpForm level={level.slug} />
       </div>
       <p className="mt-4 text-sm leading-relaxed text-ink/65">
@@ -39,7 +39,7 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
         Déjà un compte ?{" "}
         <Link
           href={`/connexion?niveau=${level.slug}`}
-          className="font-semibold text-brand underline underline-offset-4"
+          className="font-semibold text-brand-fg underline underline-offset-4"
         >
           Connecte-toi
         </Link>

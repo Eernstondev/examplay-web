@@ -8,8 +8,8 @@ export function DeleteAccount() {
   const [state, action, pending] = useActionState<DeleteState, FormData>(deleteAccount, { error: "" });
 
   return (
-    <section className="mt-8 rounded-3xl bg-white p-5 ring-1 ring-danger/30">
-      <h2 className="font-display text-lg font-bold text-danger">Supprimer mon compte</h2>
+    <section className="mt-8 rounded-3xl bg-surface p-5 ring-1 ring-danger/30">
+      <h2 className="font-display text-lg font-bold text-danger-fg">Supprimer mon compte</h2>
       <p className="mt-1 text-sm leading-relaxed text-ink/70">
         Cette action est définitive : ton compte, tes résultats, tes duels et tes badges sont effacés, sur le site
         comme dans l&apos;app.
@@ -22,11 +22,11 @@ export function DeleteAccount() {
               name="confirm"
               autoComplete="off"
               autoCapitalize="characters"
-              className="mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-white px-4 text-base font-normal"
+              className="mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base font-normal"
             />
           </label>
           {state.error && (
-            <p role="alert" className="text-sm font-semibold text-danger">
+            <p role="alert" className="text-sm font-semibold text-danger-fg">
               {state.error}
             </p>
           )}
@@ -43,7 +43,7 @@ export function DeleteAccount() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-4 h-12 rounded-xl px-5 font-bold text-danger ring-1 ring-danger/40"
+          className="mt-4 h-12 rounded-xl px-5 font-bold text-danger-fg ring-1 ring-danger/40"
         >
           Supprimer mon compte
         </button>

@@ -8,9 +8,9 @@ export const metadata: Metadata = { title: "Publicités" };
 
 function status(ad: { active: boolean; starts_on: string | null; ends_on: string | null }, today: string) {
   if (!ad.active) return { label: "Désactivée", className: "bg-ink/10 text-ink/60" };
-  if (ad.starts_on && ad.starts_on > today) return { label: "Programmée", className: "bg-brand-soft text-brand" };
+  if (ad.starts_on && ad.starts_on > today) return { label: "Programmée", className: "bg-brand-soft text-brand-fg" };
   if (ad.ends_on && ad.ends_on < today) return { label: "Terminée", className: "bg-ink/10 text-ink/60" };
-  return { label: "En ligne", className: "bg-success-soft text-success" };
+  return { label: "En ligne", className: "bg-success-soft text-success-fg" };
 }
 
 export default async function Page() {
@@ -37,9 +37,9 @@ export default async function Page() {
             const s = status(ad, today);
             const departments = ad.departments as string[];
             return (
-              <li key={ad.id} className="rounded-3xl bg-white p-4 ring-1 ring-ink/10">
+              <li key={ad.id} className="rounded-3xl bg-surface p-4 ring-1 ring-ink/10">
                 {ad.media_type === "video" ? (
-                  <video src={ad.image_url} controls muted playsInline preload="metadata" className="aspect-[3/1] w-full rounded-2xl bg-ink object-cover" />
+                  <video src={ad.image_url} controls muted playsInline preload="metadata" className="aspect-[3/1] w-full rounded-2xl bg-navy object-cover" />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={ad.image_url} alt="" className="aspect-[3/1] w-full rounded-2xl object-cover" />
@@ -90,12 +90,12 @@ export default async function Page() {
                   </div>
                 </dl>
                 <div className="mt-3 flex gap-2">
-                  <Link href={`/admin/publicites/${ad.id}`} className="grid h-11 flex-1 place-items-center rounded-xl bg-brand-soft text-sm font-bold text-brand">
+                  <Link href={`/admin/publicites/${ad.id}`} className="grid h-11 flex-1 place-items-center rounded-xl bg-brand-soft text-sm font-bold text-brand-fg">
                     Modifier
                   </Link>
                   <form action={deleteAd}>
                     <input type="hidden" name="id" value={ad.id} />
-                    <button type="submit" className="h-11 rounded-xl px-4 text-sm font-bold text-danger ring-1 ring-ink/15">
+                    <button type="submit" className="h-11 rounded-xl px-4 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
                       Supprimer
                     </button>
                   </form>

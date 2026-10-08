@@ -20,14 +20,14 @@ export type PartnerValues = {
   active: boolean;
 };
 
-const field = "mt-1.5 w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base font-normal";
+const field = "mt-1.5 w-full rounded-xl border border-ink/20 bg-surface px-4 py-3 text-base font-normal";
 const label = "block text-sm font-semibold";
 
 export function PartnerForm({ values }: { values: PartnerValues }) {
   const [state, action, pending] = useActionState<FormState, FormData>(savePartner, { error: "" });
 
   return (
-    <form action={action} noValidate className="grid max-w-3xl gap-5 rounded-3xl bg-white p-5 ring-1 ring-ink/10 sm:p-7">
+    <form action={action} noValidate className="grid max-w-3xl gap-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/10 sm:p-7">
       {values.id && <input type="hidden" name="id" value={values.id} />}
       <div className="grid gap-5 sm:grid-cols-2">
         <label className={label}>
@@ -94,7 +94,7 @@ export function PartnerForm({ values }: { values: PartnerValues }) {
       </div>
 
       {state.error && (
-        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
           {state.error}
         </p>
       )}

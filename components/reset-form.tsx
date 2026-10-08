@@ -5,14 +5,14 @@ import { confirmReset, requestReset, type ResetState } from "@/app/actions";
 import { Turnstile } from "@/components/turnstile";
 
 const field =
-  "mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-white px-4 text-base text-ink placeholder:text-ink/40";
+  "mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base text-ink placeholder:text-ink/40";
 const label = "block text-sm font-semibold";
 const submit =
   "h-13 w-full rounded-xl bg-brand text-base font-bold text-white hover:bg-brand-dark disabled:opacity-60";
 
 function ErrorMessage({ error }: { error: string }) {
   return error ? (
-    <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+    <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
       {error}
     </p>
   ) : null;

@@ -53,7 +53,7 @@ export function ImageUpload({ name, folder, label, hint, defaultValue = "", wide
     setType(isVideo ? "video" : "image");
   };
 
-  const preview = `rounded-xl bg-white ring-1 ring-ink/10 ${wide ? "aspect-[3/1] w-full max-w-md object-cover" : "size-24 object-contain p-2"}`;
+  const preview = `rounded-xl bg-surface ring-1 ring-ink/10 ${wide ? "aspect-[3/1] w-full max-w-md object-cover" : "size-24 object-contain p-2"}`;
 
   return (
     <div>
@@ -63,12 +63,12 @@ export function ImageUpload({ name, folder, label, hint, defaultValue = "", wide
           type="file"
           accept={Object.keys(accepted).join(",")}
           onChange={(e) => upload(e.target.files?.[0])}
-          className="mt-1.5 block w-full text-sm font-normal file:mr-3 file:h-11 file:rounded-xl file:border-0 file:bg-brand-soft file:px-4 file:font-bold file:text-brand"
+          className="mt-1.5 block w-full text-sm font-normal file:mr-3 file:h-11 file:rounded-xl file:border-0 file:bg-brand-soft file:px-4 file:font-bold file:text-brand-fg"
         />
       </label>
       <p className="mt-1 text-sm text-ink/60">{busy ? "Envoi en cours…" : hint}</p>
       {error && (
-        <p role="alert" className="mt-1 text-sm font-semibold text-danger">
+        <p role="alert" className="mt-1 text-sm font-semibold text-danger-fg">
           {error}
         </p>
       )}
@@ -82,7 +82,7 @@ export function ImageUpload({ name, folder, label, hint, defaultValue = "", wide
             // eslint-disable-next-line @next/next/no-img-element
             <img src={url} alt="Aperçu" className={preview} />
           )}
-          <button type="button" onClick={() => setUrl("")} className="min-h-11 text-sm font-semibold text-danger underline underline-offset-4">
+          <button type="button" onClick={() => setUrl("")} className="min-h-11 text-sm font-semibold text-danger-fg underline underline-offset-4">
             Retirer
           </button>
         </div>

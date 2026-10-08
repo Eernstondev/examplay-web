@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Joindre l'équipe Examplay par WhatsApp, e-mail ou sur les réseaux sociaux.",
 };
 
-const link = "inline-block py-1.5 font-semibold text-brand underline underline-offset-4";
+const link = "inline-block py-1.5 font-semibold text-brand-fg underline underline-offset-4";
 
 export default function Page() {
   return (

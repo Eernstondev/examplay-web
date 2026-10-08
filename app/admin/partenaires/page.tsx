@@ -35,8 +35,8 @@ export default async function Page() {
             {rows.length ? (
               <ul className="mt-3 grid gap-2">
                 {rows.map((p) => (
-                  <li key={p.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink/10">
-                    <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-brand-soft font-display font-bold text-brand">
+                  <li key={p.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
+                    <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-brand-soft font-display font-bold text-brand-fg">
                       {p.logo_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={p.logo_url} alt="" className="size-full object-contain" />
@@ -50,11 +50,11 @@ export default async function Page() {
                     </p>
                     <form action={deletePartner}>
                       <input type="hidden" name="id" value={p.id} />
-                      <button type="submit" className="h-11 rounded-xl px-4 text-sm font-bold text-danger ring-1 ring-ink/15">
+                      <button type="submit" className="h-11 rounded-xl px-4 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
                         Supprimer
                       </button>
                     </form>
-                    <Link href={`/admin/partenaires/${p.id}`} className="grid h-11 place-items-center rounded-xl bg-brand-soft px-4 text-sm font-bold text-brand">
+                    <Link href={`/admin/partenaires/${p.id}`} className="grid h-11 place-items-center rounded-xl bg-brand-soft px-4 text-sm font-bold text-brand-fg">
                       Modifier
                     </Link>
                   </li>

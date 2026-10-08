@@ -17,7 +17,7 @@ export default async function Page() {
   return (
     <AuthShell wide title="Choisis ta section" lead="Quel examen prépares-tu cette année ?">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Link href="/connexion?niveau=9e" className={`${tile} bg-ink text-white`}>
+        <Link href="/connexion?niveau=9e" className={`${tile} bg-navy text-white`}>
           <span className="font-display text-4xl font-extrabold">9e AF</span>
           <span className="text-white/75">9e année fondamentale</span>
         </Link>
@@ -28,7 +28,7 @@ export default async function Page() {
       </div>
       <p className="mt-7 text-ink/75">
         Déjà un compte ?{" "}
-        <Link href="/connexion" className="font-semibold text-brand underline underline-offset-4">
+        <Link href="/connexion" className="font-semibold text-brand-fg underline underline-offset-4">
           Connecte-toi
         </Link>
       </p>

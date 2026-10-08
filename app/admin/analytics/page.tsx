@@ -12,7 +12,7 @@ type Analytics = {
   dropout_pct_30d: number | null;
 };
 
-const card = "rounded-3xl bg-white p-5 ring-1 ring-ink/10";
+const card = "rounded-3xl bg-surface p-5 ring-1 ring-ink/10";
 const cardLabel = "text-sm font-semibold text-ink/60";
 const cardValue = "mt-1.5 font-display text-3xl font-bold leading-tight";
 
@@ -58,7 +58,7 @@ export default async function Page() {
                 <span className="font-semibold">
                   {i + 1}. {s.subject_name || subjectName(s.subject_id)}
                 </span>
-                <span className="shrink-0 text-sm font-bold text-brand">{s.n} quiz</span>
+                <span className="shrink-0 text-sm font-bold text-brand-fg">{s.n} quiz</span>
               </li>
             ))}
           </ol>

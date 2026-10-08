@@ -30,7 +30,7 @@ export function SiteFooter() {
           <ul className="grid grid-cols-2 gap-x-8 text-sm font-medium md:flex md:gap-x-5">
             {links.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="inline-block py-2 text-ink/70 hover:text-brand">
+                <Link href={link.href} className="inline-block py-2 text-ink/70 hover:text-brand-fg">
                   {link.label}
                 </Link>
               </li>
@@ -46,7 +46,7 @@ export function SiteFooter() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${site.name} sur ${n.label}`}
-                className="grid size-11 place-items-center rounded-full bg-brand-soft text-brand transition-colors hover:bg-brand hover:text-white"
+                className="grid size-11 place-items-center rounded-full bg-brand-soft text-brand-fg transition-colors hover:bg-brand hover:text-white"
               >
                 <SocialIcon name={n.label} className="size-[18px]" />
               </a>

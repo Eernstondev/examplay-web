@@ -22,7 +22,7 @@ export type AdValues = {
   active: boolean;
 };
 
-const field = "mt-1.5 w-full rounded-xl border border-ink/20 bg-white px-4 py-3 text-base font-normal";
+const field = "mt-1.5 w-full rounded-xl border border-ink/20 bg-surface px-4 py-3 text-base font-normal";
 const label = "block text-sm font-semibold";
 const check = "flex min-h-11 items-center gap-3 rounded-xl bg-brand-soft px-3 text-sm font-semibold";
 
@@ -30,7 +30,7 @@ export function AdForm({ values }: { values: AdValues }) {
   const [state, action, pending] = useActionState<FormState, FormData>(saveAd, { error: "" });
 
   return (
-    <form action={action} noValidate className="grid max-w-3xl gap-6 rounded-3xl bg-white p-5 ring-1 ring-ink/10 sm:p-7">
+    <form action={action} noValidate className="grid max-w-3xl gap-6 rounded-3xl bg-surface p-5 ring-1 ring-ink/10 sm:p-7">
       {values.id && <input type="hidden" name="id" value={values.id} />}
 
       <label className={label}>
@@ -128,7 +128,7 @@ export function AdForm({ values }: { values: AdValues }) {
       </label>
 
       {state.error && (
-        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger">
+        <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
           {state.error}
         </p>
       )}

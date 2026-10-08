@@ -57,7 +57,7 @@ export default async function Page() {
                   const website = p.website && safeUrl(p.website);
                   return (
                     <li key={p.id} className="flex flex-col rounded-3xl bg-brand-soft p-6">
-                      <span className="grid size-20 place-items-center overflow-hidden rounded-2xl bg-white font-display text-3xl font-bold text-brand ring-1 ring-ink/10">
+                      <span className="grid size-20 place-items-center overflow-hidden rounded-2xl bg-surface font-display text-3xl font-bold text-brand-fg ring-1 ring-ink/10">
                         {p.logo_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={p.logo_url} alt={`Logo ${p.name}`} loading="lazy" className="size-full object-contain p-2" />
@@ -79,7 +79,7 @@ export default async function Page() {
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label={`${p.name} sur ${label}`}
-                              className="grid size-11 place-items-center rounded-full bg-white text-ink ring-1 ring-ink/10 transition-colors hover:bg-brand hover:text-white"
+                              className="grid size-11 place-items-center rounded-full bg-surface text-ink ring-1 ring-ink/10 transition-colors hover:bg-brand hover:text-white"
                             >
                               <SocialIcon name={label} className="size-[18px]" />
                             </a>
@@ -90,7 +90,7 @@ export default async function Page() {
                             href={website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="grid h-11 place-items-center rounded-full bg-white px-4 text-sm font-bold text-brand ring-1 ring-ink/10 hover:bg-brand hover:text-white"
+                            className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-bold text-brand-fg ring-1 ring-ink/10 hover:bg-brand hover:text-white"
                           >
                             Site web
                           </a>
@@ -103,7 +103,7 @@ export default async function Page() {
             ) : (
               <p className="mt-3 text-ink/70">
                 Aucun nom annoncé pour le moment.{" "}
-                <Link href="/contact" className="font-semibold text-brand underline underline-offset-4">
+                <Link href="/contact" className="font-semibold text-brand-fg underline underline-offset-4">
                   Contactez-nous pour rejoindre Examplay
                 </Link>
                 .

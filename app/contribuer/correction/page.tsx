@@ -30,7 +30,7 @@ export default async function Page({ searchParams }: PageProps<"/contribuer/corr
               <li key={q.id}>
                 <Link
                   href={`/contribuer/correction/${q.id}`}
-                  className="block rounded-2xl bg-white p-4 font-semibold leading-snug ring-1 ring-ink/10 hover:ring-2 hover:ring-brand"
+                  className="block rounded-2xl bg-surface p-4 font-semibold leading-snug ring-1 ring-ink/10 hover:ring-2 hover:ring-brand"
                 >
                   <span className="line-clamp-2">{q.question}</span>
                 </Link>

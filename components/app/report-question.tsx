@@ -22,7 +22,7 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
 
   if (state === "sent") {
     return (
-      <p role="status" className="mt-6 text-sm font-semibold text-success">
+      <p role="status" className="mt-6 text-sm font-semibold text-success-fg">
         Merci, ton signalement a été transmis à l&apos;équipe.
       </p>
     );
@@ -33,7 +33,7 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mt-6 min-h-11 text-sm font-semibold text-ink/60 underline underline-offset-4 hover:text-brand"
+        className="mt-6 min-h-11 text-sm font-semibold text-ink/60 underline underline-offset-4 hover:text-brand-fg"
       >
         Signaler cette question
       </button>
@@ -41,14 +41,14 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
   }
 
   return (
-    <fieldset className="mt-6 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+    <fieldset className="mt-6 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
       <legend className="px-1 text-sm font-bold">Quel est le problème ?</legend>
       <div className="grid gap-2">
         {REPORT_REASONS.map((r) => (
           <label
             key={r.id}
             className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold ${
-              reason === r.id ? "bg-brand-soft text-brand" : "bg-ink/[0.04]"
+              reason === r.id ? "bg-brand-soft text-brand-fg" : "bg-ink/[0.04]"
             }`}
           >
             <input
@@ -70,11 +70,11 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
           onChange={(e) => setComment(e.target.value)}
           rows={2}
           maxLength={500}
-          className="mt-1.5 w-full rounded-xl border border-ink/20 bg-white px-3 py-2 text-base font-normal"
+          className="mt-1.5 w-full rounded-xl border border-ink/20 bg-surface px-3 py-2 text-base font-normal"
         />
       </label>
       {state === "error" && (
-        <p role="alert" className="mt-2 text-sm font-semibold text-danger">
+        <p role="alert" className="mt-2 text-sm font-semibold text-danger-fg">
           L&apos;envoi a échoué. Vérifie ta connexion et réessaie.
         </p>
       )}

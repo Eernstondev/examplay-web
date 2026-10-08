@@ -28,18 +28,18 @@ export default async function ContributorLayout({ children }: { children: ReactN
 
   return (
     <div className="flex flex-1 flex-col bg-brand-soft">
-      <header className="border-b border-ink/10 bg-white">
+      <header className="border-b border-ink/10 bg-surface">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
           <Link href="/contribuer" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="" width={36} height={36} priority className="rounded-[9px]" />
             <span className="font-display text-lg font-bold tracking-tight">Contributeurs</span>
           </Link>
           <div className="flex items-center gap-1">
-            <Link href="/dashboard" className="grid min-h-11 place-items-center px-3 text-sm font-semibold text-ink/70 hover:text-brand">
+            <Link href="/dashboard" className="grid min-h-11 place-items-center px-3 text-sm font-semibold text-ink/70 hover:text-brand-fg">
               Espace élève
             </Link>
             <form action={signOut}>
-              <button type="submit" className="min-h-11 px-3 text-sm font-semibold text-ink/70 hover:text-brand">
+              <button type="submit" className="min-h-11 px-3 text-sm font-semibold text-ink/70 hover:text-brand-fg">
                 Se déconnecter
               </button>
             </form>
@@ -50,7 +50,7 @@ export default async function ContributorLayout({ children }: { children: ReactN
         {allowed ? (
           children
         ) : (
-          <div className="mx-auto max-w-xl rounded-3xl bg-white p-6 ring-1 ring-ink/10 sm:p-8">
+          <div className="mx-auto max-w-xl rounded-3xl bg-surface p-6 ring-1 ring-ink/10 sm:p-8">
             <h1 className="font-display text-2xl font-extrabold tracking-tight">Espace enseignants et experts</h1>
             <p className="mt-3 leading-relaxed text-ink/75">
               Cet espace permet de proposer des questions et des corrections. Chaque proposition est
@@ -61,7 +61,7 @@ export default async function ContributorLayout({ children }: { children: ReactN
                 Ta demande d&apos;accès est en cours d&apos;examen. Reviens sur cette page pour voir la réponse.
               </p>
             ) : application === "rejected" ? (
-              <p className="mt-4 rounded-xl bg-danger-soft px-4 py-3 font-semibold text-danger">
+              <p className="mt-4 rounded-xl bg-danger-soft px-4 py-3 font-semibold text-danger-fg">
                 Ta demande d&apos;accès n&apos;a pas été retenue.
               </p>
             ) : (

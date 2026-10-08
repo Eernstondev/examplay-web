@@ -46,7 +46,7 @@ export default async function Page() {
           ["Bonnes réponses", totalCorrect],
           ["Jours actifs", activeDays],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+          <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
             <dt className="text-xs font-semibold leading-tight text-ink/60 sm:text-sm">{label}</dt>
             <dd className="mt-1 font-display text-2xl font-bold">{value}</dd>
           </div>
@@ -59,11 +59,11 @@ export default async function Page() {
           const count = results.filter((r) => r.subjectId === s.id).length;
           const progress = subjectProgress(results, s.id);
           return (
-            <li key={s.id} className="rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+            <li key={s.id} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
               <div className="flex items-baseline justify-between gap-3">
                 <p className="font-semibold">
                   {s.name}
-                  {s.heavy && <span className="ml-2 text-sm font-bold text-brand">×2</span>}
+                  {s.heavy && <span className="ml-2 text-sm font-bold text-brand-fg">×2</span>}
                 </p>
                 <p className="shrink-0 text-sm font-semibold tabular-nums">{progress}%</p>
               </div>
@@ -82,7 +82,7 @@ export default async function Page() {
       {results.length ? (
         <ul className="mt-3 grid gap-2.5">
           {results.slice(0, 10).map((r) => (
-            <li key={r.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-ink/10">
+            <li key={r.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
               <div className="min-w-0">
                 <p className="truncate font-semibold">{r.subjectName}</p>
                 <p className="text-sm text-ink/60">
@@ -99,7 +99,7 @@ export default async function Page() {
       ) : (
         <p className="mt-3 text-ink/70">
           Aucun résultat pour le moment.{" "}
-          <Link href="/dashboard/matieres" className="font-semibold text-brand underline underline-offset-4">
+          <Link href="/dashboard/matieres" className="font-semibold text-brand-fg underline underline-offset-4">
             Commence un quiz
           </Link>
         </p>

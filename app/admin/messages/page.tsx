@@ -32,11 +32,11 @@ export default async function Page() {
       {contacts.data?.length ? (
         <ul className="mt-3 grid gap-3">
           {contacts.data.map((c) => (
-            <li key={c.id} className="rounded-3xl bg-white p-5 ring-1 ring-ink/10">
+            <li key={c.id} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <p className="font-semibold">
                   {c.name} ·{" "}
-                  <a href={`mailto:${c.email}`} className="text-brand underline underline-offset-2">
+                  <a href={`mailto:${c.email}`} className="text-brand-fg underline underline-offset-2">
                     {c.email}
                   </a>
                 </p>
@@ -57,7 +57,7 @@ export default async function Page() {
         Liste d&apos;attente ({waitlist.count ?? 0})
       </h2>
       {waitlist.data?.length ? (
-        <ul className="mt-3 grid gap-x-6 rounded-3xl bg-white p-5 ring-1 ring-ink/10 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-3 grid gap-x-6 rounded-3xl bg-surface p-5 ring-1 ring-ink/10 sm:grid-cols-2 lg:grid-cols-3">
           {waitlist.data.map((w) => (
             <li key={w.id} className="truncate border-b border-ink/10 py-2 text-sm">
               {w.email}

@@ -20,7 +20,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
         <button type="button" onClick={reset} className="h-13 rounded-xl bg-brand font-bold text-white hover:bg-brand-dark">
           Réessayer
         </button>
-        <Link href="/" className="grid h-13 place-items-center rounded-xl font-bold text-brand ring-1 ring-ink/15">
+        <Link href="/" className="grid h-13 place-items-center rounded-xl font-bold text-brand-fg ring-1 ring-ink/15">
           Retour à l&apos;accueil
         </Link>
       </div>
