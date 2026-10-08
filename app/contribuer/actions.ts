@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import type { QuestionState } from "@/app/admin/actions";
 import { isContributor } from "@/lib/admin";
-import { ALL_SUBJECTS } from "@/lib/content";
 import { parseQuestion } from "@/lib/question-parse";
 import { createClient } from "@/lib/supabase/server";
 
@@ -30,33 +29,6 @@ export async function submitQuestion(_prev: QuestionState, formData: FormData): 
   });
   if (error) {
     console.error("submitQuestion failed:", error.code, error.message);
-    return { error: FAILED };
-  }
-  redirect("/contribuer?envoi=ok");
-}
-
-export async function submitCourse(_prev: QuestionState, formData: FormData): Promise<QuestionState> {
-  if (!(await isContributor())) return { error: DENIED };
-
-  const subject = text(formData, "subject_id");
-  const title = text(formData, "title");
-  const chapter = text(formData, "chapter");
-  const content = text(formData, "content");
-
-  if (!ALL_SUBJECTS.some((s) => s.id === subject)) return { error: "Choisis une matière." };
-  if (title.length < 3 || title.length > 150) return { error: "Donne un titre au cours." };
-  if (content.length < 50) return { error: "Le contenu du cours est trop court (50 caractères minimum)." };
-  if (content.length > 20000) return { error: "Le contenu dépasse 20 000 caractères. Découpe-le en plusieurs cours." };
-
-  const supabase = await createClient();
-  const { error } = await supabase.from("submissions").insert({
-    kind: "course",
-    subject_id: subject,
-    payload: { title, chapter: chapter || null, content },
-    note: text(formData, "note") || null,
-  });
-  if (error) {
-    console.error("submitCourse failed:", error.code, error.message);
     return { error: FAILED };
   }
   redirect("/contribuer?envoi=ok");

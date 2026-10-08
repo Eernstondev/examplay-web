@@ -21,8 +21,8 @@ export default async function Page() {
     <>
       <h1 className="font-display text-3xl font-extrabold tracking-tight">Contributeurs</h1>
       <p className="mb-5 mt-2 max-w-2xl text-ink/70">
-        Les enseignants et experts à qui tu donnes l&apos;accès peuvent proposer des questions, des corrections et
-        des cours depuis <strong>/contribuer</strong>. Rien n&apos;est publié sans ta validation.
+        Les enseignants et experts à qui tu donnes l&apos;accès peuvent proposer des questions et des
+        corrections depuis <strong>/contribuer</strong>. Rien n&apos;est publié sans ta validation.
       </p>
       {applications.length > 0 && (
         <section className="mb-7">

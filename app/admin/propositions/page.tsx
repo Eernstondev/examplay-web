@@ -18,9 +18,6 @@ type Payload = {
   year?: number | null;
   session?: string | null;
   source?: string | null;
-  title?: string;
-  chapter?: string | null;
-  content?: string;
 };
 type Joined<T> = T | T[] | null;
 const first = <T,>(x: Joined<T>) => (Array.isArray(x) ? x[0] : x) ?? null;
@@ -33,6 +30,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/propositi
   const { data } = await supabase
     .from("submissions")
     .select("id, kind, subject_id, question_id, payload, note, admin_note, created_at, author:profiles(name)")
+    .neq("kind", "course")
     .eq("status", status)
     .order("created_at", { ascending: status === "pending" })
     .limit(50);
@@ -72,51 +70,39 @@ export default async function Page({ searchParams }: PageProps<"/admin/propositi
                   </span>
                 </div>
 
-                {s.kind === "course" ? (
-                  <>
-                    <p className="mt-2 font-display text-lg font-semibold">{p.title}</p>
-                    {p.chapter && <p className="text-sm text-ink/60">Chapitre : {p.chapter}</p>}
-                    <p className="mt-2 max-h-72 overflow-y-auto whitespace-pre-wrap rounded-xl bg-ink/[0.04] p-3 text-sm leading-relaxed">
-                      {p.content}
-                    </p>
-                  </>
+                <p className="mt-2 text-sm text-ink/60">
+                  {QUESTION_TYPES.find((t) => t.id === p.type)?.label}
+                  {p.year ? ` · ${p.year}` : ""}
+                  {p.session ? ` · ${p.session}` : ""}
+                  {p.source ? ` · ${p.source}` : ""}
+                </p>
+                <p className="mt-1 font-semibold leading-snug">{p.question}</p>
+                {p.choices ? (
+                  <ol className="mt-2 grid gap-1 text-sm">
+                    {p.choices.map((c, i) => (
+                      <li key={i} className={i === p.answer ? "font-bold text-success" : ""}>
+                        {String.fromCharCode(65 + i)}. {c}
+                        {i === p.answer && " (bonne réponse)"}
+                      </li>
+                    ))}
+                  </ol>
                 ) : (
-                  <>
-                    <p className="mt-2 text-sm text-ink/60">
-                      {QUESTION_TYPES.find((t) => t.id === p.type)?.label}
-                      {p.year ? ` · ${p.year}` : ""}
-                      {p.session ? ` · ${p.session}` : ""}
-                      {p.source ? ` · ${p.source}` : ""}
-                    </p>
-                    <p className="mt-1 font-semibold leading-snug">{p.question}</p>
-                    {p.choices ? (
-                      <ol className="mt-2 grid gap-1 text-sm">
-                        {p.choices.map((c, i) => (
-                          <li key={i} className={i === p.answer ? "font-bold text-success" : ""}>
-                            {String.fromCharCode(65 + i)}. {c}
-                            {i === p.answer && " (bonne réponse)"}
-                          </li>
-                        ))}
-                      </ol>
-                    ) : (
-                      <p className="mt-2 text-sm">
-                        <strong>Réponse attendue :</strong> {p.answer_text}
-                      </p>
-                    )}
-                    {p.explain && (
-                      <p className="mt-2 text-sm text-ink/75">
-                        <strong>Explication :</strong> {p.explain}
-                      </p>
-                    )}
-                    {s.question_id && (
-                      <Link
-                        href={`/admin/questions/${s.question_id}`}
-                        className="mt-2 inline-block text-sm font-semibold text-brand underline underline-offset-4"
-                      >
-                        Voir la question actuelle
-                      </Link>
-                    )}
-                  </>
+                  <p className="mt-2 text-sm">
+                    <strong>Réponse attendue :</strong> {p.answer_text}
+                  </p>
+                )}
+                {p.explain && (
+                  <p className="mt-2 text-sm text-ink/75">
+                    <strong>Explication :</strong> {p.explain}
+                  </p>
+                )}
+                {s.question_id && (
+                  <Link
+                    href={`/admin/questions/${s.question_id}`}
+                    className="mt-2 inline-block text-sm font-semibold text-brand underline underline-offset-4"
+                  >
+                    Voir la question actuelle
+                  </Link>
                 )}
 
                 {s.note && (
@@ -139,16 +125,14 @@ export default async function Page({ searchParams }: PageProps<"/admin/propositi
                     </label>
                     <div className="flex flex-wrap gap-2">
                       <button type="submit" name="decision" value="approve" className="h-12 rounded-xl bg-success px-5 font-bold text-white">
-                        {s.kind === "course" ? "Approuver" : s.kind === "correction" ? "Approuver et corriger" : "Approuver et publier"}
+                        {s.kind === "correction" ? "Approuver et corriger" : "Approuver et publier"}
                       </button>
-                      {s.kind !== "course" && (
-                        <Link
-                          href={`/admin/propositions/${s.id}`}
-                          className="grid h-12 place-items-center rounded-xl bg-brand-soft px-5 font-bold text-brand"
-                        >
-                          Modifier avant d&apos;approuver
-                        </Link>
-                      )}
+                      <Link
+                        href={`/admin/propositions/${s.id}`}
+                        className="grid h-12 place-items-center rounded-xl bg-brand-soft px-5 font-bold text-brand"
+                      >
+                        Modifier avant d&apos;approuver
+                      </Link>
                       <button type="submit" name="decision" value="reject" className="h-12 rounded-xl px-5 font-bold text-danger ring-1 ring-ink/15">
                         Refuser
                       </button>

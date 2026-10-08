@@ -300,52 +300,6 @@ export async function approveEditedSubmission(_prev: QuestionState, formData: Fo
   redirect("/admin/propositions");
 }
 
-// Prix des cours : champ vide ou 0 = matière gratuite (le prix est supprimé).
-export async function saveCoursePrices(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const paid: { subject_id: string; price_htg: number; updated_at: string }[] = [];
-  const free: string[] = [];
-  for (const s of ALL_SUBJECTS) {
-    const raw = text(formData, `price_${s.id}`);
-    const price = raw === "" ? 0 : Number(raw);
-    if (!Number.isInteger(price) || price < 0 || price > 1_000_000) return;
-    if (price === 0) free.push(s.id);
-    else paid.push({ subject_id: s.id, price_htg: price, updated_at: new Date().toISOString() });
-  }
-
-  const supabase = await createClient();
-  if (paid.length) {
-    const { error } = await supabase.from("course_prices").upsert(paid);
-    if (error) return console.error("saveCoursePrices failed:", error.code, error.message);
-  }
-  if (free.length) await supabase.from("course_prices").delete().in("subject_id", free);
-  revalidatePath("/admin/inscriptions");
-  revalidatePath("/dashboard/cours");
-}
-
-export async function saveCoursePaymentInfo(formData: FormData) {
-  if (!(await isAdmin())) return;
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("site_settings")
-    .upsert({ key: "course_payment_info", value: text(formData, "value").slice(0, 600) });
-  if (error) console.error("saveCoursePaymentInfo failed:", error.code, error.message);
-  revalidatePath("/admin/inscriptions");
-}
-
-export async function reviewEnrollment(formData: FormData) {
-  if (!(await isAdmin())) return;
-  const supabase = await createClient();
-  const { error } = await supabase.rpc("admin_review_enrollment", {
-    p_id: text(formData, "id"),
-    p_approve: formData.get("decision") === "approve",
-    p_note: text(formData, "note"),
-  });
-  if (error) console.error("admin_review_enrollment failed:", error.code, error.message);
-  revalidatePath("/admin/inscriptions");
-}
-
 export async function reviewApplication(formData: FormData) {
   if (!(await isAdmin())) return;
   const supabase = await createClient();

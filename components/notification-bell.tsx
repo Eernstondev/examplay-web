@@ -7,13 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 type Notif = {
   id: string;
-  kind:
-    | "duel_challenge"
-    | "duel_finished"
-    | "report_resolved"
-    | "enrollment_pending"
-    | "enrollment_confirmed"
-    | "enrollment_rejected";
+  kind: "duel_challenge" | "duel_finished" | "report_resolved";
   data: Record<string, unknown>;
   read: boolean;
   created_at: string;
@@ -33,24 +27,6 @@ function describe(n: Notif): { text: string; href: string } {
         ? `Tu as gagné ton duel en ${subjectName(String(d.subject_id))} !`
         : `Tu as perdu ton duel en ${subjectName(String(d.subject_id))}.`,
       href: "/dashboard/communaute",
-    };
-  }
-  if (n.kind === "enrollment_pending") {
-    return {
-      text: `Ton inscription en ${subjectName(String(d.subject_id))} est en cours de vérification.`,
-      href: "/dashboard/cours",
-    };
-  }
-  if (n.kind === "enrollment_confirmed") {
-    return {
-      text: `Inscription confirmée en ${subjectName(String(d.subject_id))} : les cours sont débloqués.`,
-      href: `/dashboard/cours/${String(d.subject_id)}`,
-    };
-  }
-  if (n.kind === "enrollment_rejected") {
-    return {
-      text: `Ton inscription en ${subjectName(String(d.subject_id))} a été refusée${d.note ? ` : ${String(d.note)}` : "."}`,
-      href: `/dashboard/cours/${String(d.subject_id)}/inscription`,
     };
   }
   return {

@@ -22,7 +22,7 @@ const collected = [
   ],
   [
     "Signalements et contributions",
-    "Questions signalées, motif et précision donnée ; pour les enseignants et experts : questions, corrections et cours proposés",
+    "Questions signalées, motif et précision donnée ; pour les enseignants et experts : questions et corrections proposées",
     "Corriger le contenu, relire les propositions avant publication",
   ],
   [
@@ -158,8 +158,8 @@ export default function Page() {
         pour corriger le contenu.
       </p>
       <p>
-        Les enseignants et experts autorisés peuvent proposer des questions, des corrections et des
-        cours. Chaque proposition est liée au compte de son auteur et relue par l&apos;équipe avant
+        Les enseignants et experts autorisés peuvent proposer des questions et des
+        corrections. Chaque proposition est liée au compte de son auteur et relue par l&apos;équipe avant
         publication. Le contenu publié n&apos;affiche pas le nom de son auteur aux élèves.
       </p>
 

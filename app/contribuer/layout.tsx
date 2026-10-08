@@ -53,7 +53,7 @@ export default async function ContributorLayout({ children }: { children: ReactN
           <div className="mx-auto max-w-xl rounded-3xl bg-white p-6 ring-1 ring-ink/10 sm:p-8">
             <h1 className="font-display text-2xl font-extrabold tracking-tight">Espace enseignants et experts</h1>
             <p className="mt-3 leading-relaxed text-ink/75">
-              Cet espace permet de proposer des questions, des corrections et des cours. Chaque proposition est
+              Cet espace permet de proposer des questions et des corrections. Chaque proposition est
               relue par l&apos;équipe avant publication.
             </p>
             {application === "pending" ? (

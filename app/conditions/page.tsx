@@ -74,8 +74,8 @@ export default function Page() {
         signalements abusifs ou répétés sans raison peuvent entraîner la suspension du compte.
       </p>
       <p>
-        Les enseignants et experts autorisés peuvent proposer des questions, des corrections et des
-        cours. En proposant un contenu, le contributeur garantit qu&apos;il en est l&apos;auteur ou
+        Les enseignants et experts autorisés peuvent proposer des questions et des
+        corrections. En proposant un contenu, le contributeur garantit qu&apos;il en est l&apos;auteur ou
         qu&apos;il a le droit de le partager, et autorise Examplay à le relire, le modifier et le
         publier gratuitement sur le site et dans l&apos;application. Examplay reste libre
         d&apos;accepter, de modifier ou de refuser toute proposition.

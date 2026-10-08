@@ -90,7 +90,7 @@ export default async function Page() {
       >
         <span className="font-display text-lg font-semibold">Espace enseignants et experts</span>
         <span className="mt-1 block text-sm leading-relaxed text-ink/65">
-          Tu es enseignant ou expert ? Demande l&apos;accès pour proposer des questions, des corrections et des cours.
+          Tu es enseignant ou expert ? Demande l&apos;accès pour proposer des questions et des corrections.
         </span>
       </Link>
 

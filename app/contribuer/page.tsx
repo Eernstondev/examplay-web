@@ -10,7 +10,6 @@ export const metadata: Metadata = { title: "Mes propositions" };
 const actions = [
   { href: "/contribuer/question", title: "Proposer une question", body: "QCM, réponse courte ou rédaction, y compris tirée d'un examen passé." },
   { href: "/contribuer/correction", title: "Corriger une question", body: "Une erreur dans une question existante ? Propose la version corrigée." },
-  { href: "/contribuer/cours", title: "Proposer un cours", body: "Un résumé de chapitre ou une fiche de révision." },
 ];
 
 export default async function Page({ searchParams }: PageProps<"/contribuer">) {
@@ -36,7 +35,7 @@ export default async function Page({ searchParams }: PageProps<"/contribuer">) {
         </p>
       )}
 
-      <ul className="mt-6 grid gap-3 md:grid-cols-3">
+      <ul className="mt-6 grid gap-3 md:grid-cols-2">
         {actions.map((a) => (
           <li key={a.href}>
             <Link href={a.href} className="flex h-full flex-col rounded-3xl bg-white p-5 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]">
