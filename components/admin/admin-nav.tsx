@@ -14,6 +14,7 @@ const links = [
   { href: "/admin/utilisateurs", label: "Utilisateurs" },
   { href: "/admin/contributeurs", label: "Contributeurs" },
   { href: "/admin/messages", label: "Messages" },
+  { href: "/admin/erreurs", label: "Erreurs" },
 ];
 
 export function AdminNav({ counts = {} }: { counts?: Record<string, number> }) {
