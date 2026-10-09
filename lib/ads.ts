@@ -14,11 +14,14 @@ type Target = { department: string; level: string };
 // Choisit une publicité pour un emplacement. Sans élève connecté (accueil),
 // seules les publicités « tous départements, tous niveaux » sont éligibles.
 export async function pickAd(placement: AdPlacement, target?: Target): Promise<Ad | null> {
-  const { data } = await createPublicClient()
-    .from("ads")
-    .select("id, title, image_url, link_url, media_type, display_mode, departments, audience")
-    .contains("placements", [placement])
-    .contains("surfaces", ["web"]);
+  const base = () =>
+    createPublicClient()
+      .from("ads")
+      .select("id, title, image_url, link_url, media_type, display_mode, departments, audience")
+      .contains("placements", [placement]);
+  const filtered = await base().contains("surfaces", ["web"]);
+  // Colonne « surfaces » pas encore créée dans Supabase : on garde l'ancien comportement.
+  const { data } = filtered.error ? await base() : filtered;
 
   const group = target ? (target.level === "9e" ? "9e" : "ns4") : null;
   const eligible = (data ?? []).filter((ad) => {

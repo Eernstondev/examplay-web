@@ -48,11 +48,7 @@ export default function Home() {
           className={`${container} grid gap-8 pt-6 sm:gap-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20`}
         >
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold ring-1 sm:px-3.5 sm:py-1.5 sm:text-sm ring-white/25">
-              <span className="size-2 animate-pulse rounded-full bg-sun" />
-              App mobile : bientôt sur vos écrans
-            </p>
-            <h1 className="mt-4 font-display text-[clamp(2.125rem,10.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
+            <h1 className="font-display text-[clamp(2.125rem,10.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
               Apprendre,
               <br />
               Réviser,
