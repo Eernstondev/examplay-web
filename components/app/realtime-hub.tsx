@@ -81,12 +81,11 @@ export function RealtimeHub({ id, name, department, level }: Me) {
 
     catchUp();
     syncPresence(me);
+    // On reste « en ligne » même onglet caché : sinon un ami disparaît dès qu'il change d'onglet.
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
         syncPresence(me);
         catchUp();
-      } else {
-        stopPresence();
       }
     };
     document.addEventListener("visibilitychange", onVisibility);

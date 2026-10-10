@@ -29,6 +29,7 @@ type Props = {
   subjects: { value: string; label: string }[];
   points: Record<string, { rank: number; points: number }>;
   history: DuelSummary[];
+  initialTab?: Tab;
 };
 
 const tabs: { id: Tab; label: string }[] = [
@@ -38,8 +39,25 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "duels", label: "Duels" },
 ];
 
-export function Community({ me, subjects, points, history }: Props) {
-  const [tab, setTab] = useState<Tab>("online");
+const levelGroup = (level: string) => (level === "9e" ? "9e" : "ns4");
+
+function Avatar({ name, online }: { name: string; online: boolean }) {
+  return (
+    <span className="relative grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
+      {name.charAt(0).toUpperCase()}
+      {online && (
+        <span
+          role="img"
+          aria-label="En ligne"
+          className="absolute bottom-0 right-0 size-3 rounded-full bg-success ring-2 ring-surface"
+        />
+      )}
+    </span>
+  );
+}
+
+export function Community({ me, subjects, points, history, initialTab }: Props) {
+  const [tab, setTab] = useState<Tab>(initialTab ?? "online");
   const [players, setPlayers] = useState<OnlinePlayer[]>([]);
   const [visible, setVisible] = useState(true);
   const [subject, setSubject] = useState(subjects[0]?.value ?? "");
@@ -51,7 +69,7 @@ export function Community({ me, subjects, points, history }: Props) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [ranking, setRanking] = useState<FriendRank[]>([]);
-  const [invited, setInvited] = useState<Record<string, boolean>>({});
+  const [pendingSent, setPendingSent] = useState<Set<string>>(new Set());
 
   useEffect(() => onPresence(setPlayers), []);
 
@@ -108,30 +126,51 @@ export function Community({ me, subjects, points, history }: Props) {
 
   const loadFriends = useCallback(async () => {
     const supabase = createClient();
-    const [f, r, l] = await Promise.all([
+    const [f, r, l, s] = await Promise.all([
       supabase.rpc("list_friends"),
       supabase.rpc("list_friend_requests"),
       supabase.rpc("friends_leaderboard"),
+      supabase.from("friendships").select("addressee").eq("requester", me.id).eq("status", "pending"),
     ]);
     setFriends((f.data as Friend[] | null) ?? []);
     setRequests((r.data as FriendRequest[] | null) ?? []);
+    setPendingSent(new Set(((s.data as { addressee: string }[] | null) ?? []).map((x) => x.addressee)));
     setRanking(
       ((l.data as FriendRank[] | null) ?? [])
         .map((x) => ({ ...x, points: Number(x.points) }))
         .sort((a, b) => b.points - a.points),
     );
-  }, []);
+  }, [me.id]);
 
   useEffect(() => {
     const timer = setTimeout(loadFriends, 0);
     return () => clearTimeout(timer);
   }, [loadFriends]);
 
+  // Une demande reçue ou acceptée met la liste à jour tout de suite, sans recharger la page.
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("friends-" + me.id)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${me.id}` },
+        (payload) => {
+          const kind = (payload.new as { kind?: string }).kind;
+          if (kind === "friend_request" || kind === "friend_accepted") loadFriends();
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [me.id, loadFriends]);
+
   const addFriend = async (id: string) => {
     setError("");
     const { error: rpcError } = await createClient().rpc("send_friend_request", { p_addressee: id });
     if (rpcError) return setError("La demande d'ami n'a pas pu être envoyée (déjà amis ou demande en cours).");
-    setInvited((s) => ({ ...s, [id]: true }));
+    setPendingSent((s) => new Set(s).add(id));
   };
 
   const answerRequest = async (id: string, accept: boolean) => {
@@ -147,9 +186,24 @@ export function Community({ me, subjects, points, history }: Props) {
 
   const friendIds = useMemo(() => new Set(friends.map((f) => f.id)), [friends]);
 
-  const sorted = useMemo(
-    () => [...players].sort((a, b) => (points[b.id]?.points ?? 0) - (points[a.id]?.points ?? 0)),
-    [players, points],
+  // Demande reçue : id de la demande, par expéditeur (pour pouvoir l'accepter depuis une ligne de joueur).
+  const requestFrom = useMemo(() => new Map(requests.map((r) => [r.from_id, r.id])), [requests]);
+  const onlineIds = useMemo(() => new Set(players.map((p) => p.id)), [players]);
+
+  // Amis en ligne (peu importe leur département) puis élèves en ligne de mon département et mon niveau.
+  const { onlineFriends, onlineOthers } = useMemo(() => {
+    const byPoints = (a: OnlinePlayer, b: OnlinePlayer) => (points[b.id]?.points ?? 0) - (points[a.id]?.points ?? 0);
+    const sameGroup = (p: OnlinePlayer) =>
+      p.department === me.department && levelGroup(p.level) === levelGroup(me.level);
+    return {
+      onlineFriends: players.filter((p) => friendIds.has(p.id)).sort(byPoints),
+      onlineOthers: players.filter((p) => !friendIds.has(p.id) && sameGroup(p)).sort(byPoints),
+    };
+  }, [players, friendIds, points, me.department, me.level]);
+
+  const sortedFriends = useMemo(
+    () => [...friends].sort((a, b) => Number(onlineIds.has(b.id)) - Number(onlineIds.has(a.id))),
+    [friends, onlineIds],
   );
 
   const challenge = async (id: string) => {
@@ -175,11 +229,43 @@ export function Community({ me, subjects, points, history }: Props) {
     else stopPresence();
   };
 
+  // Un seul bouton par ligne : on ne défie que ses amis ; sinon on envoie (ou on accepte) une demande d'ami.
+  const action = (id: string) => {
+    const secondary = "h-11 shrink-0 rounded-xl px-3 text-sm font-bold text-brand-fg ring-1 ring-ink/15 disabled:text-ink/50";
+    if (friendIds.has(id)) {
+      return (
+        <button
+          type="button"
+          disabled={status[id] === "sent"}
+          onClick={() => challenge(id)}
+          className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
+        >
+          {status[id] === "sent" ? "Envoyé" : status[id] === "declined" ? "Refusé, relancer" : "Défier"}
+        </button>
+      );
+    }
+    const received = requestFrom.get(id);
+    if (received) {
+      return (
+        <button
+          type="button"
+          onClick={() => answerRequest(received, true)}
+          className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white"
+        >
+          Accepter
+        </button>
+      );
+    }
+    return (
+      <button type="button" disabled={pendingSent.has(id)} onClick={() => addFriend(id)} className={secondary}>
+        {pendingSent.has(id) ? "Demande envoyée" : "Ajouter"}
+      </button>
+    );
+  };
+
   const playerRow = (p: { id: string; name: string }) => (
     <li key={p.id} className="flex items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
-      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
-        {p.name.charAt(0).toUpperCase()}
-      </span>
+      <Avatar name={p.name} online={onlineIds.has(p.id)} />
       <div className="min-w-0 flex-1">
         <p className="truncate font-semibold">{p.name}</p>
         {points[p.id] && (
@@ -188,24 +274,7 @@ export function Community({ me, subjects, points, history }: Props) {
           </p>
         )}
       </div>
-      {!friendIds.has(p.id) && (
-        <button
-          type="button"
-          disabled={invited[p.id]}
-          onClick={() => addFriend(p.id)}
-          className="h-11 shrink-0 rounded-xl px-3 text-sm font-bold text-brand-fg ring-1 ring-ink/15 disabled:text-ink/50"
-        >
-          {invited[p.id] ? "Demandé" : "Ajouter"}
-        </button>
-      )}
-      <button
-        type="button"
-        disabled={status[p.id] === "sent"}
-        onClick={() => challenge(p.id)}
-        className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
-      >
-        {status[p.id] === "sent" ? "Envoyé" : status[p.id] === "declined" ? "Refusé, relancer" : "Défier"}
-      </button>
+      {action(p.id)}
     </li>
   );
 
@@ -257,7 +326,9 @@ export function Community({ me, subjects, points, history }: Props) {
           <label className="flex items-center justify-between gap-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
             <span>
               <span className="block font-semibold">Apparaître en ligne</span>
-              <span className="block text-sm text-ink/60">Les élèves de ton département peuvent te défier.</span>
+              <span className="block text-sm text-ink/60">
+                Tes amis te voient en ligne et peuvent te défier.
+              </span>
             </span>
             <input
               type="checkbox"
@@ -266,12 +337,33 @@ export function Community({ me, subjects, points, history }: Props) {
               className="size-6 shrink-0 accent-brand"
             />
           </label>
-          {sorted.length ? (
-            <ul className="mt-4 grid gap-2.5">{sorted.map(playerRow)}</ul>
-          ) : (
-            <p className="mt-8 text-center text-ink/70">
-              Personne d&apos;autre n&apos;est en ligne dans ton département pour le moment.
+          {!visible && (
+            <p className="mt-4 rounded-xl bg-brand-soft px-4 py-3 text-sm">
+              Tu es invisible : active « Apparaître en ligne » pour voir tes amis en ligne et être vu.
             </p>
+          )}
+          <p className="mt-4 text-sm text-ink/60">
+            Tu peux défier uniquement tes amis. Pour défier un élève, envoie-lui d&apos;abord une demande d&apos;ami.
+          </p>
+
+          <h2 className="mt-6 font-display text-lg font-bold">Amis en ligne ({onlineFriends.length})</h2>
+          {onlineFriends.length ? (
+            <ul className="mt-3 grid gap-2.5">{onlineFriends.map(playerRow)}</ul>
+          ) : (
+            <p className="mt-3 text-ink/70">
+              {friends.length
+                ? "Aucun de tes amis n'est en ligne pour le moment."
+                : "Tu n'as pas encore d'amis. Ajoute un élève ci-dessous."}
+            </p>
+          )}
+
+          <h2 className="mt-7 font-display text-lg font-bold">
+            Autres élèves de ton département ({onlineOthers.length})
+          </h2>
+          {onlineOthers.length ? (
+            <ul className="mt-3 grid gap-2.5">{onlineOthers.map(playerRow)}</ul>
+          ) : (
+            <p className="mt-3 text-ink/70">Personne d&apos;autre n&apos;est en ligne dans ton département.</p>
           )}
         </div>
       )}
@@ -319,12 +411,13 @@ export function Community({ me, subjects, points, history }: Props) {
           <h2 className="font-display text-lg font-bold">Mes amis ({friends.length})</h2>
           {friends.length ? (
             <ul className="mt-3 grid gap-2.5">
-              {friends.map((f) => (
+              {sortedFriends.map((f) => (
                 <li key={f.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
-                    {f.name.charAt(0).toUpperCase()}
-                  </span>
-                  <p className="min-w-0 flex-1 basis-24 truncate font-semibold">{f.name}</p>
+                  <Avatar name={f.name} online={onlineIds.has(f.id)} />
+                  <div className="min-w-0 flex-1 basis-24">
+                    <p className="truncate font-semibold">{f.name}</p>
+                    {onlineIds.has(f.id) && <p className="text-sm font-semibold text-success-fg">En ligne</p>}
+                  </div>
                   <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
                     Retirer
                   </button>

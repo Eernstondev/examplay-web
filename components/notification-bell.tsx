@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 type Notif = {
   id: string;
-  kind: "duel_challenge" | "duel_finished" | "report_resolved";
+  kind: "duel_challenge" | "duel_finished" | "report_resolved" | "friend_request" | "friend_accepted";
   data: Record<string, unknown>;
   read: boolean;
   created_at: string;
@@ -29,15 +29,31 @@ function describe(n: Notif): { text: string; href: string } {
       href: "/dashboard/communaute",
     };
   }
+  if (n.kind === "friend_request") {
+    return {
+      text: `${(d.from_name as string) || "Un élève"} t'a envoyé une demande d'ami.`,
+      href: "/dashboard/communaute?tab=friends",
+    };
+  }
+  if (n.kind === "friend_accepted") {
+    return {
+      text: `${(d.from_name as string) || "Un élève"} a accepté ta demande d'ami. Vous pouvez maintenant vous défier.`,
+      href: "/dashboard/communaute?tab=friends",
+    };
+  }
   return {
     text: d.status === "resolved" ? "Ton signalement a été pris en compte." : "Ton signalement a été refusé.",
     href: "/dashboard",
   };
 }
 
+const ANSWER_LABEL = { accepted: "Demande acceptée", declined: "Demande refusée", error: "Demande déjà traitée" } as const;
+type Answer = keyof typeof ANSWER_LABEL;
+
 export function NotificationBell({ userId }: { userId: string }) {
   const [items, setItems] = useState<Notif[]>([]);
   const [open, setOpen] = useState(false);
+  const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,6 +72,13 @@ export function NotificationBell({ userId }: { userId: string }) {
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
         (payload) => setItems((prev) => [payload.new as Notif, ...prev].slice(0, 20)),
       )
+      // Une demande d'ami traitée (ici ou sur un autre appareil) perd ses boutons.
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
+        (payload) =>
+          setItems((prev) => prev.map((n) => (n.id === (payload.new as Notif).id ? (payload.new as Notif) : n))),
+      )
       .subscribe();
 
     return () => {
@@ -73,6 +96,15 @@ export function NotificationBell({ userId }: { userId: string }) {
   }, [open]);
 
   const unread = items.filter((n) => !n.read).length;
+
+  const answer = async (n: Notif, accept: boolean) => {
+    setAnswers((a) => ({ ...a, [n.id]: accept ? "accepted" : "declined" }));
+    const { error } = await createClient().rpc("respond_friend_request", {
+      p_id: String(n.data.request_id),
+      p_accept: accept,
+    });
+    if (error) setAnswers((a) => ({ ...a, [n.id]: "error" }));
+  };
 
   const onOpen = async () => {
     const next = !open;
@@ -109,6 +141,8 @@ export function NotificationBell({ userId }: { userId: string }) {
             <ul className="max-h-96 overflow-y-auto">
               {items.map((n) => {
                 const { text, href } = describe(n);
+                const pendingRequest = n.kind === "friend_request" && !n.data.answered && !answers[n.id];
+                const result = answers[n.id] ?? (n.data.answered === "accepted" ? "accepted" : n.data.answered ? "declined" : null);
                 return (
                   <li key={n.id}>
                     <Link
@@ -118,6 +152,27 @@ export function NotificationBell({ userId }: { userId: string }) {
                     >
                       {text}
                     </Link>
+                    {pendingRequest && (
+                      <div className="grid grid-cols-2 gap-2 px-3 pb-2.5">
+                        <button
+                          type="button"
+                          onClick={() => answer(n, false)}
+                          className="h-10 rounded-xl text-sm font-bold ring-1 ring-ink/15"
+                        >
+                          Refuser
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => answer(n, true)}
+                          className="h-10 rounded-xl bg-brand text-sm font-bold text-white"
+                        >
+                          Accepter
+                        </button>
+                      </div>
+                    )}
+                    {n.kind === "friend_request" && result && (
+                      <p className="px-3 pb-2.5 text-xs font-semibold text-ink/60">{ANSWER_LABEL[result]}</p>
+                    )}
                   </li>
                 );
               })}

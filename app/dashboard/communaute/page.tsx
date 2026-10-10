@@ -7,7 +7,11 @@ import { getAccount, getFinishedDuels, getLeaderboard, getQuestionCounts } from 
 
 export const metadata: Metadata = { title: "Communauté et duels" };
 
-export default async function Page() {
+const tabs = ["online", "search", "friends", "duels"] as const;
+
+export default async function Page({ searchParams }: PageProps<"/dashboard/communaute">) {
+  const { tab } = await searchParams;
+  const initialTab = tabs.find((t) => t === tab);
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -29,6 +33,7 @@ export default async function Page() {
         subjects={subjects}
         points={points}
         history={history}
+        initialTab={initialTab}
       />
     </>
   );
