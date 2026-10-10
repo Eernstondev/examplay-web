@@ -2,6 +2,9 @@
 function normalize(s: string): string {
   return s
     .toLowerCase()
+    .replace(/œ/g, "oe")
+    .replace(/æ/g, "ae")
+    .replace(/['’`´]/g, "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9\s]/g, " ")
@@ -37,6 +40,8 @@ export function isAnswerClose(userInput: string, correctAnswer: string, threshol
   const c = normalize(correctAnswer);
   if (!u) return false;
   if (u === c) return true;
+  // La bonne réponse est écrite telle quelle dans une courte phrase (ex. « c'est ayons »)
+  if (c && ` ${u} `.includes(` ${c} `) && u.split(" ").length <= c.split(" ").length + 3) return true;
 
   const correctWords = c.split(" ").filter((w) => w.length > 2);
   if (correctWords.length <= 2) return similarity(u, c) >= threshold;
