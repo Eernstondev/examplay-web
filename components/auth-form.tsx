@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signIn, signUp, type AuthState } from "@/app/actions";
+import { PasswordInput } from "@/components/password-field";
 import { Turnstile } from "@/components/turnstile";
 import { departments } from "@/lib/levels";
 
@@ -52,13 +53,7 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
       </label>
       <label className={label}>
         Mot de passe
-        <input
-          name="password"
-          type="password"
-          required
-          autoComplete="current-password"
-          className={field}
-        />
+        <PasswordInput name="password" required autoComplete="current-password" />
       </label>
       <ErrorMessage state={state} />
       <button type="submit" disabled={pending} className={submit}>
@@ -129,15 +124,7 @@ export function SignUpForm({ level }: { level: string }) {
       </label>
       <label className={label}>
         Mot de passe
-        <input
-          name="password"
-          type="password"
-          required
-          minLength={6}
-          autoComplete="new-password"
-          aria-describedby="password-hint"
-          className={field}
-        />
+        <PasswordInput name="password" required minLength={6} autoComplete="new-password" aria-describedby="password-hint" />
         <span id="password-hint" className="mt-1.5 block text-sm font-normal text-ink/60">
           6 caractères minimum.
         </span>

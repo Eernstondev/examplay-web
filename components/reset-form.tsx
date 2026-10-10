@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { confirmReset, requestReset, type ResetState } from "@/app/actions";
+import { PasswordInput } from "@/components/password-field";
 import { Turnstile } from "@/components/turnstile";
 
 const field =
@@ -37,7 +38,7 @@ function CodeStep({ email }: { email: string }) {
       </label>
       <label className={label}>
         Nouveau mot de passe
-        <input name="password" type="password" required minLength={6} autoComplete="new-password" className={field} />
+        <PasswordInput name="password" required minLength={6} autoComplete="new-password" />
         <span className="mt-1.5 block text-sm font-normal text-ink/60">6 caractères minimum.</span>
       </label>
       <ErrorMessage error={state.error} />
