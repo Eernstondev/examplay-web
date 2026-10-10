@@ -58,6 +58,11 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   const password = String(formData.get("password") ?? "");
   const level = findLevel(String(formData.get("level") ?? ""));
   const fail = (message: string): AuthState => ({ status: "error", message, values });
+  // Code de parrainage facultatif : un code invalide ne bloque jamais l'inscription.
+  const referral = String(formData.get("referral") ?? "")
+    .trim()
+    .slice(0, 32);
+  const referralCode = /^[A-Za-z0-9_-]+$/.test(referral) ? referral : "";
 
   if (!level) redirect("/commencer");
   if (values.name.length < 2 || values.name.length > 80) return fail("Entre ton nom complet.");
@@ -81,7 +86,12 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
       // Mêmes clés que l'app mobile : le trigger handle_new_user crée le profil avec.
-      data: { name: values.name, level: level.slug, department: values.department },
+      data: {
+        name: values.name,
+        level: level.slug,
+        department: values.department,
+        ...(referralCode ? { referral_code: referralCode } : {}),
+      },
     },
   });
 
@@ -105,6 +115,10 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     };
   }
 
+  // Pas de confirmation par e-mail : la session existe déjà, on applique le code tout de suite.
+  if (referralCode) {
+    await supabase.rpc("apply_referral", { p_code: referralCode }).then(undefined, () => undefined);
+  }
   redirect("/dashboard");
 }
 

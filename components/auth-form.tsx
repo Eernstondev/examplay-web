@@ -66,7 +66,7 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
   );
 }
 
-export function SignUpForm({ level }: { level: string }) {
+export function SignUpForm({ level, referral = "" }: { level: string; referral?: string }) {
   const [state, action, pending] = useActionState(signUp, initialState);
 
   if (state.status === "confirm") {
@@ -128,6 +128,19 @@ export function SignUpForm({ level }: { level: string }) {
         <span id="password-hint" className="mt-1.5 block text-sm font-normal text-ink/60">
           6 caractères minimum.
         </span>
+      </label>
+      <label className={label}>
+        Code de parrainage <span className="font-normal text-ink/60">(facultatif)</span>
+        <input
+          name="referral"
+          type="text"
+          maxLength={32}
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          defaultValue={referral}
+          className={field}
+        />
       </label>
       <label className="flex items-start gap-3 text-sm leading-relaxed">
         <input type="checkbox" name="terms" required className="mt-0.5 size-5 shrink-0 accent-brand" />

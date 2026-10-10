@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = { title: "Inscription" };
 
 export default async function Page({ searchParams }: PageProps<"/inscription">) {
-  const { niveau } = await searchParams;
+  const { niveau, ref } = await searchParams;
   const level = findLevel(typeof niveau === "string" ? niveau : undefined);
   if (!level) redirect("/commencer");
 
@@ -30,7 +30,7 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
       }
     >
       <div className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10 sm:p-7">
-        <SignUpForm level={level.slug} />
+        <SignUpForm level={level.slug} referral={typeof ref === "string" ? ref.slice(0, 32) : ""} />
       </div>
       <p className="mt-4 text-sm leading-relaxed text-ink/65">
         Ton niveau et ton département ne pourront plus être modifiés après l&apos;inscription.
