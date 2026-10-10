@@ -7,6 +7,7 @@ import { Countdown, choiceClass, primaryButton, secondaryButton } from "@/compon
 import { subjectName } from "@/lib/content";
 import { duelError, type DuelRow } from "@/lib/realtime";
 import { hashCode, pickSeeded, shuffledOrder } from "@/lib/seeded";
+import { playFeedback } from "@/lib/sound";
 import { createClient } from "@/lib/supabase/client";
 
 type Qcm = { q: string; choices: string[]; answer: number };
@@ -164,6 +165,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     locked.current = true;
     setSel(i);
     if (i === q.answer) setScore((s) => s + 1);
+    playFeedback(i === q.answer);
     // Le serveur compare à l'index d'origine de la bonne réponse ; -1 = temps écoulé.
     const next = [...answers, { q: q.q, given: i < 0 ? -1 : q.order[i] }];
     setAnswers(next);

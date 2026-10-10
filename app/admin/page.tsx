@@ -23,7 +23,7 @@ const sorted = (o: Record<string, number>) => Object.entries(o).sort((a, b) => b
 
 export default async function Page() {
   const supabase = await createClient();
-  const { data } = await supabase.rpc("admin_stats");
+  const { data, error } = await supabase.rpc("admin_stats");
   const stats = data as Stats | null;
 
   const { data: pending } = await supabase.rpc("admin_pending");
@@ -35,7 +35,17 @@ export default async function Page() {
   ].filter((t) => t.n > 0);
 
   if (!stats) {
-    return <p className="text-ink/70">Les chiffres n&apos;ont pas pu être chargés.</p>;
+    return (
+      <div className="text-ink/70">
+        <p>Les chiffres n&apos;ont pas pu être chargés.</p>
+        {error && (
+          <p className="mt-2 rounded-xl bg-surface p-3 font-mono text-sm ring-1 ring-ink/10">
+            {error.code ? `${error.code} · ` : ""}
+            {error.message}
+          </p>
+        )}
+      </div>
+    );
   }
 
   const cards = [

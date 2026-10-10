@@ -7,6 +7,7 @@ import { Countdown, ProgressBar, choiceClass, primaryButton, secondaryButton } f
 import { isAnswerClose } from "@/lib/fuzzy";
 import { addToBank, enqueueResult, getUid, pickFromBank, toOfflineQuestion } from "@/lib/offline";
 import { shuffle } from "@/lib/seeded";
+import { playFeedback } from "@/lib/sound";
 import { createClient } from "@/lib/supabase/client";
 
 export type QuizMode = "quiz" | "exam" | "short" | "essay";
@@ -374,7 +375,10 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
         </span>
         {mode === "quiz" && q.type === "qcm" && selected === null && (
           // +6 s sur la première question : la publicité d'avant-quiz peut recouvrir l'écran quelques secondes.
-          <Countdown key={idx} seconds={TIME_FOR_TYPE.qcm + (idx === 0 ? 6 : 0)} onExpire={() => setSelected(-1)} />
+          <Countdown key={idx} seconds={TIME_FOR_TYPE.qcm + (idx === 0 ? 6 : 0)} onExpire={() => {
+              setSelected(-1);
+              if (mode === "quiz") playFeedback(false);
+            }} />
         )}
       </div>
 
@@ -397,7 +401,10 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
                 <button
                   type="button"
                   disabled={feedback}
-                  onClick={() => setSelected(i)}
+                  onClick={() => {
+                    setSelected(i);
+                    if (mode === "quiz") playFeedback(i === q.answer);
+                  }}
                   className={choiceClass(state)}
                 >
                   <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-bold text-brand-fg">
@@ -464,7 +471,15 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
               {last ? "Terminer" : "Suivant"}
             </button>
           ) : (
-            <button type="button" disabled={!typed.trim()} onClick={() => setRevealed(true)} className={primaryButton}>
+            <button
+              type="button"
+              disabled={!typed.trim()}
+              onClick={() => {
+                setRevealed(true);
+                if (mode === "quiz") playFeedback(isAnswerClose(typed, q.answerText));
+              }}
+              className={primaryButton}
+            >
               Valider
             </button>
           ))}
