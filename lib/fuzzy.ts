@@ -40,11 +40,19 @@ export function isAnswerClose(userInput: string, correctAnswer: string, threshol
   const c = normalize(correctAnswer);
   if (!u) return false;
   if (u === c) return true;
-  // La bonne réponse est écrite telle quelle dans une courte phrase (ex. « c'est ayons »)
-  if (c && ` ${u} `.includes(` ${c} `) && u.split(" ").length <= c.split(" ").length + 3) return true;
+  // La bonne réponse est écrite telle quelle dans une phrase ou un long texte (ex. « c'est ayons »)
+  if (c && ` ${u} `.includes(` ${c} `)) return true;
 
   const correctWords = c.split(" ").filter((w) => w.length > 2);
-  if (correctWords.length <= 2) return similarity(u, c) >= threshold;
+  if (correctWords.length <= 2) {
+    // Cherche la réponse (avec tolérance aux fautes) n'importe où dans le texte de l'élève
+    const uw = u.split(" "), n = c.split(" ").length;
+    for (let i = 0; i + n <= uw.length; i++) {
+      const windows = uw.slice(i, i + n).join(" ");
+      if (similarity(windows, c) >= threshold) return true;
+    }
+    return similarity(u, c) >= threshold;
+  }
 
   const userWords = u.split(" ");
   const found = correctWords.filter((cw) =>
