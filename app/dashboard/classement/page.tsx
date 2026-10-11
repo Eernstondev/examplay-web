@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AdSlot } from "@/components/ad-slot";
 import { SubHeader } from "@/components/app/ui";
-import { getAccount, getLeaderboard } from "@/lib/data";
+import { DEPARTMENTS, LEVELS } from "@/lib/content";
+import { getAccount, getRanking } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Classement" };
+
+const ALL = "tous";
+const LEVEL_OPTIONS = [
+  { value: ALL, label: "Tous les niveaux" },
+  { value: "9e", label: "9e année fondamentale" },
+  { value: "ns4", label: "Tout le NS4" },
+  ...LEVELS.filter((l) => l.id !== "9e").map((l) => ({ value: l.id, label: l.label })),
+];
 
 // Or : top 5 %, Argent : top 20 %, Bronze : top 50 % (sur au moins 100 places), comme dans l'app.
 function medal(rank: number, total: number) {
@@ -15,22 +24,70 @@ function medal(rank: number, total: number) {
   return null;
 }
 
-export default async function Page() {
+const select =
+  "mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-surface px-3 text-base text-ink";
+
+export default async function Page({ searchParams }: PageProps<"/dashboard/classement">) {
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
-  const board = await getLeaderboard(100);
-  const group = account.level === "9e" ? "9e AF" : "NS4";
+  const params = await searchParams;
+  const rawDep = typeof params.dep === "string" ? params.dep : "";
+  const rawLevel = typeof params.niv === "string" ? params.niv : "";
+
+  // Par défaut : ton département et ton groupe de niveau (9e ou NS4).
+  const dep = rawDep === ALL || DEPARTMENTS.includes(rawDep) ? rawDep : account.department;
+  const level = LEVEL_OPTIONS.some((o) => o.value === rawLevel)
+    ? rawLevel
+    : account.level === "9e"
+      ? "9e"
+      : "ns4";
+
+  const board = await getRanking(dep === ALL ? null : dep, level === ALL ? null : level, 100);
+  const levelLabel = LEVEL_OPTIONS.find((o) => o.value === level)?.label ?? "";
+  const place = dep === ALL ? "Tout Haïti" : dep;
 
   return (
     <>
-      <SubHeader title={`Classement · ${account.department}`} />
-      <p className="text-ink/70">
-        Élèves de {group} de ton département. 10 points par bonne réponse, 30 par duel gagné.
+      <SubHeader title="Classement" />
+      <p className="text-ink/70">10 points par bonne réponse, 30 par duel gagné.</p>
+
+      <form method="get" className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+        <label className="block text-sm font-semibold">
+          Département
+          <select name="dep" defaultValue={dep} className={select}>
+            <option value={ALL}>Tout Haïti</option>
+            {DEPARTMENTS.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block text-sm font-semibold">
+          Niveau
+          <select name="niv" defaultValue={level} className={select}>
+            {LEVEL_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="submit"
+          className="h-12 rounded-xl bg-brand px-6 text-base font-bold text-white hover:bg-brand-dark"
+        >
+          Afficher
+        </button>
+      </form>
+
+      <p className="mt-4 text-sm font-semibold text-ink/70">
+        {place} · {levelLabel}
       </p>
 
       {board.me && (
-        <section className="mt-5 flex items-center justify-between gap-4 rounded-3xl bg-brand p-5 text-white">
+        <section className="mt-3 flex items-center justify-between gap-4 rounded-3xl bg-brand p-5 text-white">
           <div>
             <p className="text-sm font-semibold text-white/75">Ta place</p>
             <p className="font-display text-4xl font-extrabold leading-none">
@@ -42,7 +99,9 @@ export default async function Page() {
         </section>
       )}
 
-      {board.rows.length ? (
+      {board.error ? (
+        <p className="mt-8 text-center text-ink/70">Le classement n&apos;a pas pu être chargé.</p>
+      ) : board.rows.length ? (
         <ol className="mt-5 grid gap-2">
           {board.rows.map((p) => {
             const m = medal(p.rank, board.total);
@@ -59,6 +118,7 @@ export default async function Page() {
                     {p.name}
                     {p.me && <span className="ml-2 text-sm font-bold text-brand-fg">Toi</span>}
                   </p>
+                  {dep === ALL && <p className="truncate text-xs text-ink/60">{p.department}</p>}
                 </div>
                 {m && (
                   <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${m.className}`}>{m.label}</span>
@@ -69,7 +129,7 @@ export default async function Page() {
           })}
         </ol>
       ) : (
-        <p className="mt-8 text-center text-ink/70">Le classement n&apos;a pas pu être chargé.</p>
+        <p className="mt-8 text-center text-ink/70">Personne dans ce classement pour le moment.</p>
       )}
 
       <AdSlot

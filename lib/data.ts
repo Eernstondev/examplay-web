@@ -143,6 +143,43 @@ export const getLeaderboard = cache(async (limit: number): Promise<Board> => {
   return { rows, total, me: rows.find((r) => r.me) ?? null };
 });
 
+export type RankedPlayer = Player & { department: string; level: string };
+export type Ranking = { rows: RankedPlayer[]; total: number; me: RankedPlayer | null; error: boolean };
+
+// Classement filtré : department null = tout Haïti ; level null = tous, "9e", "ns4" ou une série.
+export const getRanking = cache(
+  async (department: string | null, level: string | null, limit: number): Promise<Ranking> => {
+    const supabase = await createClient();
+    const account = await getAccount();
+    const { data, error } = await supabase.rpc("ranking", {
+      p_department: department,
+      p_level: level,
+      p_limit: limit,
+    });
+    if (error || !data) return { rows: [], total: 0, me: null, error: true };
+    const rows: RankedPlayer[] = (
+      data as {
+        user_id: string;
+        name: string;
+        department: string;
+        level: string;
+        points: number;
+        pos: number;
+      }[]
+    ).map((r) => ({
+      id: r.user_id,
+      name: r.name,
+      department: r.department,
+      level: r.level,
+      points: Number(r.points),
+      rank: Number(r.pos),
+      me: r.user_id === account?.id,
+    }));
+    const total = data.length ? Number((data[0] as { total: number }).total) : 0;
+    return { rows, total, me: rows.find((r) => r.me) ?? null, error: false };
+  },
+);
+
 export const getQuestionCounts = cache(async (): Promise<Record<string, number>> => {
   const supabase = await createClient();
   const { data } = await supabase.rpc("question_counts");
