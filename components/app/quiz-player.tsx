@@ -48,6 +48,17 @@ type PickedRow = {
   chapter_title: string | null;
 };
 
+// crypto.randomUUID n'existe pas sur les vieux navigateurs (Chrome < 92, Safari < 15.4).
+function newId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const h = Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+
 const TIME_FOR_TYPE: Record<QType, number> = { qcm: 20, short_answer: 45, essay: 90 };
 const WANTED: Record<QuizMode, QType> = { quiz: "qcm", exam: "qcm", short: "short_answer", essay: "essay" };
 
@@ -173,7 +184,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
     const supabase = createClient();
     const correct = all.filter((a) => a.isCorrect).length;
     const row = {
-      id: crypto.randomUUID(),
+      id: newId(),
       level,
       subject_id: subject,
       subject_name: subjectName,

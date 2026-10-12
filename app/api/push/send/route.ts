@@ -171,7 +171,7 @@ async function sendPhone(supabase: Db, userId: string, payload: Payload): Promis
           title: payload.title,
           body: payload.body,
           sound: "default",
-          channelId: "default",
+          channelId: "duels",
           priority: "high",
           ttl: 3600,
           data: { screen: payload.screen },
