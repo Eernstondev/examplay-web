@@ -126,21 +126,13 @@ export type Player = { id: string; name: string; points: number; rank: number; m
 export type Board = { rows: Player[]; total: number; me: Player | null };
 
 // Classement du département de l'élève (même groupe de niveau : 9e ou NS4).
+// Même fonction SQL que la page Classement et l'app : un seul calcul de rang partout.
 export const getLeaderboard = cache(async (limit: number): Promise<Board> => {
-  const supabase = await createClient();
   const account = await getAccount();
-  const { data } = await supabase.rpc("leaderboard", { p_limit: limit });
-  const rows: Player[] = ((data as { user_id: string; name: string; points: number; pos: number }[]) ?? []).map(
-    (r) => ({
-      id: r.user_id,
-      name: r.name,
-      points: Number(r.points),
-      rank: Number(r.pos),
-      me: r.user_id === account?.id,
-    }),
-  );
-  const total = data?.length ? Number((data[0] as { total: number }).total) : 0;
-  return { rows, total, me: rows.find((r) => r.me) ?? null };
+  if (!account) return { rows: [], total: 0, me: null };
+  const r = await getRanking(account.department, account.level === "9e" ? "9e" : "ns4", limit);
+  const rows: Player[] = r.rows.map(({ id, name, points, rank, me }) => ({ id, name, points, rank, me }));
+  return { rows, total: r.total, me: rows.find((x) => x.me) ?? null };
 });
 
 export type RankedPlayer = Player & { department: string; level: string };
