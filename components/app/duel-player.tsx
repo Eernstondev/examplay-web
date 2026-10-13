@@ -44,6 +44,15 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
         const d = data as DuelRow;
         setDuel(d);
         setState("ready");
+        // Reprise d'un duel interrompu (page rechargée) : on repart des réponses déjà enregistrées.
+        const isChallenger = d.challenger === me;
+        const saved = (isChallenger ? d.challenger_answers : d.opponent_answers) ?? [];
+        if (saved.length) {
+          setAnswers(saved);
+          setScore(isChallenger ? d.challenger_score : d.opponent_score);
+          setIdx(saved.length);
+          if (saved.length >= 5) setFinished(true);
+        }
         supabase
           .from("profiles")
           .select("id,name")
@@ -64,7 +73,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
       alive = false;
       supabase.removeChannel(ch);
     };
-  }, [id]);
+  }, [id, me]);
 
   const subjectId = duel?.subject_id;
   const seed = duel?.seed;
@@ -302,6 +311,15 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
   }
 
   const q = view[idx];
+  // Toutes les questions disponibles ont déjà une réponse enregistrée (reprise) : on attend la fin.
+  if (!q) {
+    return (
+      <div className="mx-auto max-w-md py-4">
+        {scoreboard}
+        <p className="mt-6 text-center font-display text-xl font-bold">{oppName} joue encore…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl">

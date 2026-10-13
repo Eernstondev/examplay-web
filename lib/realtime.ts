@@ -25,6 +25,9 @@ export type DuelRow = {
   winner: string | null;
   created_at: string;
   updated_at: string;
+  // Réponses déjà enregistrées par le serveur (reprise d'un duel interrompu).
+  challenger_answers?: { q: string; given: number }[];
+  opponent_answers?: { q: string; given: number }[];
 };
 
 const SHOW_ONLINE_KEY = "examplay:showOnline";
