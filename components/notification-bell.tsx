@@ -7,7 +7,14 @@ import { createClient } from "@/lib/supabase/client";
 
 type Notif = {
   id: string;
-  kind: "duel_challenge" | "duel_finished" | "report_resolved" | "friend_request" | "friend_accepted";
+  kind:
+    | "duel_challenge"
+    | "duel_finished"
+    | "report_resolved"
+    | "friend_request"
+    | "friend_accepted"
+    | "study_reminder"
+    | "streak_danger";
   data: Record<string, unknown>;
   read: boolean;
   created_at: string;
@@ -40,6 +47,18 @@ function describe(n: Notif): { text: string; href: string } {
       text: `${(d.from_name as string) || "Un élève"} a accepté ta demande d'ami. Vous pouvez maintenant vous défier.`,
       href: "/dashboard/communaute?tab=friends",
     };
+  }
+  if (n.kind === "streak_danger") {
+    const days = Number(d.streak) || 0;
+    return {
+      text: days > 1
+        ? `Ta série de ${days} jours est en danger : fais un quiz aujourd'hui.`
+        : "Ta série est en danger : fais un quiz aujourd'hui.",
+      href: "/dashboard",
+    };
+  }
+  if (n.kind === "study_reminder") {
+    return { text: "Tu n'as pas révisé aujourd'hui. Un quiz rapide de 5 questions ?", href: "/dashboard" };
   }
   return {
     text: d.status === "resolved" ? "Ton signalement a été pris en compte." : "Ton signalement a été refusé.",

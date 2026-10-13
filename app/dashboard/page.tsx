@@ -31,6 +31,7 @@ const modes = [
   { title: "Mode examen", body: "Simulation sans correction avant la fin", href: "/dashboard/matieres?mode=exam" },
   { title: "Révision Smart", body: "Fiches à retourner", href: "/dashboard/matieres?mode=flash" },
   { title: "Communauté et duels", body: "Élèves en ligne, défis, historique", href: "/dashboard/communaute" },
+  { title: "Plan de révision", body: "Quoi réviser chaque jour jusqu'à l'examen", href: "/dashboard/plan" },
 ];
 
 async function StreakCard() {

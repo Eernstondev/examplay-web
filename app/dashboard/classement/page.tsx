@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { AdSlot } from "@/components/ad-slot";
 import { SubHeader } from "@/components/app/ui";
 import { DEPARTMENTS, LEVELS } from "@/lib/content";
-import { getAccount, getRanking } from "@/lib/data";
+import Link from "next/link";
+import { getAccount, getRanking, getWeeklyRanking } from "@/lib/data";
+import { haitiToday } from "@/lib/revision-plan";
 
 export const metadata: Metadata = { title: "Classement" };
 
@@ -24,6 +26,14 @@ function medal(rank: number, total: number) {
   return null;
 }
 
+// Jours restants avant la fin du défi (dimanche soir, heure d'Haïti).
+function daysLeftInWeek() {
+  const day = haitiToday().getDay(); // 0 = dimanche
+  return day === 0 ? 0 : 7 - day;
+}
+
+const tab = "flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold";
+
 const select =
   "mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-surface px-3 text-base text-ink";
 
@@ -43,16 +53,54 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
       ? "9e"
       : "ns4";
 
-  const board = await getRanking(dep === ALL ? null : dep, level === ALL ? null : level, 100);
+  const weekly = params.periode === "semaine";
+  const depArg = dep === ALL ? null : dep;
+  const levelArg = level === ALL ? null : level;
+  const [board, lastWeek] = await Promise.all([
+    weekly ? getWeeklyRanking(depArg, levelArg, 100, 0) : getRanking(depArg, levelArg, 100),
+    weekly ? getWeeklyRanking(depArg, levelArg, 3, 1) : null,
+  ]);
+  const podium = (lastWeek?.rows ?? []).filter((r) => r.points > 0 && r.rank <= 3);
+  const query = (periode: string) =>
+    `/dashboard/classement?dep=${encodeURIComponent(dep)}&niv=${encodeURIComponent(level)}${periode ? `&periode=${periode}` : ""}`;
+  const left = daysLeftInWeek();
   const levelLabel = LEVEL_OPTIONS.find((o) => o.value === level)?.label ?? "";
   const place = dep === ALL ? "Tout Haïti" : dep;
 
   return (
     <>
       <SubHeader title="Classement" />
-      <p className="text-ink/70">10 points par bonne réponse, 30 par duel gagné.</p>
+      <nav className="flex gap-2 rounded-2xl bg-surface p-1.5 ring-1 ring-ink/10" aria-label="Période">
+        <Link href={query("")} className={`${tab} ${weekly ? "text-ink/70" : "bg-brand text-white"}`}>
+          Général
+        </Link>
+        <Link href={query("semaine")} className={`${tab} ${weekly ? "bg-brand text-white" : "text-ink/70"}`}>
+          Défi de la semaine
+        </Link>
+      </nav>
+      <p className="mt-4 text-ink/70">
+        {weekly
+          ? `Points gagnés depuis lundi. Le défi repart à zéro chaque lundi${left ? ` : encore ${left} jour${left > 1 ? "s" : ""}.` : " : dernier jour !"}`
+          : "10 points par bonne réponse, 30 par duel gagné."}
+      </p>
+
+      {weekly && podium.length > 0 && (
+        <section className="mt-5 rounded-3xl bg-navy p-5 text-white">
+          <p className="text-sm font-semibold text-white/70">Podium de la semaine dernière</p>
+          <ol className="mt-3 grid grid-cols-3 gap-3 text-center">
+            {podium.map((p) => (
+              <li key={p.id} className="rounded-2xl bg-white/10 p-3">
+                <p className="font-display text-2xl font-extrabold text-sun">{p.rank}</p>
+                <p className="truncate font-semibold">{p.name}</p>
+                <p className="text-sm text-white/70">{p.points} pts</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       <form method="get" className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+        {weekly && <input type="hidden" name="periode" value="semaine" />}
         <label className="block text-sm font-semibold">
           Département
           <select name="dep" defaultValue={dep} className={select}>

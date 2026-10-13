@@ -61,6 +61,26 @@ function message(n: Notif): Payload | null {
         tag: `report-${String(d.report_id ?? "")}`,
         screen: "/notifications",
       };
+    case "streak_danger": {
+      const n = Number(d.streak) || 0;
+      return {
+        title: "Ta série est en danger",
+        body: n > 1
+          ? `Tu as révisé ${n} jours de suite. Fais un quiz aujourd'hui pour ne pas tout perdre.`
+          : "Fais un quiz aujourd'hui pour garder ta série.",
+        url: "/dashboard",
+        tag: "study-reminder",
+        screen: "/home",
+      };
+    }
+    case "study_reminder":
+      return {
+        title: "Tu n'as pas révisé aujourd'hui",
+        body: "Un quiz rapide de 5 questions, ça prend 2 minutes. On s'y met ?",
+        url: "/dashboard",
+        tag: "study-reminder",
+        screen: "/home",
+      };
     default:
       return null;
   }
