@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { Ad } from "@/lib/ads";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 const CLOSE_DELAY_MS = 5000;
 
 // Affiche une publicité ; le bouton de fermeture apparaît après quelques secondes.
 export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
+  const t = useT();
   const [closed, setClosed] = useState(false);
   const [canClose, setCanClose] = useState(false);
 
@@ -87,7 +89,7 @@ export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
     <button
       type="button"
       onClick={() => setClosed(true)}
-      aria-label="Fermer la publicité"
+      aria-label={t("Fermer la publicité")}
       className="absolute right-2 top-2 grid size-11 place-items-center rounded-full bg-ink/80 text-white backdrop-blur hover:bg-navy"
     >
       <svg viewBox="0 0 20 20" aria-hidden="true" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -103,7 +105,7 @@ export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
       rel="sponsored noopener"
       className="mt-2 flex h-12 items-center justify-center rounded-xl bg-brand font-bold text-white hover:bg-brand-dark"
     >
-      En savoir plus
+      {t("En savoir plus")}
     </a>
   );
 
@@ -111,7 +113,7 @@ export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
   // <AdSlot> est placé dans le flux (position fixe, par-dessus tout le reste).
   if (fullscreen) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="Publicité" className="fixed inset-0 z-50 grid place-items-center bg-ink/80 p-4">
+      <div role="dialog" aria-modal="true" aria-label={t("Publicité")} className="fixed inset-0 z-50 grid place-items-center bg-ink/80 p-4">
         <div className="relative w-full max-w-lg">
           {media}
           {closeButton}
@@ -122,8 +124,8 @@ export function AdView({ ad, className = "" }: { ad: Ad; className?: string }) {
   }
 
   return (
-    <aside aria-label="Publicité" className={className}>
-      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-ink/50">Publicité</p>
+    <aside aria-label={t("Publicité")} className={className}>
+      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-ink/50">{t("Publicité")}</p>
       <div className="relative">
         {media}
         {closeButton}

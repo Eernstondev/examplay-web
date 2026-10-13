@@ -5,6 +5,7 @@ import { SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Choisis un chapitre" };
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = { title: "Choisis un chapitre" };
 const WANTED: Record<string, string | null> = { quiz: "qcm", short: "short_answer", essay: "essay", flash: null };
 
 export default async function Page({ searchParams }: PageProps<"/dashboard/chapitres">) {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -34,7 +36,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/chapi
     .map((c) => ({ title: c.title as string, count: byId.get(c.id) ?? 0 }))
     .filter((c) => c.count > 0);
   const general = byId.get(null) ?? 0;
-  if (general > 0) rows.push({ title: "Général", count: general });
+  if (general > 0) rows.push({ title: t("Général"), count: general });
   const total = questions?.length ?? 0;
 
   const href = (chapter?: string) => {
@@ -50,13 +52,13 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/chapi
     <>
       <SubHeader title={subject.name} back={`/dashboard/matieres?mode=${mode}`} />
       {total === 0 ? (
-        <p className="py-10 text-center text-ink/70">Aucune question de ce type pour cette matière pour le moment.</p>
+        <p className="py-10 text-center text-ink/70">{t("Aucune question de ce type pour cette matière pour le moment.")}</p>
       ) : (
         <ul className="grid gap-2.5 md:grid-cols-2">
           <li className="md:col-span-2">
             <Link href={href()} className={`${row} bg-brand text-white`}>
-              <span className="font-display text-lg font-semibold">Toute la matière</span>
-              <span className="shrink-0 text-sm font-semibold text-white/80">{total} questions</span>
+              <span className="font-display text-lg font-semibold">{t("Toute la matière")}</span>
+              <span className="shrink-0 text-sm font-semibold text-white/80">{total}{t(" questions")}</span>
             </Link>
           </li>
           {rows.map((c) => (

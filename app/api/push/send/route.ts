@@ -1,6 +1,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import webpush from "web-push";
+import { makeT, parseLang, type T } from "@/lib/i18n/core";
 
 // Appelé par un webhook de base de données à chaque nouvelle ligne de `notifications`.
 // Corps attendu : { type: "INSERT", table: "notifications", record: { user_id, kind, data } }.
@@ -17,57 +18,58 @@ function digest(value: string) {
   return createHash("sha256").update(value).digest();
 }
 
-function message(n: Notif): Payload | null {
+// Textes en français (clés du dictionnaire) traduits selon la langue de l'élève.
+function message(n: Notif, t: T): Payload | null {
   const d = n.data ?? {};
-  const from = typeof d.from_name === "string" && d.from_name ? d.from_name : "Un élève";
+  const from = typeof d.from_name === "string" && d.from_name ? d.from_name : t("Un élève");
   switch (n.kind) {
     case "duel_challenge":
       return {
-        title: "Nouveau duel",
-        body: `${from} te défie en duel.`,
+        title: t("Nouveau duel"),
+        body: t("{from} te défie en duel.", { from }),
         url: "/dashboard/communaute",
         tag: `duel-${String(d.duel_id ?? "")}`,
         screen: "/", // l'invitation s'affiche en bannière à l'ouverture de l'app
       };
     case "duel_finished":
       return {
-        title: "Duel terminé",
-        body: d.won === true ? "Tu as gagné ton duel !" : "Le résultat de ton duel est prêt.",
+        title: t("Duel terminé"),
+        body: d.won === true ? t("Tu as gagné ton duel !") : t("Le résultat de ton duel est prêt."),
         url: "/dashboard/communaute",
         tag: `duel-end-${String(d.duel_id ?? "")}`,
         screen: "/notifications",
       };
     case "friend_request":
       return {
-        title: "Demande d'ami",
-        body: `${from} veut être ton ami.`,
+        title: t("Demande d'ami"),
+        body: t("{from} veut être ton ami.", { from }),
         url: "/dashboard/communaute?tab=friends",
         tag: `friend-${String(d.request_id ?? "")}`,
         screen: "/notifications",
       };
     case "friend_accepted":
       return {
-        title: "Nouvel ami",
-        body: `${from} a accepté ta demande. Vous pouvez vous défier.`,
+        title: t("Nouvel ami"),
+        body: t("{from} a accepté ta demande. Vous pouvez vous défier.", { from }),
         url: "/dashboard/communaute?tab=friends",
         tag: `friend-ok-${String(d.from_id ?? "")}`,
         screen: "/notifications",
       };
     case "report_resolved":
       return {
-        title: "Signalement traité",
-        body: "Ton signalement a reçu une réponse.",
+        title: t("Signalement traité"),
+        body: t("Ton signalement a reçu une réponse."),
         url: "/dashboard",
         tag: `report-${String(d.report_id ?? "")}`,
         screen: "/notifications",
       };
     case "streak_danger": {
-      const n = Number(d.streak) || 0;
+      const days = Number(d.streak) || 0;
       return {
-        title: "Ta série est en danger",
-        body: n > 1
-          ? `Tu as révisé ${n} jours de suite. Fais un quiz aujourd'hui pour ne pas tout perdre.`
-          : "Fais un quiz aujourd'hui pour garder ta série.",
+        title: t("Ta série est en danger"),
+        body: days > 1
+          ? t("Tu as révisé {days} jours de suite. Fais un quiz aujourd'hui pour ne pas tout perdre.", { days })
+          : t("Fais un quiz aujourd'hui pour garder ta série."),
         url: "/dashboard",
         tag: "study-reminder",
         screen: "/home",
@@ -75,8 +77,8 @@ function message(n: Notif): Payload | null {
     }
     case "study_reminder":
       return {
-        title: "Tu n'as pas révisé aujourd'hui",
-        body: "Un quiz rapide de 5 questions, ça prend 2 minutes. On s'y met ?",
+        title: t("Tu n'as pas révisé aujourd'hui"),
+        body: t("Un quiz rapide de 5 questions, ça prend 2 minutes. On s'y met ?"),
         url: "/dashboard",
         tag: "study-reminder",
         screen: "/home",
@@ -116,10 +118,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "bad request" }, { status: 400 });
   }
 
-  const payload = message(record);
-  if (!payload) return Response.json({ sent: 0 });
-
   const supabase = serviceClient(serviceKey);
+  const { data: profile } = await supabase.from("profiles").select("language").eq("id", record.user_id).maybeSingle();
+  const payload = message(record, makeT(parseLang(profile?.language)));
+  if (!payload) return Response.json({ sent: 0 });
 
   const [web, phone] = await Promise.all([sendWeb(supabase, record.user_id, payload), sendPhone(supabase, record.user_id, payload)]);
   return Response.json({ sent: web.sent + phone.sent, removed: web.removed + phone.removed });

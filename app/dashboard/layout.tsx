@@ -10,8 +10,10 @@ import { isAdmin, isContributor } from "@/lib/admin";
 import { getSubjects } from "@/lib/content";
 import { getAccount } from "@/lib/data";
 import { site } from "@/lib/site";
+import { getT } from "@/lib/i18n/server";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
   // Le compte admin n'a pas d'espace élève.
@@ -39,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         <div className="flex items-center gap-1.5">
           {contributor && (
             <Link href="/contribuer" className="grid min-h-11 place-items-center rounded-lg px-3 text-sm font-semibold text-brand-fg">
-              Contribuer
+              {t("Contribuer")}
             </Link>
           )}
           <NotificationBell userId={account.id} />
@@ -48,12 +50,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               type="submit"
               className="min-h-11 rounded-lg px-3 text-sm font-semibold text-ink/70 hover:text-brand-fg"
             >
-              Se déconnecter
+              {t("Se déconnecter")}
             </button>
           </form>
           <Link
             href="/dashboard/profil"
-            aria-label="Mon profil"
+            aria-label={t("Mon profil")}
             className="grid size-11 place-items-center rounded-full bg-brand font-display text-lg font-bold text-white"
           >
             {account.name.charAt(0).toUpperCase()}

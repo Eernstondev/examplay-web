@@ -4,10 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { LanguageButton } from "@/components/language-switch";
 import { ThemeButton } from "@/components/theme-toggle";
 import { navLinks, site } from "@/lib/site";
+import { useT } from "@/components/i18n-provider";
 
 export function SiteHeader() {
+  const t = useT();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -22,7 +25,7 @@ export function SiteHeader() {
           <span className="font-display text-xl font-bold tracking-tight">{site.name}</span>
         </Link>
 
-        <nav aria-label="Navigation principale" className="hidden items-center gap-6 xl:flex">
+        <nav aria-label={t("Navigation principale")} className="hidden items-center gap-6 xl:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -30,19 +33,20 @@ export function SiteHeader() {
               aria-current={pathname === link.href ? "page" : undefined}
               className="whitespace-nowrap text-sm font-medium text-ink/70 hover:text-brand-fg aria-[current=page]:text-brand-fg"
             >
-              {link.label}
+              {t(link.label)}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageButton />
           <ThemeButton />
           <Link
             href="/commencer"
             onClick={() => setOpen(false)}
             className="hidden whitespace-nowrap rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark sm:block"
           >
-            Commencer
+            {t("Commencer")}
           </Link>
           <button
             type="button"
@@ -51,7 +55,7 @@ export function SiteHeader() {
             onClick={() => setOpen((v) => !v)}
             className="min-h-11 rounded-lg border border-ink/15 px-4 text-sm font-semibold xl:hidden"
           >
-            {open ? "Fermer" : "Menu"}
+            {open ? t("Fermer") : t("Menu")}
           </button>
         </div>
       </div>
@@ -59,7 +63,7 @@ export function SiteHeader() {
       {open && (
         <nav
           id="menu-mobile"
-          aria-label="Navigation mobile"
+          aria-label={t("Navigation mobile")}
           className="mt-4 grid border-t border-ink/10 pt-2 xl:hidden"
         >
           {navLinks.map((link) => (
@@ -70,7 +74,7 @@ export function SiteHeader() {
               aria-current={pathname === link.href ? "page" : undefined}
               className="border-b border-ink/10 py-3.5 font-medium aria-[current=page]:text-brand-fg"
             >
-              {link.label}
+              {t(link.label)}
             </Link>
           ))}
           <Link
@@ -78,7 +82,7 @@ export function SiteHeader() {
             onClick={() => setOpen(false)}
             className="mt-4 rounded-lg bg-brand px-4 py-3 text-center font-semibold text-white sm:hidden"
           >
-            Commencer
+            {t("Commencer")}
           </Link>
         </nav>
       )}

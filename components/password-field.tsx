@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type ComponentPropsWithoutRef } from "react";
+import { useT } from "@/components/i18n-provider";
 
 const input =
   "h-13 w-full rounded-xl border border-ink/20 bg-surface pl-4 pr-14 text-base text-ink placeholder:text-ink/40";
 
 // Champ mot de passe avec bouton « afficher / masquer ».
 export function PasswordInput(props: Omit<ComponentPropsWithoutRef<"input">, "type" | "className">) {
+  const t = useT();
   const [shown, setShown] = useState(false);
   return (
     <span className="relative mt-1.5 block">
@@ -14,7 +16,7 @@ export function PasswordInput(props: Omit<ComponentPropsWithoutRef<"input">, "ty
       <button
         type="button"
         onClick={() => setShown((value) => !value)}
-        aria-label={shown ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+        aria-label={shown ? t("Masquer le mot de passe") : t("Afficher le mot de passe")}
         aria-pressed={shown}
         className="absolute inset-y-0 right-1 grid w-12 place-items-center rounded-xl text-ink/60 hover:text-ink"
       >

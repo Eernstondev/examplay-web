@@ -4,6 +4,7 @@ import { PageShell } from "@/components/page-shell";
 import { SocialIcon } from "@/components/social-icon";
 import { PARTNER_CATEGORIES, safeUrl } from "@/lib/media";
 import { createPublicClient } from "@/lib/supabase/public";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Collaborateurs",
@@ -32,6 +33,7 @@ const networks = [
 ] as const;
 
 export default async function Page() {
+  const t = await getT();
   const { data } = await createPublicClient()
     .from("partners")
     .select("id, category, name, description, logo_url, website, facebook, instagram, tiktok")
@@ -41,8 +43,8 @@ export default async function Page() {
 
   return (
     <PageShell
-      title="L'écosystème Examplay"
-      lead="Examplay grandit grâce à la confiance de ses partenaires. Découvrez les entités et les personnes qui rendent cette aventure possible."
+      title={t("L'écosystème Examplay")}
+      lead={t("Examplay grandit grâce à la confiance de ses partenaires. Découvrez les entités et les personnes qui rendent cette aventure possible.")}
     >
       {PARTNER_CATEGORIES.map((category) => {
         const rows = partners.filter((p) => p.category === category.id);
@@ -60,7 +62,7 @@ export default async function Page() {
                       <span className="grid size-20 place-items-center overflow-hidden rounded-2xl bg-surface font-display text-3xl font-bold text-brand-fg ring-1 ring-ink/10">
                         {p.logo_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.logo_url} alt={`Logo ${p.name}`} loading="lazy" className="size-full object-contain p-2" />
+                          <img src={p.logo_url} alt={t("Logo {name}", { name: p.name })} loading="lazy" className="size-full object-contain p-2" />
                         ) : (
                           p.name.charAt(0).toUpperCase()
                         )}
@@ -78,7 +80,7 @@ export default async function Page() {
                               href={href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              aria-label={`${p.name} sur ${label}`}
+                              aria-label={t("{name} sur {label}", { name: p.name, label })}
                               className="grid size-11 place-items-center rounded-full bg-surface text-ink ring-1 ring-ink/10 transition-colors hover:bg-brand hover:text-white"
                             >
                               <SocialIcon name={label} className="size-[18px]" />
@@ -92,7 +94,7 @@ export default async function Page() {
                             rel="noopener noreferrer"
                             className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-bold text-brand-fg ring-1 ring-ink/10 hover:bg-brand hover:text-white"
                           >
-                            Site web
+                            {t("Site web")}
                           </a>
                         )}
                       </div>
@@ -102,9 +104,9 @@ export default async function Page() {
               </ul>
             ) : (
               <p className="mt-3 text-ink/70">
-                Aucun nom annoncé pour le moment.{" "}
+                {t("Aucun nom annoncé pour le moment.")}{" "}
                 <Link href="/contact" className="font-semibold text-brand-fg underline underline-offset-4">
-                  Contactez-nous pour rejoindre Examplay
+                  {t("Contactez-nous pour rejoindre Examplay")}
                 </Link>
                 .
               </p>

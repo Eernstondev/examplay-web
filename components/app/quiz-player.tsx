@@ -9,6 +9,7 @@ import { addToBank, enqueueResult, getUid, pickFromBank, toOfflineQuestion } fro
 import { shuffle } from "@/lib/seeded";
 import { playFeedback } from "@/lib/sound";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 export type QuizMode = "quiz" | "exam" | "short" | "essay";
 type QType = "qcm" | "short_answer" | "essay";
@@ -79,6 +80,7 @@ type Props = {
 };
 
 export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter, beforeAd, afterAd, shareUrl, referralCode }: Props) {
+  const t = useT();
   const [pool, setPool] = useState<Question[] | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [idx, setIdx] = useState(0);
@@ -263,14 +265,14 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
     setShowReview(false);
   };
 
-  if (pool === null) return <p className="py-16 text-center text-ink/70">Chargement des questions…</p>;
+  if (pool === null) return <p className="py-16 text-center text-ink/70">{t("Chargement des questions…")}</p>;
 
   if (!questions.length) {
     return (
       <div className="py-12 text-center">
-        <p className="text-ink/75">Aucune question de ce type pour cette matière pour le moment.</p>
+        <p className="text-ink/75">{t("Aucune question de ce type pour cette matière pour le moment.")}</p>
         <Link href={backHref} className={`${secondaryButton} mx-auto mt-6 max-w-xs`}>
-          Retour
+          {t("Retour")}
         </Link>
       </div>
     );
@@ -282,7 +284,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
         <ol className="grid gap-4">
           {answers.map((a, i) => (
             <li key={i} className="rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
-              <p className="text-sm font-semibold text-ink/60">Question {i + 1}</p>
+              <p className="text-sm font-semibold text-ink/60">{t("Question ")}{i + 1}</p>
               <p className="mt-1 font-display text-lg font-semibold leading-snug">{a.q}</p>
               {a.type === "qcm" ? (
                 <ul className="mt-3 grid gap-2">
@@ -299,18 +301,18 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
                   ))}
                 </ul>
               ) : (
-                <p className="mt-3 rounded-xl bg-brand-soft p-3">Ta réponse : {a.givenText || "(aucune)"}</p>
+                <p className="mt-3 rounded-xl bg-brand-soft p-3">{t("Ta réponse : ")}{a.givenText || t("(aucune)")}</p>
               )}
               <p className={`mt-3 font-semibold ${a.isCorrect ? "text-success-fg" : "text-danger-fg"}`}>
-                {a.given === -1 ? "Temps écoulé" : a.isCorrect ? "Bonne réponse" : "Mauvaise réponse"}
+                {a.given === -1 ? t("Temps écoulé") : a.isCorrect ? t("Bonne réponse") : t("Mauvaise réponse")}
               </p>
-              {a.correctText && <p className="mt-1 text-ink/75">Réponse attendue : {a.correctText}</p>}
+              {a.correctText && <p className="mt-1 text-ink/75">{t("Réponse attendue : ")}{a.correctText}</p>}
               {a.explain && <p className="mt-1 text-ink/75">{a.explain}</p>}
             </li>
           ))}
         </ol>
         <button type="button" onClick={() => setShowReview(false)} className={`${primaryButton} mt-6`}>
-          Revenir au résultat
+          {t("Revenir au résultat")}
         </button>
       </div>
     );
@@ -327,43 +329,46 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
         <p className="mt-3 font-display text-2xl font-bold">
           {correct} / {answers.length}
         </p>
-        <p className="mt-2 text-ink/75">{message}</p>
-        <p className="mt-1 text-sm text-ink/60">+ {correct * 10} points au classement</p>
+        <p className="mt-2 text-ink/75">{t(message)}</p>
+        <p className="mt-1 text-sm text-ink/60">+ {correct * 10}{t(" points au classement")}</p>
         {saveError && (
           <p role="alert" className="mt-4 rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
-            Ce résultat n&apos;a pas pu être enregistré. Vérifie ta connexion.
+            {t("Ce résultat n'a pas pu être enregistré. Vérifie ta connexion.")}
           </p>
         )}
         {savedOffline && (
           <p className="mt-4 rounded-xl bg-surface px-4 py-3 text-sm font-semibold ring-1 ring-ink/10">
-            Pas de connexion : ton résultat est gardé sur ton téléphone et sera envoyé dès que tu seras en ligne.
+            {t("Pas de connexion : ton résultat est gardé sur ton téléphone et sera envoyé dès que tu seras en ligne.")}
           </p>
         )}
         {afterAd}
         <div className="mt-8 grid gap-3">
           {mode === "exam" && (
             <button type="button" onClick={() => setShowReview(true)} className={primaryButton}>
-              Voir la correction
+              {t("Voir la correction")}
             </button>
           )}
           <button type="button" onClick={restart} className={mode === "exam" ? secondaryButton : primaryButton}>
-            Rejouer
+            {t("Rejouer")}
           </button>
           {shareUrl && (
             <a
               href={`https://wa.me/?text=${encodeURIComponent(
-                `J'ai eu ${correct}/${answers.length} en ${subjectName} sur Examplay. Prépare l'examen d'État avec moi : ${shareUrl}` +
-                  (referralCode ? `\nMon code de parrainage : ${referralCode}` : ""),
+                t("J'ai eu {score} en {subjectName} sur Examplay. Prépare l'examen d'État avec moi : {shareUrl}", {
+                  score: `${correct}/${answers.length}`,
+                  subjectName,
+                  shareUrl,
+                }) + (referralCode ? `\n${t("Mon code de parrainage : {referralCode}", { referralCode })}` : ""),
               )}`}
               target="_blank"
               rel="noopener noreferrer"
               className={secondaryButton}
             >
-              Partager sur WhatsApp
+              {t("Partager sur WhatsApp")}
             </a>
           )}
           <Link href="/dashboard" className={secondaryButton}>
-            Retour au tableau de bord
+            {t("Retour au tableau de bord")}
           </Link>
         </div>
       </div>
@@ -430,7 +435,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
       ) : (
         <div className="mt-5">
           <label className="block text-sm font-semibold">
-            Ta réponse
+            {t("Ta réponse")}
             <textarea
               value={typed}
               onChange={(e) => setTyped(e.target.value)}
@@ -443,11 +448,11 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
             <div className="mt-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
               {q.type === "short_answer" && (
                 <p className={`font-semibold ${shortOk ? "text-success-fg" : "text-danger-fg"}`}>
-                  {shortOk ? "Bonne réponse" : "Pas tout à fait"}
+                  {shortOk ? t("Bonne réponse") : t("Pas tout à fait")}
                 </p>
               )}
               <p className="mt-1">
-                <strong>{q.type === "essay" ? "Modèle de réponse : " : "Réponse attendue : "}</strong>
+                <strong>{q.type === "essay" ? t("Modèle de réponse : ") : t("Réponse attendue : ")}</strong>
                 {q.answerText}
               </p>
               {q.explain && <p className="mt-2 text-ink/75">{q.explain}</p>}
@@ -459,7 +464,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
       {feedback && (
         <div aria-live="polite" className="mt-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
           <p className={`font-semibold ${selected === q.answer ? "text-success-fg" : "text-danger-fg"}`}>
-            {selected === -1 ? "Temps écoulé" : selected === q.answer ? "Bonne réponse" : "Mauvaise réponse"}
+            {selected === -1 ? t("Temps écoulé") : selected === q.answer ? t("Bonne réponse") : t("Mauvaise réponse")}
           </p>
           {q.explain && <p className="mt-1 text-ink/75">{q.explain}</p>}
         </div>
@@ -473,13 +478,13 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
             onClick={() => commit(selected === q.answer, selected)}
             className={primaryButton}
           >
-            {last ? "Terminer" : "Suivant"}
+            {last ? t("Terminer") : t("Suivant")}
           </button>
         )}
         {q.type === "short_answer" &&
           (revealed ? (
             <button type="button" onClick={() => commit(shortOk, null, typed.trim())} className={primaryButton}>
-              {last ? "Terminer" : "Suivant"}
+              {last ? t("Terminer") : t("Suivant")}
             </button>
           ) : (
             <button
@@ -491,22 +496,22 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
               }}
               className={primaryButton}
             >
-              Valider
+              {t("Valider")}
             </button>
           ))}
         {q.type === "essay" &&
           (revealed ? (
             <div className="grid grid-cols-2 gap-3">
               <button type="button" onClick={() => commit(false, null, typed.trim())} className={secondaryButton}>
-                À revoir
+                {t("À revoir")}
               </button>
               <button type="button" onClick={() => commit(true, null, typed.trim())} className={primaryButton}>
-                J&apos;avais bon
+                {t("J'avais bon")}
               </button>
             </div>
           ) : (
             <button type="button" disabled={!typed.trim()} onClick={() => setRevealed(true)} className={primaryButton}>
-              Voir la correction
+              {t("Voir la correction")}
             </button>
           ))}
       </div>

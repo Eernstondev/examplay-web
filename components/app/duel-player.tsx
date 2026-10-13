@@ -9,12 +9,14 @@ import { duelError, type DuelRow } from "@/lib/realtime";
 import { hashCode, pickSeeded, shuffledOrder } from "@/lib/seeded";
 import { playFeedback } from "@/lib/sound";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 type Qcm = { q: string; choices: string[]; answer: number };
 type DuelAnswer = { q: string; given: number };
 const TIME_PER_QUESTION = 15;
 
 export function DuelPlayer({ id, me }: { id: string; me: string }) {
+  const t = useT();
   const router = useRouter();
   const [duel, setDuel] = useState<DuelRow | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
@@ -138,13 +140,13 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     };
   }, [waiting, duelId, status]);
 
-  if (state === "loading") return <p className="py-16 text-center text-ink/70">Chargement du duel…</p>;
+  if (state === "loading") return <p className="py-16 text-center text-ink/70">{t("Chargement du duel…")}</p>;
   if (state === "error" || !duel) {
     return (
       <div className="py-12 text-center">
-        <p className="text-ink/75">Ce duel est introuvable.</p>
+        <p className="text-ink/75">{t("Ce duel est introuvable.")}</p>
         <Link href="/dashboard/communaute" className={`${secondaryButton} mx-auto mt-6 max-w-xs`}>
-          Retour à la communauté
+          {t("Retour à la communauté")}
         </Link>
       </div>
     );
@@ -204,7 +206,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
 
   const leave = async () => {
     const ok = window.confirm(
-      `Quitter le duel ? Tu abandonnes la partie : ${oppName} gagnera et tu perdras des points au classement.`,
+      t("Quitter le duel ? Tu abandonnes la partie : {oppName} gagnera et tu perdras des points au classement.", { oppName }),
     );
     if (!ok) return;
     await createClient().rpc("duel_forfeit", { p_id: duel.id });
@@ -214,7 +216,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
   const scoreboard = (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-3xl bg-navy p-5 text-white">
       <div>
-        <p className="text-sm text-white/70">Toi</p>
+        <p className="text-sm text-white/70">{t("Toi")}</p>
         <p className="font-display text-4xl font-extrabold">{myScore}</p>
       </div>
       <p className="text-sm font-semibold text-white/60">{subjectName(duel.subject_id)}</p>
@@ -227,15 +229,15 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
 
   const backLink = (
     <Link href="/dashboard/communaute" className={`${secondaryButton} mt-6`}>
-      Retour à la communauté
+      {t("Retour à la communauté")}
     </Link>
   );
 
   if (duel.status === "pending") {
     return (
       <div className="mx-auto max-w-md py-10 text-center">
-        <p className="font-display text-2xl font-bold">En attente de {oppName}…</p>
-        <p className="mt-2 text-ink/70">Le duel démarre dès que ton adversaire accepte.</p>
+        <p className="font-display text-2xl font-bold">{t("En attente de ")}{oppName}…</p>
+        <p className="mt-2 text-ink/70">{t("Le duel démarre dès que ton adversaire accepte.")}</p>
         {backLink}
       </div>
     );
@@ -245,7 +247,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     return (
       <div className="mx-auto max-w-md py-10 text-center">
         <p className="font-display text-2xl font-bold">
-          {duel.status === "declined" ? "Défi refusé" : "Duel annulé"}
+          {duel.status === "declined" ? t("Défi refusé") : t("Duel annulé")}
         </p>
         {backLink}
       </div>
@@ -254,21 +256,21 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
 
   if (duel.status === "finished") {
     const title = iForfeited
-      ? "Tu as abandonné"
+      ? t("Tu as abandonné")
       : theyForfeited
-        ? `${oppName} a abandonné, tu gagnes !`
+        ? t("{oppName} a abandonné, tu gagnes !", { oppName })
         : duel.winner === me
-          ? "Victoire !"
+          ? t("Victoire !")
           : duel.winner === null
-            ? "Match nul"
-            : "Défaite";
+            ? t("Match nul")
+            : t("Défaite");
     return (
       <div className="mx-auto max-w-md py-4">
         <p className="mb-5 text-center font-display text-[clamp(2rem,9vw,3rem)] font-extrabold leading-tight">
           {title}
         </p>
         {scoreboard}
-        {duel.winner === me && <p className="mt-4 text-center text-ink/70">+ 30 points au classement</p>}
+        {duel.winner === me && <p className="mt-4 text-center text-ink/70">{t("+ 30 points au classement")}</p>}
         {backLink}
       </div>
     );
@@ -279,32 +281,32 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
       <div className="mx-auto max-w-md py-4">
         {scoreboard}
         <p className="mt-6 text-center font-display text-xl font-bold">
-          {oppDone ? "Calcul du résultat…" : `${oppName} joue encore…`}
+          {oppDone ? t("Calcul du résultat…") : t("{oppName} joue encore…", { oppName })}
         </p>
         {sendErr && (
           <button type="button" onClick={retry} className={`${primaryButton} mt-4`}>
-            Renvoyer mes réponses
+            {t("Renvoyer mes réponses")}
           </button>
         )}
         {canClaim && !sendErr && (
           <button type="button" onClick={claim} className={`${primaryButton} mt-4`}>
-            Terminer le duel
+            {t("Terminer le duel")}
           </button>
         )}
         {message && (
           <p role="alert" className="mt-3 text-center text-sm font-semibold text-danger-fg">
-            {message}
+            {t(message)}
           </p>
         )}
       </div>
     );
   }
 
-  if (!rawQs) return <p className="py-16 text-center text-ink/70">Chargement des questions…</p>;
+  if (!rawQs) return <p className="py-16 text-center text-ink/70">{t("Chargement des questions…")}</p>;
   if (!view.length) {
     return (
       <div className="py-12 text-center">
-        <p className="text-ink/75">Aucune question disponible pour ce duel.</p>
+        <p className="text-ink/75">{t("Aucune question disponible pour ce duel.")}</p>
         {backLink}
       </div>
     );
@@ -316,7 +318,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     return (
       <div className="mx-auto max-w-md py-4">
         {scoreboard}
-        <p className="mt-6 text-center font-display text-xl font-bold">{oppName} joue encore…</p>
+        <p className="mt-6 text-center font-display text-xl font-bold">{oppName}{t(" joue encore…")}</p>
       </div>
     );
   }
@@ -326,7 +328,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
       {scoreboard}
       <div className="mt-5 flex items-center justify-between gap-3">
         <span className="text-sm font-semibold text-ink/60">
-          Question {idx + 1} / {view.length}
+          {t("Question ")}{idx + 1} / {view.length}
         </span>
         {sel === null && <Countdown key={idx} seconds={TIME_PER_QUESTION} onExpire={() => pick(-1)} />}
       </div>
@@ -348,7 +350,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
         })}
       </ul>
       <button type="button" onClick={leave} className="mt-6 min-h-11 text-sm font-semibold text-danger-fg underline underline-offset-4">
-        Quitter le duel
+        {t("Quitter le duel")}
       </button>
     </div>
   );

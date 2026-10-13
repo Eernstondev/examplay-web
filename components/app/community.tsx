@@ -17,6 +17,7 @@ import {
 } from "@/lib/realtime";
 import type { DuelSummary } from "@/lib/stats";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 type Tab = "online" | "search" | "friends" | "duels";
 type Friend = { id: string; name: string };
@@ -42,13 +43,14 @@ const tabs: { id: Tab; label: string }[] = [
 const levelGroup = (level: string) => (level === "9e" ? "9e" : "ns4");
 
 function Avatar({ name, online }: { name: string; online: boolean }) {
+  const tx = useT();
   return (
     <span className="relative grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
       {name.charAt(0).toUpperCase()}
       {online && (
         <span
           role="img"
-          aria-label="En ligne"
+          aria-label={tx("En ligne")}
           className="absolute bottom-0 right-0 size-3 rounded-full bg-success ring-2 ring-surface"
         />
       )}
@@ -57,6 +59,7 @@ function Avatar({ name, online }: { name: string; online: boolean }) {
 }
 
 export function Community({ me, subjects, points, history, initialTab }: Props) {
+  const tx = useT();
   const [tab, setTab] = useState<Tab>(initialTab ?? "online");
   const [players, setPlayers] = useState<OnlinePlayer[]>([]);
   const [visible, setVisible] = useState(true);
@@ -179,7 +182,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
   };
 
   const removeFriend = async (id: string, name: string) => {
-    if (!window.confirm(`Retirer ${name} de tes amis ?`)) return;
+    if (!window.confirm(tx("Retirer {name} de tes amis ?", { name }))) return;
     await createClient().rpc("remove_friend", { p_other: id });
     loadFriends();
   };
@@ -240,7 +243,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
           onClick={() => challenge(id)}
           className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
         >
-          {status[id] === "sent" ? "Envoyé" : status[id] === "declined" ? "Refusé, relancer" : "Défier"}
+          {status[id] === "sent" ? tx("Envoyé") : status[id] === "declined" ? tx("Refusé, relancer") : tx("Défier")}
         </button>
       );
     }
@@ -252,13 +255,13 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
           onClick={() => answerRequest(received, true)}
           className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white"
         >
-          Accepter
+          {tx("Accepter")}
         </button>
       );
     }
     return (
       <button type="button" disabled={pendingSent.has(id)} onClick={() => addFriend(id)} className={secondary}>
-        {pendingSent.has(id) ? "Demande envoyée" : "Ajouter"}
+        {pendingSent.has(id) ? tx("Demande envoyée") : tx("Ajouter")}
       </button>
     );
   };
@@ -270,7 +273,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <p className="truncate font-semibold">{p.name}</p>
         {points[p.id] && (
           <p className="text-sm text-ink/60">
-            {points[p.id].rank}ᵉ · {points[p.id].points} pts
+            {points[p.id].rank}ᵉ · {points[p.id].points}{tx(" pts")}
           </p>
         )}
       </div>
@@ -280,7 +283,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div role="tablist" aria-label="Communauté" className="grid grid-cols-4 gap-1 rounded-2xl bg-surface p-1 ring-1 ring-ink/10">
+      <div role="tablist" aria-label={tx("Communauté")} className="grid grid-cols-4 gap-1 rounded-2xl bg-surface p-1 ring-1 ring-ink/10">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -290,7 +293,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
             onClick={() => setTab(t.id)}
             className={`relative h-11 rounded-xl text-[0.8125rem] font-bold sm:text-sm ${tab === t.id ? "bg-brand text-white" : "text-ink/70"}`}
           >
-            {t.label}
+            {tx(t.label)}
             {t.id === "friends" && requests.length > 0 && (
               <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-danger" />
             )}
@@ -300,7 +303,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
       {tab !== "duels" && (
         <label className="mt-5 block text-sm font-semibold">
-          Matière du duel
+          {tx("Matière du duel")}
           <select
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
@@ -317,7 +320,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
       {error && (
         <p role="alert" className="mt-4 rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
-          {error}
+          {tx(error)}
         </p>
       )}
 
@@ -325,9 +328,9 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <div className="mt-5">
           <label className="flex items-center justify-between gap-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
             <span>
-              <span className="block font-semibold">Apparaître en ligne</span>
+              <span className="block font-semibold">{tx("Apparaître en ligne")}</span>
               <span className="block text-sm text-ink/60">
-                Tes amis te voient en ligne et peuvent te défier.
+                {tx("Tes amis te voient en ligne et peuvent te défier.")}
               </span>
             </span>
             <input
@@ -339,31 +342,31 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
           </label>
           {!visible && (
             <p className="mt-4 rounded-xl bg-brand-soft px-4 py-3 text-sm">
-              Tu es invisible : active « Apparaître en ligne » pour voir tes amis en ligne et être vu.
+              {tx("Tu es invisible : active « Apparaître en ligne » pour voir tes amis en ligne et être vu.")}
             </p>
           )}
           <p className="mt-4 text-sm text-ink/60">
-            Tu peux défier uniquement tes amis. Pour défier un élève, envoie-lui d&apos;abord une demande d&apos;ami.
+            {tx("Tu peux défier uniquement tes amis. Pour défier un élève, envoie-lui d'abord une demande d'ami.")}
           </p>
 
-          <h2 className="mt-6 font-display text-lg font-bold">Amis en ligne ({onlineFriends.length})</h2>
+          <h2 className="mt-6 font-display text-lg font-bold">{tx("Amis en ligne (")}{onlineFriends.length})</h2>
           {onlineFriends.length ? (
             <ul className="mt-3 grid gap-2.5">{onlineFriends.map(playerRow)}</ul>
           ) : (
             <p className="mt-3 text-ink/70">
               {friends.length
-                ? "Aucun de tes amis n'est en ligne pour le moment."
-                : "Tu n'as pas encore d'amis. Ajoute un élève ci-dessous."}
+                ? tx("Aucun de tes amis n'est en ligne pour le moment.")
+                : tx("Tu n'as pas encore d'amis. Ajoute un élève ci-dessous.")}
             </p>
           )}
 
           <h2 className="mt-7 font-display text-lg font-bold">
-            Autres élèves de ton département ({onlineOthers.length})
+            {tx("Autres élèves de ton département (")}{onlineOthers.length})
           </h2>
           {onlineOthers.length ? (
             <ul className="mt-3 grid gap-2.5">{onlineOthers.map(playerRow)}</ul>
           ) : (
-            <p className="mt-3 text-ink/70">Personne d&apos;autre n&apos;est en ligne dans ton département.</p>
+            <p className="mt-3 text-ink/70">{tx("Personne d'autre n'est en ligne dans ton département.")}</p>
           )}
         </div>
       )}
@@ -371,7 +374,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
       {tab === "search" && (
         <div className="mt-5">
           <label className="block text-sm font-semibold">
-            Chercher un élève par son nom
+            {tx("Chercher un élève par son nom")}
             <input
               type="search"
               value={query}
@@ -382,7 +385,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
           {found.length > 0 ? (
             <ul className="mt-4 grid gap-2.5">{found.map(playerRow)}</ul>
           ) : (
-            query.trim().length >= 2 && <p className="mt-8 text-center text-ink/70">Aucun élève trouvé.</p>
+            query.trim().length >= 2 && <p className="mt-8 text-center text-ink/70">{tx("Aucun élève trouvé.")}</p>
           )}
         </div>
       )}
@@ -391,16 +394,16 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <div className="mt-5">
           {requests.length > 0 && (
             <>
-              <h2 className="font-display text-lg font-bold">Demandes reçues</h2>
+              <h2 className="font-display text-lg font-bold">{tx("Demandes reçues")}</h2>
               <ul className="mb-7 mt-3 grid gap-2.5">
                 {requests.map((r) => (
                   <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
                     <p className="min-w-0 flex-1 basis-32 truncate font-semibold">{r.name}</p>
                     <button type="button" onClick={() => answerRequest(r.id, false)} className="h-11 rounded-xl px-4 text-sm font-bold ring-1 ring-ink/15">
-                      Refuser
+                      {tx("Refuser")}
                     </button>
                     <button type="button" onClick={() => answerRequest(r.id, true)} className="h-11 rounded-xl bg-brand px-4 text-sm font-bold text-white">
-                      Accepter
+                      {tx("Accepter")}
                     </button>
                   </li>
                 ))}
@@ -408,7 +411,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
             </>
           )}
 
-          <h2 className="font-display text-lg font-bold">Mes amis ({friends.length})</h2>
+          <h2 className="font-display text-lg font-bold">{tx("Mes amis (")}{friends.length})</h2>
           {friends.length ? (
             <ul className="mt-3 grid gap-2.5">
               {sortedFriends.map((f) => (
@@ -416,10 +419,10 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
                   <Avatar name={f.name} online={onlineIds.has(f.id)} />
                   <div className="min-w-0 flex-1 basis-24">
                     <p className="truncate font-semibold">{f.name}</p>
-                    {onlineIds.has(f.id) && <p className="text-sm font-semibold text-success-fg">En ligne</p>}
+                    {onlineIds.has(f.id) && <p className="text-sm font-semibold text-success-fg">{tx("En ligne")}</p>}
                   </div>
                   <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
-                    Retirer
+                    {tx("Retirer")}
                   </button>
                   <button
                     type="button"
@@ -427,20 +430,20 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
                     onClick={() => challenge(f.id)}
                     className="h-11 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
                   >
-                    {status[f.id] === "sent" ? "Envoyé" : "Défier"}
+                    {status[f.id] === "sent" ? tx("Envoyé") : tx("Défier")}
                   </button>
                 </li>
               ))}
             </ul>
           ) : (
             <p className="mt-3 text-ink/70">
-              Tu n&apos;as pas encore d&apos;amis. Ajoute un élève depuis « En ligne » ou « Rechercher ».
+              {tx("Tu n'as pas encore d'amis. Ajoute un élève depuis « En ligne » ou « Rechercher ».")}
             </p>
           )}
 
           {ranking.length > 1 && (
             <>
-              <h2 className="mt-7 font-display text-lg font-bold">Classement entre amis</h2>
+              <h2 className="mt-7 font-display text-lg font-bold">{tx("Classement entre amis")}</h2>
               <ol className="mt-3 grid gap-2">
                 {ranking.map((r, i) => (
                   <li
@@ -450,9 +453,9 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
                     <span className="w-8 shrink-0 text-center font-display text-lg font-bold">{i + 1}</span>
                     <p className="min-w-0 flex-1 truncate font-semibold">
                       {r.name}
-                      {r.is_me && <span className="ml-2 text-sm font-bold text-brand-fg">Toi</span>}
+                      {r.is_me && <span className="ml-2 text-sm font-bold text-brand-fg">{tx("Toi")}</span>}
                     </p>
-                    <span className="shrink-0 font-semibold tabular-nums">{r.points} pts</span>
+                    <span className="shrink-0 font-semibold tabular-nums">{r.points}{tx(" pts")}</span>
                   </li>
                 ))}
               </ol>
@@ -465,23 +468,23 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <div className="mt-5">
           {active.length > 0 && (
             <>
-              <h2 className="font-display text-lg font-bold">En cours</h2>
+              <h2 className="font-display text-lg font-bold">{tx("En cours")}</h2>
               <ul className="mt-3 grid gap-2.5">
                 {active.map((d) => (
                   <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
                     <div className="min-w-0">
-                      <p className="truncate font-semibold">Contre {d.opp}</p>
+                      <p className="truncate font-semibold">{tx("Contre ")}{d.opp}</p>
                       <p className="text-sm text-ink/60">{d.subject}</p>
                     </div>
                     <Link href={`/dashboard/duel?id=${d.id}`} className="grid h-11 shrink-0 place-items-center rounded-xl bg-brand px-4 text-sm font-bold text-white">
-                      Reprendre
+                      {tx("Reprendre")}
                     </Link>
                   </li>
                 ))}
               </ul>
             </>
           )}
-          <h2 className={`font-display text-lg font-bold ${active.length ? "mt-7" : ""}`}>Historique</h2>
+          <h2 className={`font-display text-lg font-bold ${active.length ? "mt-7" : ""}`}>{tx("Historique")}</h2>
           {history.length ? (
             <ul className="mt-3 grid gap-2.5">
               {history.map((d) => {
@@ -490,24 +493,24 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
                 return (
                   <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
                     <div className="min-w-0">
-                      <p className="truncate font-semibold">Contre {d.opp}</p>
+                      <p className="truncate font-semibold">{tx("Contre ")}{d.opp}</p>
                       <p className="text-sm text-ink/60">{d.subject}</p>
                     </div>
                     <div className="shrink-0 text-right">
                       <p className="font-display text-lg font-bold tabular-nums">
                         {d.me} – {d.them}
                       </p>
-                      <p className={`text-sm font-semibold ${tone}`}>{outcome}</p>
+                      <p className={`text-sm font-semibold ${tone}`}>{tx(outcome)}</p>
                     </div>
                   </li>
                 );
               })}
             </ul>
           ) : (
-            <p className="mt-3 text-ink/70">Tu n&apos;as pas encore joué de duel. Défie un élève en ligne.</p>
+            <p className="mt-3 text-ink/70">{tx("Tu n'as pas encore joué de duel. Défie un élève en ligne.")}</p>
           )}
           <p className="mt-6 text-sm text-ink/60">
-            Les défis reçus s&apos;affichent en haut de l&apos;écran, où que tu sois dans ton espace.
+            {tx("Les défis reçus s'affichent en haut de l'écran, où que tu sois dans ton espace.")}
           </p>
         </div>
       )}

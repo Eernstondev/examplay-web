@@ -10,6 +10,8 @@ export type Badge = {
   done: boolean;
   progress: number;
   goal: number;
+  // Variables des textes (le titre et la description sont des clés de traduction).
+  vars?: Record<string, string>;
 };
 
 const SUBJECT_EMOJI: Record<string, string> = {
@@ -140,8 +142,9 @@ export function computeBadges(
     const avg = list.length ? Math.round(list.reduce((a, r) => a + pct(r), 0) / list.length) : 0;
     return {
       id: `subject_${s.id}`,
-      title: `Maîtrise : ${s.name}`,
-      desc: `Score moyen ≥ 70% sur au moins 5 quiz de ${s.name}`,
+      title: "Maîtrise : {name}",
+      desc: "Score moyen ≥ 70% sur au moins 5 quiz de {name}",
+      vars: { name: s.name },
       emoji: SUBJECT_EMOJI[s.id.replace(/9e$/, "")] ?? "📘",
       done: list.length >= 5 && avg >= 70,
       progress: Math.min(list.length, 5),

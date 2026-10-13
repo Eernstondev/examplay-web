@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { subjectName } from "@/lib/content";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
+import type { T } from "@/lib/i18n/core";
 
 type Notif = {
   id: string;
@@ -20,31 +22,25 @@ type Notif = {
   created_at: string;
 };
 
-function describe(n: Notif): { text: string; href: string } {
+function describe(n: Notif, t: T): { text: string; href: string } {
   const d = n.data;
+  const subject = subjectName(String(d.subject_id));
+  const from = (d.from_name as string) || t("Un élève");
   if (n.kind === "duel_challenge") {
-    return {
-      text: `${(d.from_name as string) || "Un élève"} t'a défié en ${subjectName(String(d.subject_id))}.`,
-      href: "/dashboard/communaute",
-    };
+    return { text: t("{from} t'a défié en {subject}.", { from, subject }), href: "/dashboard/communaute" };
   }
   if (n.kind === "duel_finished") {
     return {
-      text: d.won
-        ? `Tu as gagné ton duel en ${subjectName(String(d.subject_id))} !`
-        : `Tu as perdu ton duel en ${subjectName(String(d.subject_id))}.`,
+      text: d.won ? t("Tu as gagné ton duel en {subject} !", { subject }) : t("Tu as perdu ton duel en {subject}.", { subject }),
       href: "/dashboard/communaute",
     };
   }
   if (n.kind === "friend_request") {
-    return {
-      text: `${(d.from_name as string) || "Un élève"} t'a envoyé une demande d'ami.`,
-      href: "/dashboard/communaute?tab=friends",
-    };
+    return { text: t("{from} t'a envoyé une demande d'ami.", { from }), href: "/dashboard/communaute?tab=friends" };
   }
   if (n.kind === "friend_accepted") {
     return {
-      text: `${(d.from_name as string) || "Un élève"} a accepté ta demande d'ami. Vous pouvez maintenant vous défier.`,
+      text: t("{from} a accepté ta demande d'ami. Vous pouvez maintenant vous défier.", { from }),
       href: "/dashboard/communaute?tab=friends",
     };
   }
@@ -52,16 +48,16 @@ function describe(n: Notif): { text: string; href: string } {
     const days = Number(d.streak) || 0;
     return {
       text: days > 1
-        ? `Ta série de ${days} jours est en danger : fais un quiz aujourd'hui.`
-        : "Ta série est en danger : fais un quiz aujourd'hui.",
+        ? t("Ta série de {days} jours est en danger : fais un quiz aujourd'hui.", { days })
+        : t("Ta série est en danger : fais un quiz aujourd'hui."),
       href: "/dashboard",
     };
   }
   if (n.kind === "study_reminder") {
-    return { text: "Tu n'as pas révisé aujourd'hui. Un quiz rapide de 5 questions ?", href: "/dashboard" };
+    return { text: t("Tu n'as pas révisé aujourd'hui. Un quiz rapide de 5 questions ?"), href: "/dashboard" };
   }
   return {
-    text: d.status === "resolved" ? "Ton signalement a été pris en compte." : "Ton signalement a été refusé.",
+    text: d.status === "resolved" ? t("Ton signalement a été pris en compte.") : t("Ton signalement a été refusé."),
     href: "/dashboard",
   };
 }
@@ -70,6 +66,7 @@ const ANSWER_LABEL = { accepted: "Demande acceptée", declined: "Demande refusé
 type Answer = keyof typeof ANSWER_LABEL;
 
 export function NotificationBell({ userId }: { userId: string }) {
+  const t = useT();
   const [items, setItems] = useState<Notif[]>([]);
   const [open, setOpen] = useState(false);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
@@ -139,7 +136,7 @@ export function NotificationBell({ userId }: { userId: string }) {
       <button
         type="button"
         onClick={onOpen}
-        aria-label={unread ? `Notifications, ${unread} non lues` : "Notifications"}
+        aria-label={unread ? t("Notifications, {unread} non lues", { unread }) : t("Notifications")}
         className="relative grid size-11 place-items-center rounded-full text-ink/70 hover:bg-surface hover:text-brand-fg"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -155,11 +152,11 @@ export function NotificationBell({ userId }: { userId: string }) {
       {open && (
         <div className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[90vw] rounded-2xl bg-surface p-2 shadow-xl ring-1 ring-ink/10">
           {items.length === 0 ? (
-            <p className="p-4 text-center text-sm text-ink/60">Aucune notification pour le moment.</p>
+            <p className="p-4 text-center text-sm text-ink/60">{t("Aucune notification pour le moment.")}</p>
           ) : (
             <ul className="max-h-96 overflow-y-auto">
               {items.map((n) => {
-                const { text, href } = describe(n);
+                const { text, href } = describe(n, t);
                 const pendingRequest = n.kind === "friend_request" && !n.data.answered && !answers[n.id];
                 const result = answers[n.id] ?? (n.data.answered === "accepted" ? "accepted" : n.data.answered ? "declined" : null);
                 return (
@@ -178,19 +175,19 @@ export function NotificationBell({ userId }: { userId: string }) {
                           onClick={() => answer(n, false)}
                           className="h-10 rounded-xl text-sm font-bold ring-1 ring-ink/15"
                         >
-                          Refuser
+                          {t("Refuser")}
                         </button>
                         <button
                           type="button"
                           onClick={() => answer(n, true)}
                           className="h-10 rounded-xl bg-brand text-sm font-bold text-white"
                         >
-                          Accepter
+                          {t("Accepter")}
                         </button>
                       </div>
                     )}
                     {n.kind === "friend_request" && result && (
-                      <p className="px-3 pb-2.5 text-xs font-semibold text-ink/60">{ANSWER_LABEL[result]}</p>
+                      <p className="px-3 pb-2.5 text-xs font-semibold text-ink/60">{t(ANSWER_LABEL[result])}</p>
                     )}
                   </li>
                 );

@@ -1,10 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { contactSubjects } from "@/lib/contact";
 import { departments, findLevel } from "@/lib/levels";
 import { createClient } from "@/lib/supabase/server";
+import { getT } from "@/lib/i18n/server";
+import { LANG_COOKIE, parseLang } from "@/lib/i18n/core";
 import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -43,7 +45,12 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     return fail("La connexion a échoué. Réessaie dans un instant.");
   }
 
-  const { data: admin } = await supabase.rpc("is_admin");
+  // Langue choisie explicitement sur le site : reportée sur le compte (notifications push).
+  const chosen = (await cookies()).get(LANG_COOKIE)?.value;
+  const [{ data: admin }] = await Promise.all([
+    supabase.rpc("is_admin"),
+    chosen ? supabase.rpc("set_language", { p_lang: parseLang(chosen) }) : null,
+  ]);
   redirect(admin === true ? "/admin" : "/dashboard");
 }
 
@@ -110,7 +117,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (!data.session) {
     return {
       status: "confirm",
-      message: `Compte créé. Ouvre le lien envoyé à ${values.email} pour l'activer.`,
+      message: (await getT())("Compte créé. Ouvre le lien envoyé à {email} pour l'activer.", { email: values.email }),
       values,
     };
   }

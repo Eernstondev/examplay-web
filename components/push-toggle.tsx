@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { primaryButton, secondaryButton } from "@/components/app/ui";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 type State = "loading" | "unsupported" | "denied" | "off" | "on" | "busy";
 
@@ -16,6 +17,7 @@ function keyToBytes(base64: string) {
 
 // Active ou coupe les notifications push sur cet appareil (duel reçu, duel terminé, signalement traité).
 export function PushToggle() {
+  const t = useT();
   const [state, setState] = useState<State>("loading");
   const [ios, setIos] = useState(false);
 
@@ -83,26 +85,26 @@ export function PushToggle() {
 
   return (
     <section className="mt-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
-      <h2 className="font-display text-lg font-semibold">Notifications</h2>
+      <h2 className="font-display text-lg font-semibold">{t("Notifications")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-ink/65">
-        Reçois une alerte sur ton téléphone quand on te défie en duel, quand un duel se termine ou quand ton signalement a une réponse.
+        {t("Reçois une alerte sur ton téléphone quand on te défie en duel, quand un duel se termine ou quand ton signalement a une réponse.")}
       </p>
       {ios && state !== "on" && (
         <p className="mt-2 text-sm font-semibold text-ink/70">
-          Sur iPhone : ajoute d&apos;abord Examplay à l&apos;écran d&apos;accueil (Partager, puis « Sur l&apos;écran d&apos;accueil »).
+          {t("Sur iPhone : ajoute d'abord Examplay à l'écran d'accueil (Partager, puis « Sur l'écran d'accueil »).")}
         </p>
       )}
       {state === "denied" ? (
         <p className="mt-3 text-sm font-semibold text-danger-fg">
-          Les notifications sont bloquées. Autorise-les dans les réglages du navigateur pour ce site.
+          {t("Les notifications sont bloquées. Autorise-les dans les réglages du navigateur pour ce site.")}
         </p>
       ) : state === "on" ? (
         <button type="button" onClick={disable} className={`${secondaryButton} mt-4 sm:max-w-xs`}>
-          Désactiver les notifications
+          {t("Désactiver les notifications")}
         </button>
       ) : (
         <button type="button" onClick={enable} disabled={state !== "off"} className={`${primaryButton} mt-4 sm:max-w-xs`}>
-          {state === "busy" || state === "loading" ? "Patiente…" : "Activer les notifications"}
+          {state === "busy" || state === "loading" ? t("Patiente…") : t("Activer les notifications")}
         </button>
       )}
     </section>

@@ -6,6 +6,8 @@ import { getSubjects } from "@/lib/content";
 import { getAccount } from "@/lib/data";
 import { buildPlan, haitiToday, type AttemptRow } from "@/lib/revision-plan";
 import { createClient } from "@/lib/supabase/server";
+import { getLang, getT } from "@/lib/i18n/server";
+import { formatDate } from "@/lib/i18n/core";
 
 export const metadata: Metadata = { title: "Plan de révision" };
 
@@ -21,9 +23,11 @@ async function recentAttempts(): Promise<AttemptRow[]> {
   return (data as AttemptRow[] | null) ?? [];
 }
 
-const dayLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "short" });
 
 export default async function Page() {
+  const tx = await getT();
+  const lang = await getLang();
+  const dayLabel = (d: Date) => formatDate(lang, d, { weekday: true });
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -31,19 +35,19 @@ export default async function Page() {
 
   return (
     <>
-      <SubHeader title="Plan de révision" />
+      <SubHeader title={tx("Plan de révision")} />
       {!plan ? (
-        <p className="mt-6 text-ink/70">Le calendrier des épreuves n&apos;est pas encore disponible pour ton niveau.</p>
+        <p className="mt-6 text-ink/70">{tx("Le calendrier des épreuves n'est pas encore disponible pour ton niveau.")}</p>
       ) : (
         <>
           <section className="rounded-3xl bg-brand p-6 text-white">
-            <p className="text-sm font-semibold text-white/75">Première épreuve : {plan.firstExam}</p>
+            <p className="text-sm font-semibold text-white/75">{tx("Première épreuve : ")}{plan.firstExam}</p>
             <p className="mt-1 font-display text-6xl font-extrabold leading-none">
               {plan.daysLeft}
-              <span className="text-2xl font-bold"> jour{plan.daysLeft > 1 ? "s" : ""}</span>
+              <span className="text-2xl font-bold">{tx(" jour")}{plan.daysLeft > 1 ? tx("s") : ""}</span>
             </p>
             <p className="mt-3 text-sm text-white/80">
-              Les épreuves proches et tes points faibles passent en premier. 2 séances de 30 min par jour.
+              {tx("Les épreuves proches et tes points faibles passent en premier. 2 séances de 30 min par jour.")}
             </p>
           </section>
 
@@ -51,8 +55,8 @@ export default async function Page() {
             {plan.days.map((day, i) => (
               <li key={day.date.toISOString()}>
                 <h2 className="font-display text-lg font-bold first-letter:uppercase">
-                  {i === 0 ? "Aujourd'hui" : i === 1 ? "Demain" : dayLabel.format(day.date)}
-                  {i < 2 && <span className="font-normal text-ink/60"> · {dayLabel.format(day.date)}</span>}
+                  {i === 0 ? tx("Aujourd'hui") : i === 1 ? tx("Demain") : dayLabel(day.date)}
+                  {i < 2 && <span className="font-normal text-ink/60"> · {dayLabel(day.date)}</span>}
                 </h2>
                 <ul className="mt-2 divide-y divide-ink/10 overflow-hidden rounded-2xl bg-surface ring-1 ring-ink/10">
                   {day.tasks.map((t, j) => {
@@ -64,10 +68,10 @@ export default async function Page() {
                         <span className="min-w-0 flex-1">
                           <span className="block font-semibold">{t.label}</span>
                           <span className="block text-sm text-ink/65">
-                            {t.chapter ? `Chapitre à reprendre : ${t.chapter}` : "Quiz de révision"} · 30 min
+                            {t.chapter ? tx("Chapitre à reprendre : {chapter}", { chapter: t.chapter }) : tx("Quiz de révision")}{tx(" · 30 min")}
                           </span>
                         </span>
-                        {href && <span className="shrink-0 text-sm font-bold text-brand-fg">Réviser</span>}
+                        {href && <span className="shrink-0 text-sm font-bold text-brand-fg">{tx("Réviser")}</span>}
                       </>
                     );
                     return (

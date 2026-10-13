@@ -4,10 +4,12 @@ import { AdSlot } from "@/components/ad-slot";
 import { DuelPlayer } from "@/components/app/duel-player";
 import { SubHeader } from "@/components/app/ui";
 import { getAccount } from "@/lib/data";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Duel" };
 
 export default async function Page({ searchParams }: PageProps<"/dashboard/duel">) {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -16,7 +18,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/duel"
 
   return (
     <>
-      <SubHeader title="Duel" back="/dashboard/communaute" />
+      <SubHeader title={t("Duel")} back="/dashboard/communaute" />
       <DuelPlayer key={id} id={id} me={account.id} />
       <AdSlot
         placement="duel"

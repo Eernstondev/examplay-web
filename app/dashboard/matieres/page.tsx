@@ -6,6 +6,7 @@ import { ProgressBar, SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount, getQuestionCounts, getResults } from "@/lib/data";
 import { subjectProgress } from "@/lib/stats";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Choisis une matière" };
 
@@ -18,6 +19,7 @@ const modes = [
 ];
 
 export default async function Page({ searchParams }: PageProps<"/dashboard/matieres">) {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -28,8 +30,8 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
 
   return (
     <>
-      <SubHeader title="Choisis une matière" />
-      <nav aria-label="Mode de révision" className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
+      <SubHeader title={t("Choisis une matière")} />
+      <nav aria-label={t("Mode de révision")} className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
         <ul className="flex w-max gap-2">
           {modes.map((m) => (
             <li key={m.id}>
@@ -38,13 +40,13 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
                 aria-current={m.id === mode.id ? "page" : undefined}
                 className="grid h-11 place-items-center whitespace-nowrap rounded-full bg-surface px-4 text-sm font-bold text-ink/70 ring-1 ring-ink/10 aria-[current=page]:bg-brand aria-[current=page]:text-white aria-[current=page]:ring-0"
               >
-                {m.label}
+                {t(m.label)}
               </Link>
             </li>
           ))}
         </ul>
       </nav>
-      <p className="mt-3 text-sm leading-relaxed text-ink/70">{mode.hint}</p>
+      <p className="mt-3 text-sm leading-relaxed text-ink/70">{t(mode.hint)}</p>
 
       <ul className="mt-5 grid gap-2.5 md:grid-cols-2">
         {subjects.map((s) => {
@@ -59,12 +61,12 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
               <div className="flex items-baseline justify-between gap-3">
                 <span className="font-display text-lg font-semibold">
                   {s.name}
-                  {s.heavy && <span className="ml-2 text-sm font-bold text-brand-fg">×2</span>}
+                  {s.heavy && <span className="ml-2 text-sm font-bold text-brand-fg">{t("×2")}</span>}
                 </span>
                 {count > 0 && <span className="shrink-0 text-sm font-semibold text-ink/60">{progress}%</span>}
               </div>
               <span className="mt-0.5 block text-sm text-ink/60">
-                {count ? `${count} questions disponibles` : "Bientôt disponible"}
+                {count ? t("{count} questions disponibles", { count }) : t("Bientôt disponible")}
               </span>
               {count > 0 && (
                 <div className="mt-3">

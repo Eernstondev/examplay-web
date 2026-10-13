@@ -4,12 +4,14 @@ import { Community } from "@/components/app/community";
 import { SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount, getFinishedDuels, getLeaderboard, getQuestionCounts } from "@/lib/data";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Communauté et duels" };
 
 const tabs = ["online", "search", "friends", "duels"] as const;
 
 export default async function Page({ searchParams }: PageProps<"/dashboard/communaute">) {
+  const tx = await getT();
   const { tab } = await searchParams;
   const initialTab = tabs.find((t) => t === tab);
   const account = await getAccount();
@@ -27,7 +29,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/commu
 
   return (
     <>
-      <SubHeader title="Communauté et duels" />
+      <SubHeader title={tx("Communauté et duels")} />
       <Community
         me={{ id: account.id, name: account.name, department: account.department, level: account.level }}
         subjects={subjects}

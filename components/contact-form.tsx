@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { sendContactRequest, type ContactState } from "@/app/actions";
 import { Turnstile } from "@/components/turnstile";
 import { contactSubjects } from "@/lib/contact";
+import { useT } from "@/components/i18n-provider";
 
 const initialState: ContactState = {
   status: "idle",
@@ -15,12 +16,13 @@ const field =
   "mt-1.5 w-full rounded-lg border border-ink/20 bg-surface px-4 py-3 text-ink placeholder:text-ink/40";
 
 export function ContactForm() {
+  const t = useT();
   const [state, action, pending] = useActionState(sendContactRequest, initialState);
 
   if (state.status === "success") {
     return (
       <p role="status" className="text-lg font-medium">
-        {state.message}
+        {t(state.message)}
       </p>
     );
   }
@@ -29,7 +31,7 @@ export function ContactForm() {
     <form action={action} noValidate className="grid gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block text-sm font-medium">
-          Nom complet ou organisation
+          {t("Nom complet ou organisation")}
           <input
             name="name"
             type="text"
@@ -41,7 +43,7 @@ export function ContactForm() {
           />
         </label>
         <label className="block text-sm font-medium">
-          Adresse e-mail professionnelle
+          {t("Adresse e-mail professionnelle")}
           <input
             name="email"
             type="email"
@@ -54,20 +56,20 @@ export function ContactForm() {
         </label>
       </div>
       <label className="block text-sm font-medium">
-        Sujet
+        {t("Sujet")}
         <select name="subject" required defaultValue={state.values.subject} className={field}>
           <option value="" disabled>
-            Sélectionnez un sujet
+            {t("Sélectionnez un sujet")}
           </option>
           {contactSubjects.map((s) => (
             <option key={s.value} value={s.value}>
-              {s.label}
+              {t(s.label)}
             </option>
           ))}
         </select>
       </label>
       <label className="block text-sm font-medium">
-        Message
+        {t("Message")}
         <textarea
           name="message"
           required
@@ -82,7 +84,7 @@ export function ContactForm() {
       <Turnstile resetKey={state} />
       {state.status === "error" && (
         <p role="alert" className="text-sm font-medium text-danger-fg">
-          {state.message}
+          {t(state.message)}
         </p>
       )}
       <button
@@ -90,7 +92,7 @@ export function ContactForm() {
         disabled={pending}
         className="h-12 justify-self-start rounded-lg bg-brand px-6 font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
       >
-        {pending ? "Envoi…" : "Envoyer la demande"}
+        {pending ? t("Envoi…") : t("Envoyer la demande")}
       </button>
     </form>
   );

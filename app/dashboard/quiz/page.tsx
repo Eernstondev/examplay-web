@@ -7,6 +7,7 @@ import { getSubjects } from "@/lib/content";
 import { getAccount, getQuestionCounts, getResults } from "@/lib/data";
 import { site } from "@/lib/site";
 import { recommendSubject } from "@/lib/stats";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Quiz" };
 
@@ -14,6 +15,7 @@ const MODES: QuizMode[] = ["quiz", "exam", "short", "essay"];
 const SUFFIX: Record<QuizMode, string> = { quiz: "", exam: " · Simulation", short: " · Réponse courte", essay: " · Rédaction" };
 
 export default async function Page({ searchParams }: PageProps<"/dashboard/quiz">) {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -37,8 +39,8 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/quiz"
 
   return (
     <>
-      <SubHeader title={subject.name + SUFFIX[mode]} back={backHref} />
-      {chapter && <p className="-mt-3 mb-5 text-sm font-semibold text-ink/60">Chapitre : {chapter}</p>}
+      <SubHeader title={subject.name + t(SUFFIX[mode])} back={backHref} />
+      {chapter && <p className="-mt-3 mb-5 text-sm font-semibold text-ink/60">{t("Chapitre : ")}{chapter}</p>}
       <QuizPlayer
         key={`${subject.id}-${mode}-${chapter ?? ""}`}
         subject={subject.id}

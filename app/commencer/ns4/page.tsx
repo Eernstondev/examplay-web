@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthShell } from "@/components/auth-shell";
 import { ns4Tracks } from "@/lib/levels";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Choisis ta série NS4" };
 
-export default function Page() {
+export default async function Page() {
+  const t = await getT();
   return (
-    <AuthShell wide title="Choisis ta série NS4" lead="Les questions seront adaptées à ta filière.">
+    <AuthShell wide title={t("Choisis ta série NS4")} lead={t("Les questions seront adaptées à ta filière.")}>
       <ul className="grid gap-3 sm:grid-cols-2">
         {ns4Tracks.map((track) => (
           <li key={track.slug}>
@@ -25,7 +27,7 @@ export default function Page() {
       </ul>
       <p className="mt-7">
         <Link href="/commencer" className="font-semibold text-brand-fg underline underline-offset-4">
-          Retour au choix du niveau
+          {t("Retour au choix du niveau")}
         </Link>
       </p>
     </AuthShell>

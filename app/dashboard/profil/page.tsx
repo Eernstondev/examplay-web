@@ -5,10 +5,12 @@ import { signOut } from "@/app/actions";
 import { DeleteAccount } from "@/components/app/delete-account";
 import { SubHeader } from "@/components/app/ui";
 import { PushToggle } from "@/components/push-toggle";
+import { LanguageSwitch } from "@/components/language-switch";
 import { ThemeSwitch } from "@/components/theme-toggle";
 import { levelLabel } from "@/lib/content";
 import { getAccount, getReferralCount } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Mon profil" };
 
@@ -22,6 +24,7 @@ type PublicProfile = {
 };
 
 export default async function Page() {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -43,7 +46,7 @@ export default async function Page() {
 
   return (
     <>
-      <SubHeader title="Mon profil" />
+      <SubHeader title={t("Mon profil")} />
       <section className="flex items-center gap-4 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
         <span className="grid size-16 shrink-0 place-items-center rounded-full bg-brand font-display text-2xl font-bold text-white">
           {account.name.charAt(0).toUpperCase()}
@@ -57,13 +60,13 @@ export default async function Page() {
         </div>
       </section>
       <p className="mt-2 text-sm text-ink/60">
-        Le nom, le niveau et le département sont fixés à l&apos;inscription.
+        {t("Le nom, le niveau et le département sont fixés à l'inscription.")}
       </p>
 
       <dl className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3">
         {rows.map(([label, value]) => (
           <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
-            <dt className="text-sm font-semibold text-ink/60">{label}</dt>
+            <dt className="text-sm font-semibold text-ink/60">{t(label)}</dt>
             <dd className="mt-1 font-display text-2xl font-bold">{Number(value ?? 0)}</dd>
           </div>
         ))}
@@ -71,19 +74,20 @@ export default async function Page() {
 
       {account.referralCode && (
         <section className="mt-5 rounded-3xl bg-brand p-5 text-white">
-          <p className="text-sm font-semibold text-white/75">Ton code de parrainage</p>
+          <p className="text-sm font-semibold text-white/75">{t("Ton code de parrainage")}</p>
           <p className="mt-1 select-all font-display text-3xl font-extrabold tracking-wider">
             {account.referralCode}
           </p>
           <p className="mt-2 text-sm text-white/80">
             {referrals > 0
-              ? `${referrals} ami${referrals > 1 ? "s" : ""} inscrit${referrals > 1 ? "s" : ""} avec ton code.`
-              : "Partage-le : tes amis le saisissent dans l'app à l'inscription."}
+              ? t("{referrals} ami{v1} inscrit{v2} avec ton code.", { referrals, v1: referrals > 1 ? "s" : "", v2: referrals > 1 ? "s" : "" })
+              : t("Partage-le : tes amis le saisissent dans l'app à l'inscription.")}
           </p>
         </section>
       )}
 
       <ThemeSwitch />
+      <LanguageSwitch />
 
       <PushToggle />
 
@@ -91,9 +95,9 @@ export default async function Page() {
         href="/contribuer"
         className="mt-5 block rounded-3xl bg-surface p-5 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
       >
-        <span className="font-display text-lg font-semibold">Espace enseignants et experts</span>
+        <span className="font-display text-lg font-semibold">{t("Espace enseignants et experts")}</span>
         <span className="mt-1 block text-sm leading-relaxed text-ink/65">
-          Tu es enseignant ou expert ? Demande l&apos;accès pour proposer des questions et des corrections.
+          {t("Tu es enseignant ou expert ? Demande l'accès pour proposer des questions et des corrections.")}
         </span>
       </Link>
 
@@ -102,7 +106,7 @@ export default async function Page() {
           type="submit"
           className="h-13 w-full rounded-xl bg-surface font-bold text-danger-fg ring-1 ring-ink/15 sm:w-auto sm:px-8"
         >
-          Se déconnecter
+          {t("Se déconnecter")}
         </button>
       </form>
 

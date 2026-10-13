@@ -6,6 +6,7 @@ import { signIn, signUp, type AuthState } from "@/app/actions";
 import { PasswordInput } from "@/components/password-field";
 import { Turnstile } from "@/components/turnstile";
 import { departments } from "@/lib/levels";
+import { useT } from "@/components/i18n-provider";
 
 const initialState: AuthState = { status: "idle", message: "", values: { email: "" } };
 
@@ -16,15 +17,17 @@ const submit =
   "h-13 w-full rounded-xl bg-brand text-base font-bold text-white hover:bg-brand-dark disabled:opacity-60";
 
 function ErrorMessage({ state }: { state: AuthState }) {
+  const t = useT();
   if (state.status !== "error") return null;
   return (
     <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-semibold text-danger-fg">
-      {state.message}
+      {t(state.message)}
     </p>
   );
 }
 
 export function SignInForm({ notice, success }: { notice?: string; success?: string }) {
+  const t = useT();
   const [state, action, pending] = useActionState(signIn, initialState);
 
   return (
@@ -40,7 +43,7 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
         </p>
       )}
       <label className={label}>
-        Adresse e-mail
+        {t("Adresse e-mail")}
         <input
           name="email"
           type="email"
@@ -52,27 +55,28 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
         />
       </label>
       <label className={label}>
-        Mot de passe
+        {t("Mot de passe")}
         <PasswordInput name="password" required autoComplete="current-password" />
       </label>
       <ErrorMessage state={state} />
       <button type="submit" disabled={pending} className={submit}>
-        {pending ? "Connexion…" : "Se connecter"}
+        {pending ? t("Connexion…") : t("Se connecter")}
       </button>
       <Link href="/mot-de-passe-oublie" className="justify-self-center py-1 text-sm font-semibold text-brand-fg underline underline-offset-4">
-        Mot de passe oublié ?
+        {t("Mot de passe oublié ?")}
       </Link>
     </form>
   );
 }
 
 export function SignUpForm({ level, referral = "" }: { level: string; referral?: string }) {
+  const t = useT();
   const [state, action, pending] = useActionState(signUp, initialState);
 
   if (state.status === "confirm") {
     return (
       <p role="status" className="rounded-xl bg-success-soft px-4 py-4 font-semibold text-success-fg">
-        {state.message}
+        {t(state.message)}
       </p>
     );
   }
@@ -81,7 +85,7 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
     <form action={action} noValidate className="grid gap-4">
       <input type="hidden" name="level" value={level} />
       <label className={label}>
-        Nom complet
+        {t("Nom complet")}
         <input
           name="name"
           type="text"
@@ -93,7 +97,7 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
         />
       </label>
       <label className={label}>
-        Adresse e-mail
+        {t("Adresse e-mail")}
         <input
           name="email"
           type="email"
@@ -105,7 +109,7 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
         />
       </label>
       <label className={label}>
-        Département
+        {t("Département")}
         <select
           name="department"
           required
@@ -113,7 +117,7 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
           className={field}
         >
           <option value="" disabled>
-            Choisis ton département
+            {t("Choisis ton département")}
           </option>
           {departments.map((d) => (
             <option key={d} value={d}>
@@ -123,14 +127,14 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
         </select>
       </label>
       <label className={label}>
-        Mot de passe
+        {t("Mot de passe")}
         <PasswordInput name="password" required minLength={6} autoComplete="new-password" aria-describedby="password-hint" />
         <span id="password-hint" className="mt-1.5 block text-sm font-normal text-ink/60">
-          6 caractères minimum.
+          {t("6 caractères minimum.")}
         </span>
       </label>
       <label className={label}>
-        Code de parrainage <span className="font-normal text-ink/60">(facultatif)</span>
+        {t("Code de parrainage ")}<span className="font-normal text-ink/60">{t("(facultatif)")}</span>
         <input
           name="referral"
           type="text"
@@ -145,13 +149,13 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
       <label className="flex items-start gap-3 text-sm leading-relaxed">
         <input type="checkbox" name="terms" required className="mt-0.5 size-5 shrink-0 accent-brand" />
         <span>
-          J&apos;accepte les{" "}
+          {t("J'accepte les")}{" "}
           <Link href="/conditions" target="_blank" className="font-semibold text-brand-fg underline underline-offset-2">
-            conditions d&apos;utilisation
+            {t("conditions d'utilisation")}
           </Link>{" "}
-          et la{" "}
+          {t("et la")}{" "}
           <Link href="/confidentialite" target="_blank" className="font-semibold text-brand-fg underline underline-offset-2">
-            politique de confidentialité
+            {t("politique de confidentialité")}
           </Link>
           .
         </span>
@@ -159,7 +163,7 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
       <Turnstile resetKey={state} />
       <ErrorMessage state={state} />
       <button type="submit" disabled={pending} className={submit}>
-        {pending ? "Création du compte…" : "Créer mon compte"}
+        {pending ? t("Création du compte…") : t("Créer mon compte")}
       </button>
     </form>
   );

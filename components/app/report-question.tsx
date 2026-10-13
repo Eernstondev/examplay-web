@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { REPORT_REASONS } from "@/lib/reports";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 // Lien discret sous une question ; à remonter avec une nouvelle `key` à chaque question.
 export function ReportQuestion({ questionId }: { questionId: string }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [comment, setComment] = useState("");
@@ -23,7 +25,7 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
   if (state === "sent") {
     return (
       <p role="status" className="mt-6 text-sm font-semibold text-success-fg">
-        Merci, ton signalement a été transmis à l&apos;équipe.
+        {t("Merci, ton signalement a été transmis à l'équipe.")}
       </p>
     );
   }
@@ -35,14 +37,14 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
         onClick={() => setOpen(true)}
         className="mt-6 min-h-11 text-sm font-semibold text-ink/60 underline underline-offset-4 hover:text-brand-fg"
       >
-        Signaler cette question
+        {t("Signaler cette question")}
       </button>
     );
   }
 
   return (
     <fieldset className="mt-6 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
-      <legend className="px-1 text-sm font-bold">Quel est le problème ?</legend>
+      <legend className="px-1 text-sm font-bold">{t("Quel est le problème ?")}</legend>
       <div className="grid gap-2">
         {REPORT_REASONS.map((r) => (
           <label
@@ -64,7 +66,7 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
         ))}
       </div>
       <label className="mt-3 block text-sm font-semibold">
-        Précision (optionnel)
+        {t("Précision (optionnel)")}
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -75,12 +77,12 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
       </label>
       {state === "error" && (
         <p role="alert" className="mt-2 text-sm font-semibold text-danger-fg">
-          L&apos;envoi a échoué. Vérifie ta connexion et réessaie.
+          {t("L'envoi a échoué. Vérifie ta connexion et réessaie.")}
         </p>
       )}
       <div className="mt-3 grid grid-cols-2 gap-2">
         <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-xl text-sm font-bold ring-1 ring-ink/15">
-          Annuler
+          {t("Annuler")}
         </button>
         <button
           type="button"
@@ -88,7 +90,7 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
           onClick={send}
           className="h-11 rounded-xl bg-brand text-sm font-bold text-white disabled:opacity-50"
         >
-          {state === "sending" ? "Envoi…" : "Envoyer"}
+          {state === "sending" ? t("Envoi…") : t("Envoyer")}
         </button>
       </div>
     </fieldset>

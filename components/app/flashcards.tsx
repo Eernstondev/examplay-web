@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ReportQuestion } from "@/components/app/report-question";
 import { ProgressBar, primaryButton, secondaryButton } from "@/components/app/ui";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
 type Card = { id: string; q: string; answer: string; explain: string };
 const SERIES_SIZE = 20;
@@ -19,6 +20,7 @@ type PickedRow = {
 };
 
 export function Flashcards({ subject, chapter }: { subject: string; chapter?: string }) {
+  const t = useT();
   const [loaded, setLoaded] = useState(false);
   const [round, setRound] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
@@ -66,9 +68,9 @@ export function Flashcards({ subject, chapter }: { subject: string; chapter?: st
     setFinished(false);
   };
 
-  if (!loaded) return <p className="py-16 text-center text-ink/70">Chargement des fiches…</p>;
+  if (!loaded) return <p className="py-16 text-center text-ink/70">{t("Chargement des fiches…")}</p>;
   if (!cards.length) {
-    return <p className="py-12 text-center text-ink/75">Aucune fiche pour cette matière pour le moment.</p>;
+    return <p className="py-12 text-center text-ink/75">{t("Aucune fiche pour cette matière pour le moment.")}</p>;
   }
 
   if (finished) {
@@ -77,13 +79,13 @@ export function Flashcards({ subject, chapter }: { subject: string; chapter?: st
         <p className="font-display text-[clamp(3.5rem,18vw,5.5rem)] font-extrabold leading-none text-brand-fg">
           {known} / {cards.length}
         </p>
-        <p className="mt-3 text-ink/75">fiches que tu savais déjà. {cards.length - known} à revoir.</p>
+        <p className="mt-3 text-ink/75">{t("fiches que tu savais déjà. ")}{cards.length - known}{t(" à revoir.")}</p>
         <div className="mt-8 grid gap-3">
           <button type="button" onClick={restart} className={primaryButton}>
-            Nouvelle série
+            {t("Nouvelle série")}
           </button>
           <Link href="/dashboard" className={secondaryButton}>
-            Retour au tableau de bord
+            {t("Retour au tableau de bord")}
           </Link>
         </div>
       </div>
@@ -112,21 +114,21 @@ export function Flashcards({ subject, chapter }: { subject: string; chapter?: st
         }`}
       >
         <span className={`text-sm font-semibold ${flipped ? "text-white/70" : "text-ink/55"}`}>
-          {flipped ? "Réponse" : "Question"}
+          {flipped ? t("Réponse") : t("Question")}
         </span>
         <span className="mt-2 font-display text-[clamp(1.25rem,5vw,1.625rem)] font-semibold leading-snug">
           {flipped ? card.answer : card.q}
         </span>
         {flipped && card.explain && <span className="mt-3 text-white/85">{card.explain}</span>}
-        {!flipped && <span className="mt-6 text-sm text-ink/55">Touche la carte pour la retourner</span>}
+        {!flipped && <span className="mt-6 text-sm text-ink/55">{t("Touche la carte pour la retourner")}</span>}
       </button>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         <button type="button" disabled={!flipped} onClick={() => next(false)} className={`${secondaryButton} disabled:opacity-50`}>
-          À revoir
+          {t("À revoir")}
         </button>
         <button type="button" disabled={!flipped} onClick={() => next(true)} className={primaryButton}>
-          Je savais
+          {t("Je savais")}
         </button>
       </div>
 

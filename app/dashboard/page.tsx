@@ -16,6 +16,7 @@ import {
   type Account,
 } from "@/lib/data";
 import { DAILY_GOAL, globalProgress, questionsToday } from "@/lib/stats";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
 
@@ -35,38 +36,39 @@ const modes = [
 ];
 
 async function StreakCard() {
+  const t = await getT();
   const [streak, results] = await Promise.all([getStreak(), getResults()]);
   const days = streak.streak;
   const done = questionsToday(results);
   const reached = done >= DAILY_GOAL;
   const atRisk = days > 0 && !streak.activeToday;
   return (
-    <section aria-label="Série de jours" className="mt-6 rounded-3xl bg-brand p-5 text-white sm:p-7">
+    <section aria-label={t("Série de jours")} className="mt-6 rounded-3xl bg-brand p-5 text-white sm:p-7">
       <div className="flex items-center gap-4 sm:gap-6">
         <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun font-display text-3xl font-extrabold text-sun-ink sm:size-20 sm:text-4xl">
           {days}
         </span>
         <div>
           <h2 className="font-display text-xl font-bold leading-snug sm:text-2xl">
-            {days > 0 ? `${days} jour${days > 1 ? "s" : ""} de suite` : "Commence une série aujourd'hui !"}
+            {days > 0 ? t("{days} jour{v1} de suite", { days, v1: days > 1 ? "s" : "" }) : t("Commence une série aujourd'hui !")}
           </h2>
           <p className="mt-1 text-sm leading-relaxed text-white/80 sm:text-base">
             {atRisk
-              ? "Ta série s'arrête ce soir : fais un quiz pour la garder."
-              : "Continue ta série pour débloquer des badges."}
+              ? t("Ta série s'arrête ce soir : fais un quiz pour la garder.")
+              : t("Continue ta série pour débloquer des badges.")}
           </p>
         </div>
       </div>
       <div className="mt-4">
         <div className="flex items-baseline justify-between text-sm font-semibold">
-          <span>{reached ? "Objectif du jour atteint" : "Objectif du jour"}</span>
+          <span>{reached ? t("Objectif du jour atteint") : t("Objectif du jour")}</span>
           <span className="tabular-nums text-white/85">
-            {Math.min(done, DAILY_GOAL)} / {DAILY_GOAL} questions
+            {Math.min(done, DAILY_GOAL)} / {DAILY_GOAL}{t(" questions")}
           </span>
         </div>
         <div
           role="progressbar"
-          aria-label="Objectif du jour"
+          aria-label={t("Objectif du jour")}
           aria-valuemin={0}
           aria-valuemax={DAILY_GOAL}
           aria-valuenow={Math.min(done, DAILY_GOAL)}
@@ -80,6 +82,7 @@ async function StreakCard() {
 }
 
 async function Stats({ account }: { account: Account }) {
+  const t = await getT();
   const [results, duels, streak, board, referrals] = await Promise.all([
     getResults(),
     getFinishedDuels(account.id),
@@ -97,15 +100,15 @@ async function Stats({ account }: { account: Account }) {
     <ul className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
       <li>
         <Link href="/dashboard/classement" className={card}>
-          <span className={cardTitle}>Points</span>
-          <span className={`${cardValue} block`}>{board.me?.points ?? 0} pts</span>
+          <span className={cardTitle}>{t("Points")}</span>
+          <span className={`${cardValue} block`}>{board.me?.points ?? 0}{t(" pts")}</span>
         </Link>
       </li>
       <li>
         <Link href="/dashboard/badges" className={card}>
-          <span className={cardTitle}>Mes badges</span>
+          <span className={cardTitle}>{t("Mes badges")}</span>
           <span className={`${cardValue} block`}>
-            {earned.length ? earned.length : "Aucun badge"}
+            {earned.length ? earned.length : t("Aucun badge")}
           </span>
           {earned.length > 0 && (
             <span aria-hidden="true" className="mt-1 block text-xl">
@@ -116,7 +119,7 @@ async function Stats({ account }: { account: Account }) {
       </li>
       <li>
         <Link href="/dashboard/progression" className={card}>
-          <span className={cardTitle}>Progression</span>
+          <span className={cardTitle}>{t("Progression")}</span>
           {results.length ? (
             <>
               <span className={`${cardValue} mb-2 block`}>{progress}%</span>
@@ -124,29 +127,29 @@ async function Stats({ account }: { account: Account }) {
             </>
           ) : (
             <span className="mt-1.5 block font-semibold leading-snug">
-              Commence un quiz pour progresser !
+              {t("Commence un quiz pour progresser !")}
             </span>
           )}
         </Link>
       </li>
       <li>
         <Link href="/dashboard/classement" className={card}>
-          <span className={cardTitle}>Classement · {account.department}</span>
+          <span className={cardTitle}>{t("Classement · ")}{account.department}</span>
           {board.me ? (
             <span className={`${cardValue} block`}>
               {board.me.rank}
               <span className="text-base font-semibold text-ink/60"> / {board.total}</span>
             </span>
           ) : (
-            <span className="mt-1.5 block font-semibold leading-snug">Voir le classement</span>
+            <span className="mt-1.5 block font-semibold leading-snug">{t("Voir le classement")}</span>
           )}
         </Link>
       </li>
       {account.level !== "9e" && (
         <li className="col-span-2 md:col-span-1">
           <Link href="/dashboard/orientation" className={card}>
-            <span className={cardTitle}>Orientation</span>
-            <span className="mt-1.5 block font-semibold leading-snug">Ton avenir après le NS4</span>
+            <span className={cardTitle}>{t("Orientation")}</span>
+            <span className="mt-1.5 block font-semibold leading-snug">{t("Ton avenir après le NS4")}</span>
           </Link>
         </li>
       )}
@@ -155,6 +158,7 @@ async function Stats({ account }: { account: Account }) {
 }
 
 export default async function Page() {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -162,10 +166,10 @@ export default async function Page() {
   return (
     <>
       <h1 className="mt-3 font-display text-[clamp(1.75rem,7.5vw,2.75rem)] font-extrabold leading-[1.05] tracking-tight">
-        Bienvenue, {account.name.split(" ")[0]} !
+        {t("Bienvenue, ")}{account.name.split(" ")[0]} !
       </h1>
       <p className="mt-2 text-ink/70">
-        Série : <strong className="font-semibold text-ink">{levelLabel(account.level)}</strong>
+        {t("Série : ")}<strong className="font-semibold text-ink">{levelLabel(account.level)}</strong>
       </p>
 
       <Suspense fallback={<div className={`${skeleton} mt-6 h-[9.5rem] bg-brand/25 sm:h-[11rem]`} />}>
@@ -174,7 +178,7 @@ export default async function Page() {
 
       <section aria-labelledby="modes" className="mt-7">
         <h2 id="modes" className="font-display text-xl font-bold tracking-tight">
-          Réviser
+          {t("Réviser")}
         </h2>
         <ul className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
           {modes.map((mode, i) => (
@@ -185,9 +189,9 @@ export default async function Page() {
                   i === 0 ? "bg-navy text-white" : "bg-surface ring-1 ring-ink/10"
                 }`}
               >
-                <span className="font-display text-lg font-semibold leading-tight">{mode.title}</span>
+                <span className="font-display text-lg font-semibold leading-tight">{t(mode.title)}</span>
                 <span className={`text-sm leading-snug ${i === 0 ? "text-white/75" : "text-ink/60"}`}>
-                  {mode.body}
+                  {t(mode.body)}
                 </span>
               </Link>
             </li>
@@ -205,7 +209,7 @@ export default async function Page() {
 
       <section aria-labelledby="stats" className="mt-7">
         <h2 id="stats" className="font-display text-xl font-bold tracking-tight">
-          Ton parcours
+          {t("Ton parcours")}
         </h2>
         <Suspense
           fallback={

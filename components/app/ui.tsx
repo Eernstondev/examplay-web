@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useT } from "@/components/i18n-provider";
 
 export function SubHeader({ title, back = "/dashboard" }: { title: string; back?: string }) {
+  const t = useT();
   return (
     <div className="mb-6 mt-2">
       <Link href={back} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand-fg">
         <svg viewBox="0 0 20 20" aria-hidden="true" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12.5 4.5 7 10l5.5 5.5" />
         </svg>
-        Retour
+        {t("Retour")}
       </Link>
       <h1 className="mt-1 font-display text-[clamp(1.625rem,7vw,2.5rem)] font-extrabold leading-[1.08] tracking-tight">
         {title}
@@ -21,6 +23,7 @@ export function SubHeader({ title, back = "/dashboard" }: { title: string; back?
 
 // Compte à rebours ; à remonter avec une nouvelle `key` pour le relancer.
 export function Countdown({ seconds, onExpire }: { seconds: number; onExpire: () => void }) {
+  const t = useT();
   const [remaining, setRemaining] = useState(seconds);
 
   useEffect(() => {
@@ -41,7 +44,7 @@ export function Countdown({ seconds, onExpire }: { seconds: number; onExpire: ()
         remaining <= 5 ? "bg-danger-soft text-danger-fg" : "bg-brand-soft text-brand-fg"
       }`}
     >
-      {remaining} s
+      {remaining}{t(" s")}
     </span>
   );
 }

@@ -4,10 +4,12 @@ import { Flashcards } from "@/components/app/flashcards";
 import { SubHeader } from "@/components/app/ui";
 import { getSubjects } from "@/lib/content";
 import { getAccount } from "@/lib/data";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Révision Smart" };
 
 export default async function Page({ searchParams }: PageProps<"/dashboard/flashcards">) {
+  const t = await getT();
   const account = await getAccount();
   if (!account) redirect("/connexion");
 
@@ -18,8 +20,8 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/flash
 
   return (
     <>
-      <SubHeader title={`${subject.name} · Fiches`} back={`/dashboard/chapitres?subject=${subject.id}&mode=flash`} />
-      {chapter && <p className="-mt-3 mb-5 text-sm font-semibold text-ink/60">Chapitre : {chapter}</p>}
+      <SubHeader title={t("{name} · Fiches", { name: subject.name })} back={`/dashboard/chapitres?subject=${subject.id}&mode=flash`} />
+      {chapter && <p className="-mt-3 mb-5 text-sm font-semibold text-ink/60">{t("Chapitre : ")}{chapter}</p>}
       <Flashcards key={`${subject.id}-${chapter ?? ""}`} subject={subject.id} chapter={chapter} />
     </>
   );

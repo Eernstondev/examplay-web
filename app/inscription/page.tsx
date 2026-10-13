@@ -5,10 +5,12 @@ import { SignUpForm } from "@/components/auth-form";
 import { AuthShell } from "@/components/auth-shell";
 import { findLevel } from "@/lib/levels";
 import { createClient } from "@/lib/supabase/server";
+import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Inscription" };
 
 export default async function Page({ searchParams }: PageProps<"/inscription">) {
+  const t = await getT();
   const { niveau, ref } = await searchParams;
   const level = findLevel(typeof niveau === "string" ? niveau : undefined);
   if (!level) redirect("/commencer");
@@ -19,12 +21,12 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
 
   return (
     <AuthShell
-      title="Crée ton compte"
+      title={t("Crée ton compte")}
       lead={
         <>
-          Section choisie : <strong className="text-ink">{level.label}</strong>.{" "}
+          {t("Section choisie : ")}<strong className="text-ink">{level.label}</strong>.{" "}
           <Link href="/commencer" className="font-semibold text-brand-fg underline underline-offset-4">
-            Changer
+            {t("Changer")}
           </Link>
         </>
       }
@@ -33,15 +35,15 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
         <SignUpForm level={level.slug} referral={typeof ref === "string" ? ref.slice(0, 32) : ""} />
       </div>
       <p className="mt-4 text-sm leading-relaxed text-ink/65">
-        Ton niveau et ton département ne pourront plus être modifiés après l&apos;inscription.
+        {t("Ton niveau et ton département ne pourront plus être modifiés après l'inscription.")}
       </p>
       <p className="mt-5 text-ink/75">
-        Déjà un compte ?{" "}
+        {t("Déjà un compte ?")}{" "}
         <Link
           href={`/connexion?niveau=${level.slug}`}
           className="font-semibold text-brand-fg underline underline-offset-4"
         >
-          Connecte-toi
+          {t("Connecte-toi")}
         </Link>
       </p>
     </AuthShell>

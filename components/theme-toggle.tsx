@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useT } from "@/components/i18n-provider";
 
 type Theme = "system" | "light" | "dark";
 
@@ -48,12 +49,13 @@ function useTheme() {
 
 // Choix clair / sombre / auto (suit le système).
 export function ThemeSwitch() {
+  const t = useT();
   const theme = useTheme();
   return (
     <section className="mt-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
-      <p className="font-display text-lg font-semibold">Apparence</p>
-      <p className="mt-1 text-sm text-ink/65">« Auto » suit le réglage de ton appareil.</p>
-      <div role="radiogroup" aria-label="Thème" className="mt-3 grid grid-cols-3 gap-1.5 rounded-2xl bg-ink/5 p-1.5">
+      <p className="font-display text-lg font-semibold">{t("Apparence")}</p>
+      <p className="mt-1 text-sm text-ink/65">{t("« Auto » suit le réglage de ton appareil.")}</p>
+      <div role="radiogroup" aria-label={t("Thème")} className="mt-3 grid grid-cols-3 gap-1.5 rounded-2xl bg-ink/5 p-1.5">
         {OPTIONS.map((o) => (
           <button
             key={o.id}
@@ -63,7 +65,7 @@ export function ThemeSwitch() {
             onClick={() => apply(o.id)}
             className="h-11 rounded-xl text-sm font-bold text-ink/70 aria-checked:bg-brand aria-checked:text-white"
           >
-            {o.label}
+            {t(o.label)}
           </button>
         ))}
       </div>
@@ -73,6 +75,7 @@ export function ThemeSwitch() {
 
 // Bouton compact (en-tête public) : alterne clair / sombre selon ce qui est affiché.
 export function ThemeButton() {
+  const t = useT();
   useTheme();
   const toggle = () => {
     const root = document.documentElement;
@@ -85,7 +88,7 @@ export function ThemeButton() {
     <button
       type="button"
       onClick={toggle}
-      aria-label="Changer de thème"
+      aria-label={t("Changer de thème")}
       className="grid size-11 place-items-center rounded-lg border border-ink/15 text-ink/80 hover:text-brand-fg"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

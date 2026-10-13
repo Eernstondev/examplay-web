@@ -5,11 +5,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { subjectName } from "@/lib/content";
 import { emitDuelUpdate, stopPresence, syncPresence, type DuelRow, type Me } from "@/lib/realtime";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/components/i18n-provider";
 
-type Notice = { id: string; duelId?: string; title: string; subtitle: string };
+// Textes en français (clés de traduction) + variables : traduits à l'affichage.
+type Notice = { id: string; duelId?: string; title: string; subtitle: string; vars?: Record<string, string> };
 
 // Présent sur tout l'espace élève : signale sa présence en ligne et reçoit les défis.
 export function RealtimeHub({ id, name, department, level }: Me) {
+  const t = useT();
   const router = useRouter();
   const me = useMemo(() => ({ id, name, department, level }), [id, name, department, level]);
   const handled = useRef(new Set<string>());
@@ -22,7 +25,7 @@ export function RealtimeHub({ id, name, department, level }: Me) {
 
     const nameOf = async (id: string) => {
       const { data } = await supabase.from("profiles").select("name").eq("id", id).maybeSingle();
-      return data?.name ?? "Un joueur";
+      return data?.name ?? "";
     };
 
     const incoming = async (row: DuelRow) => {
@@ -34,7 +37,7 @@ export function RealtimeHub({ id, name, department, level }: Me) {
       const id = "invite-" + row.id;
       setNotices((n) => [
         ...n,
-        { id, duelId: row.id, title: `${who} te défie`, subtitle: subjectName(row.subject_id) },
+        { id, duelId: row.id, title: who ? "{who} te défie" : "Un joueur te défie", subtitle: subjectName(row.subject_id), vars: { who } },
       ]);
       dismissLater(id, 120000 - age);
     };
@@ -49,7 +52,7 @@ export function RealtimeHub({ id, name, department, level }: Me) {
       } else if (row.status === "declined") {
         const who = await nameOf(row.opponent);
         const id = "decl-" + row.id;
-        setNotices((n) => [...n, { id, title: "Défi refusé", subtitle: `${who} a refusé ton duel.` }]);
+        setNotices((n) => [...n, { id, title: "Défi refusé", subtitle: who ? "{who} a refusé ton duel." : "Ton duel a été refusé.", vars: { who } }]);
         dismissLater(id, 6000);
       }
     };
@@ -117,8 +120,8 @@ export function RealtimeHub({ id, name, department, level }: Me) {
           role="alert"
           className="rounded-2xl bg-navy p-4 text-white shadow-[0_20px_40px_-16px_rgba(11,37,89,0.6)]"
         >
-          <p className="font-display text-lg font-bold leading-snug">{notice.title}</p>
-          <p className="text-sm text-white/75">{notice.subtitle}</p>
+          <p className="font-display text-lg font-bold leading-snug">{t(notice.title, notice.vars)}</p>
+          <p className="text-sm text-white/75">{t(notice.subtitle, notice.vars)}</p>
           {notice.duelId ? (
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
@@ -126,14 +129,14 @@ export function RealtimeHub({ id, name, department, level }: Me) {
                 onClick={() => respond(notice, true)}
                 className="h-11 rounded-xl bg-sun font-bold text-sun-ink"
               >
-                Accepter
+                {t("Accepter")}
               </button>
               <button
                 type="button"
                 onClick={() => respond(notice, false)}
                 className="h-11 rounded-xl bg-white/15 font-bold"
               >
-                Refuser
+                {t("Refuser")}
               </button>
             </div>
           ) : (
@@ -142,7 +145,7 @@ export function RealtimeHub({ id, name, department, level }: Me) {
               onClick={() => respond(notice, false)}
               className="mt-2 min-h-11 text-sm font-semibold underline underline-offset-4"
             >
-              Fermer
+              {t("Fermer")}
             </button>
           )}
         </div>
