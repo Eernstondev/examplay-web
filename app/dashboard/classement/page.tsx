@@ -11,9 +11,8 @@ import { getT } from "@/lib/i18n/server";
 export const metadata: Metadata = { title: "Classement" };
 
 const ALL = "tous";
-const LEVEL_OPTIONS = [
-  { value: ALL, label: "Tous les niveaux" },
-  { value: "9e", label: "9e année fondamentale" },
+// 9e et NS4 sont séparés (aussi côté serveur) : un élève ne choisit qu'à l'intérieur de son groupe.
+const NS4_OPTIONS = [
   { value: "ns4", label: "Tout le NS4" },
   ...LEVELS.filter((l) => l.id !== "9e").map((l) => ({ value: l.id, label: l.label })),
 ];
@@ -49,15 +48,12 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
 
   // Par défaut : ton département et ton groupe de niveau (9e ou NS4).
   const dep = rawDep === ALL || DEPARTMENTS.includes(rawDep) ? rawDep : account.department;
-  const level = LEVEL_OPTIONS.some((o) => o.value === rawLevel)
-    ? rawLevel
-    : account.level === "9e"
-      ? "9e"
-      : "ns4";
+  const is9e = account.level === "9e";
+  const level = is9e ? "9e" : NS4_OPTIONS.some((o) => o.value === rawLevel) ? rawLevel : "ns4";
 
   const weekly = params.periode === "semaine";
   const depArg = dep === ALL ? null : dep;
-  const levelArg = level === ALL ? null : level;
+  const levelArg = level;
   const [board, lastWeek] = await Promise.all([
     weekly ? getWeeklyRanking(depArg, levelArg, 100, 0) : getRanking(depArg, levelArg, 100),
     weekly ? getWeeklyRanking(depArg, levelArg, 3, 1) : null,
@@ -66,7 +62,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
   const query = (periode: string) =>
     `/dashboard/classement?dep=${encodeURIComponent(dep)}&niv=${encodeURIComponent(level)}${periode ? `&periode=${periode}` : ""}`;
   const left = daysLeftInWeek();
-  const levelLabel = t(LEVEL_OPTIONS.find((o) => o.value === level)?.label ?? "");
+  const levelLabel = t(is9e ? "9e année fondamentale" : (NS4_OPTIONS.find((o) => o.value === level)?.label ?? ""));
   const place = dep === ALL ? t("Tout Haïti") : dep;
 
   return (
@@ -115,16 +111,18 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
             ))}
           </select>
         </label>
-        <label className="block text-sm font-semibold">
-          {t("Niveau")}
-          <select name="niv" defaultValue={level} className={select}>
-            {LEVEL_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {t(o.label)}
-              </option>
-            ))}
-          </select>
-        </label>
+        {!is9e && (
+          <label className="block text-sm font-semibold">
+            {t("Niveau")}
+            <select name="niv" defaultValue={level} className={select}>
+              {NS4_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {t(o.label)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <button
           type="submit"
           className="h-12 rounded-xl bg-brand px-6 text-base font-bold text-white hover:bg-brand-dark"

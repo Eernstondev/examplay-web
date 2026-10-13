@@ -96,7 +96,7 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
 export default function Page() {
   return (
     <LegalPage title="Politique de confidentialité">
-      <p className="updated">Dernière mise à jour : 5 octobre 2026</p>
+      <p className="updated">Dernière mise à jour : 13 octobre 2026</p>
       <p>
         Examplay est une application de préparation aux examens d&apos;État (NS4 et 9e année
         fondamentale) destinée aux élèves haïtiens, éditée depuis Haïti.
@@ -220,9 +220,24 @@ export default function Page() {
       <ul>
         <li>aucune date de naissance exacte n&apos;est demandée à l&apos;inscription ;</li>
         <li>
+          seules les données utiles à la révision sont collectées (nom, e-mail, niveau, département,
+          résultats) : ni photo, ni téléphone, ni localisation précise ;
+        </li>
+        <li>
+          les élèves de 9e et ceux du NS4 sont séparés : le nom, le département, le niveau et les
+          points d&apos;un élève ne sont visibles que par les élèves connectés du même groupe
+          d&apos;examen (9e ou NS4), dans le classement, la recherche, la liste des élèves en ligne
+          et les duels. L&apos;e-mail et les résultats détaillés ne sont jamais montrés aux autres
+          élèves ;
+        </li>
+        <li>
+          chaque élève peut masquer sa présence avec l&apos;option « Apparaître en ligne » ;
+        </li>
+        <li>
           les publicités affichées sont sélectionnées par Examplay et adaptées à un public
           scolaire : aucune publicité pour l&apos;alcool, le tabac, les jeux d&apos;argent ou tout
-          contenu réservé aux adultes ;
+          contenu réservé aux adultes. Aucune publicité n&apos;est personnalisée selon le
+          comportement ou l&apos;historique d&apos;un élève ;
         </li>
         <li>
           les échanges entre élèves se limitent aux duels et demandes d&apos;amis liés à la révision

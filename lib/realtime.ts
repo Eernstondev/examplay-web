@@ -31,7 +31,8 @@ export type DuelRow = {
 };
 
 const SHOW_ONLINE_KEY = "examplay:showOnline";
-const PRESENCE_CHANNEL = "online:all";
+// Un canal par groupe d'examen (9e / NS4) : un élève de 9e ne reçoit jamais la présence des NS4.
+const presenceChannel = (level: string) => (level === "9e" ? "online:9e" : "online:ns4");
 let channel: RealtimeChannel | null = null;
 let current: OnlinePlayer[] = [];
 // Les démarrages et arrêts de présence passent dans une file : rouvrir un canal de même nom
@@ -94,7 +95,7 @@ export const syncPresence = (me: Me) =>
   enqueue(async () => {
     if (!getShowOnline()) return closeChannel();
     if (channel) return;
-    const ch = createClient().channel(PRESENCE_CHANNEL, { config: { presence: { key: me.id } } });
+    const ch = createClient().channel(presenceChannel(me.level), { config: { presence: { key: me.id } } });
     channel = ch;
     ch.on("presence", { event: "sync" }, () => {
       const state = ch.presenceState() as Record<string, { name?: string; department?: string; level?: string }[]>;
