@@ -188,8 +188,13 @@ body {
 .home {
   --rule: #d6e1f5;
   --pen: #c8102e;
-  --line: 2.5rem;
+  --line: 2rem;
   font-family: "Archivo Variable", var(--font-sans);
+}
+@media (min-width: 640px) {
+  .home {
+    --line: 2.5rem;
+  }
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .home {

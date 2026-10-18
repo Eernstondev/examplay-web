@@ -24,8 +24,8 @@ export function SampleQuestion() {
   return (
     <div className="relative rounded-[3px] bg-surface text-ink shadow-[0_32px_60px_-34px_rgba(11,37,89,0.55)] ring-1 ring-ink/15">
       {/* En-tête de la copie : cases Matière et Note */}
-      <dl className="grid grid-cols-[1fr_6.5rem] border-b-2 border-ink">
-        <div className="border-r border-ink/25 px-5 py-2.5">
+      <dl className="grid grid-cols-[1fr_5.5rem] border-b-2 border-ink sm:grid-cols-[1fr_6.5rem]">
+        <div className="border-r border-ink/25 px-4 py-2 sm:px-5 sm:py-2.5">
           <dt className="text-xs text-ink/60">{t("Matière")}</dt>
           <dd className="font-semibold">{question.subject}</dd>
         </div>
@@ -44,16 +44,16 @@ export function SampleQuestion() {
         </div>
       </dl>
 
-      <div className="notebook relative py-[var(--line)] pr-5 pl-14 sm:pr-7 sm:pl-16">
-        <span aria-hidden="true" className="margin-rule left-10 sm:left-12" />
+      <div className="notebook relative py-[var(--line)] pr-4 pl-12 sm:pr-7 sm:pl-16">
+        <span aria-hidden="true" className="margin-rule left-9 sm:left-12" />
         <span
           aria-hidden="true"
-          className="home-display text-pen absolute left-3 text-2xl leading-[var(--line)] sm:left-4"
+          className="home-display text-pen absolute left-2.5 text-xl leading-[var(--line)] sm:left-4 sm:text-2xl"
         >
           1.
         </span>
 
-        <p className="text-lg leading-[var(--line)] font-semibold sm:text-xl">{question.prompt}</p>
+        <p className="leading-[var(--line)] font-semibold sm:text-xl">{question.prompt}</p>
 
         <ul className="mt-[var(--line)]">
           {question.choices.map((choice, i) => {
@@ -65,11 +65,11 @@ export function SampleQuestion() {
                   type="button"
                   disabled={answered}
                   onClick={() => setPicked(i)}
-                  className={`group flex h-[var(--line)] w-full items-center gap-3 text-left text-[1.0625rem] ${
+                  className={`group flex h-[var(--line)] w-full items-center gap-2.5 text-left sm:gap-3 sm:text-[1.0625rem] ${
                     answered && !isAnswer && !isPicked ? "text-ink/45" : ""
                   }`}
                 >
-                  <span className="relative grid size-8 shrink-0 place-items-center font-bold">
+                  <span className="relative grid size-7 shrink-0 place-items-center font-bold sm:size-8">
                     {letters[i]}
                     {answered && isAnswer && (
                       <svg aria-hidden="true" viewBox="0 0 40 40" className="absolute -inset-1.5 size-11">
@@ -101,7 +101,7 @@ export function SampleQuestion() {
           })}
         </ul>
 
-        <div aria-live="polite" className="mt-[var(--line)] min-h-[calc(var(--line)*3)] leading-[var(--line)]">
+        <div aria-live="polite" className="mt-[var(--line)] min-h-[var(--line)] text-[0.9375rem] leading-[var(--line)] sm:min-h-[calc(var(--line)*3)] sm:text-base">
           {answered ? (
             <>
               <p className="text-ink/80">
