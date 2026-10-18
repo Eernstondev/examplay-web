@@ -1,16 +1,14 @@
-import { SampleQuestion } from "@/components/sample-question";
+import "@fontsource-variable/archivo/wdth.css";
 import Link from "next/link";
 import { AdSlot } from "@/components/ad-slot";
-import { ns4Tracks } from "@/lib/levels";
+import { SampleQuestion } from "@/components/sample-question";
 import { getT } from "@/lib/i18n/server";
+import { ns4Tracks } from "@/lib/levels";
 
 const steps = [
   { title: "Choisis ta section", body: "Sélectionne ton niveau et la filière que tu prépares." },
   { title: "Joue à des quiz", body: "Teste tes connaissances avec des questions ciblées." },
-  {
-    title: "Suis ta progression",
-    body: "Gagne des points, des badges et grimpe dans le classement.",
-  },
+  { title: "Suis ta progression", body: "Gagne des points, des badges et grimpe dans le classement." },
 ];
 
 const features = [
@@ -36,114 +34,74 @@ const features = [
 export const revalidate = 300;
 
 const container = "mx-auto w-full max-w-6xl px-5 sm:px-8";
-const cta =
-  "btn-sun flex h-13 items-center justify-center rounded-xl px-10 text-base font-bold sm:h-14 sm:text-lg";
-const h2 = "font-display text-[clamp(1.75rem,6vw,2.75rem)] font-bold leading-[1.1] tracking-tight";
+const h2 = "home-display text-[clamp(2.25rem,7vw,3.75rem)] leading-[0.95]";
+const cta = "btn-ink inline-flex h-13 items-center justify-center rounded-md px-8 text-base font-bold sm:h-14 sm:text-lg";
 
 export default async function Home() {
   const t = await getT();
   return (
-    <main className="flex-1">
-      {/* Hero : la carte de question déborde sous le bloc bleu sur mobile */}
-      <section className="rounded-b-[2rem] bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
-        <div
-          className={`${container} grid gap-8 pt-6 sm:gap-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:py-20`}
-        >
+    <main className="home flex-1">
+      {/* La page de cahier : lignes bleues, marge rouge, copie corrigée au stylo */}
+      <section className="notebook relative border-b border-[var(--rule)]">
+        <div className={`${container} relative grid gap-10 pt-[var(--line)] pb-[calc(var(--line)*2)] lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-16 lg:pt-[calc(var(--line)*2)] lg:pb-[calc(var(--line)*3)]`}>
+          <span aria-hidden="true" className="margin-rule -left-0 hidden lg:block xl:-left-6" />
           <div>
-            <h1 className="font-display text-[clamp(2.125rem,10.5vw,5.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
-              {t("Apprendre,")}
-              <br />
-              {t("Réviser,")}
-              <br />
-              {t("Réussir.")}
+            <h1 className="home-display text-[clamp(3.25rem,13vw,7rem)] leading-[0.9]">
+              {t("Révise avec les vraies questions d'examen.")}
             </h1>
-            <p className="mt-3 max-w-md leading-relaxed text-white/85 sm:mt-5 sm:text-lg">
-              {t("L'app qui te prépare aux examens d'État haïtiens, en NS4 et en 9e année fondamentale.")}
+            <p className="mt-[var(--line)] max-w-md text-lg leading-[var(--line)] text-ink/80">
+              {t("Des quiz corrigés, tirés des annales officielles, pour la 9e année fondamentale et les quatre séries du NS4. Gratuit.")}
             </p>
-            <div className="mt-5 flex flex-col gap-2 sm:mt-7 sm:flex-row sm:items-center sm:gap-6">
+            <div className="mt-[var(--line)] flex flex-wrap items-center gap-x-7 gap-y-3">
               <Link href="/commencer" className={cta}>
                 {t("Commencer")}
               </Link>
-              <Link
-                href="/connexion"
-                className="py-2 text-center font-semibold underline underline-offset-4 sm:text-left"
-              >
+              <Link href="/connexion" className="font-semibold underline underline-offset-4">
                 {t("J'ai déjà un compte")}
               </Link>
             </div>
           </div>
-          <div className="relative z-10 -mb-16 lg:mb-0">
-            <SampleQuestion />
-          </div>
+          <SampleQuestion />
         </div>
       </section>
 
-      <section className={`${container} pb-16 pt-32 sm:pb-20 lg:py-28`}>
-        <div className="grid gap-5 lg:grid-cols-[1fr_1.2fr] lg:gap-14">
-          <h2 className={h2}>{t("Conçu par des étudiants, pour des étudiants.")}</h2>
-          <div className="max-w-xl space-y-4 text-[1.0625rem] leading-relaxed text-ink/75 sm:text-lg">
-            <p>
-              {t("Notre mission : ta réussite aux examens d'État. On transforme les longues heures de révision en une expérience motivante et interactive.")}
-            </p>
-            <p>
-              {t("Nous croyons qu'apprendre peut être amusant. Examplay est une plateforme de quiz adaptée aux élèves de la 9e AF et aux séries du Nouveau Secondaire 4, pour t'aider à maîtriser tes matières et à aborder l'examen avec confiance.")}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className={`${container} pb-16 sm:pb-20 lg:pb-28`}>
-        <h2 className={h2}>{t("Pour quels examens ?")}</h2>
-        <div className="mt-7 grid gap-4 lg:mt-10 lg:grid-cols-[1.4fr_1fr]">
-          <div className="rounded-3xl bg-brand-soft p-6 sm:p-8">
-            <h3 className="font-display text-3xl font-bold">{t("NS4")}</h3>
-            <p className="mt-1 text-ink/70">{t("Les quatre filières du bac haïtien.")}</p>
-            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+      {/* Les examens : chaque ligne mène directement à l'inscription */}
+      <section className={`${container} py-20 lg:py-28`}>
+        <h2 className={h2}>{t("Pour quels examens ?")}</h2>
+        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
+          <p className="max-w-sm leading-relaxed text-ink/75">
+            {t("Choisis ton examen : tu arrives directement sur la création de ton compte, avec les matières de ta section.")}
+          </p>
+          <div>
+            <h3 className="font-semibold text-ink/65">{t("9e année fondamentale")}</h3>
+            <ul className="mt-2 border-t-2 border-ink">
+              <ExamRow href="/inscription?niveau=9e" code="9e AF" name={t("Le programme de l'examen officiel de 9e AF.")} />
+            </ul>
+            <h3 className="mt-10 font-semibold text-ink/65">{t("Nouveau Secondaire 4, quatre séries")}</h3>
+            <ul className="mt-2 border-t-2 border-ink">
               {ns4Tracks.map((track) => (
-                <li key={track.code} className="flex items-center gap-3 rounded-2xl bg-surface p-3">
-                  <span className="grid h-11 w-14 shrink-0 place-items-center rounded-xl bg-brand text-sm font-bold text-white">
-                    {track.code}
-                  </span>
-                  <span className="text-sm font-medium leading-snug">{track.name}</span>
-                </li>
+                <ExamRow key={track.slug} href={`/inscription?niveau=${track.slug}`} code={track.code} name={t(track.name)} />
               ))}
             </ul>
           </div>
-          <div className="flex flex-col justify-between gap-8 rounded-3xl bg-navy p-6 text-white sm:p-8">
-            <h3 className="font-display text-3xl font-bold leading-tight">
-              {t("9e année")}
-              <br />
-              {t("fondamentale")}
-            </h3>
-            <p className="text-white/75">{t("Le programme de l'examen officiel de 9e AF.")}</p>
-          </div>
         </div>
       </section>
 
-      <AdSlot placement="home" className={`${container} pb-16 sm:pb-20`} />
+      <AdSlot placement="home" className={`${container} pb-20`} />
 
-      <section className="bg-brand-soft">
-        <div className={`${container} py-16 sm:py-20 lg:py-28`}>
-          <h2 className={h2}>{t("Comment ça marche ?")}</h2>
-          <ol className="mt-8 grid gap-0 md:mt-12 md:grid-cols-3 md:gap-8">
+      {/* Une vraie suite d'étapes : numérotées comme les questions d'une copie */}
+      <section className="border-y border-[var(--rule)] bg-brand-soft">
+        <div className={`${container} py-20 lg:py-24`}>
+          <h2 className={h2}>{t("Comment ça marche ?")}</h2>
+          <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-12">
             {steps.map((step, i) => (
-              <li
-                key={step.title}
-                className="relative flex gap-4 pb-8 last:pb-0 md:block md:pb-0"
-              >
-                {/* Trait qui relie les étapes : vertical sur mobile, horizontal sur desktop */}
-                {i < steps.length - 1 && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute bottom-0 left-6 top-12 w-0.5 -translate-x-1/2 bg-brand/25 md:bottom-auto md:left-16 md:right-[-2rem] md:top-6 md:h-0.5 md:w-auto md:translate-x-0"
-                  />
-                )}
-                <span className="relative grid size-12 shrink-0 place-items-center rounded-full bg-brand font-display text-xl font-bold text-white">
-                  {i + 1}
+              <li key={step.title} className="grid grid-cols-[2.5rem_1fr] gap-x-3">
+                <span aria-hidden="true" className="home-display text-pen text-4xl leading-none">
+                  {i + 1}.
                 </span>
-                <div className="md:mt-5">
-                  <h3 className="font-display text-xl font-semibold">{t(step.title)}</h3>
-                  <p className="mt-1.5 leading-relaxed text-ink/70">{t(step.body)}</p>
+                <div>
+                  <h3 className="text-xl font-bold">{t(step.title)}</h3>
+                  <p className="mt-1.5 leading-relaxed text-ink/75">{t(step.body)}</p>
                 </div>
               </li>
             ))}
@@ -151,37 +109,47 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className={`${container} py-16 sm:py-20 lg:py-28`}>
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-14">
-          <h2 className={`${h2} lg:sticky lg:top-8 lg:self-start`}>
-            {t("Ce que tu trouveras dans l'app")}
-          </h2>
-          <ul className="divide-y divide-ink/10 border-y border-ink/10">
-            {features.map((feature) => (
-              <li key={feature.title} className="py-6 sm:py-7">
-                <h3 className="font-display text-xl font-semibold sm:text-2xl">{t(feature.title)}</h3>
-                <p className="mt-2 max-w-lg leading-relaxed text-ink/70">{t(feature.body)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <section className={`${container} py-20 lg:py-28`}>
+        <h2 className={`${h2} max-w-2xl`}>{t("Ce que tu trouveras dans l'app")}</h2>
+        <dl className="mt-12 grid gap-x-16 gap-y-10 md:grid-cols-2">
+          {features.map((feature) => (
+            <div key={feature.title} className="border-t border-ink/20 pt-5">
+              <dt className="text-xl font-bold">{t(feature.title)}</dt>
+              <dd className="mt-2 max-w-md leading-relaxed text-ink/75">{t(feature.body)}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      <section className="bg-brand text-white sm:mx-4 sm:rounded-[2.5rem] lg:mx-6">
-        <div
-          className={`${container} flex flex-col gap-7 py-14 sm:py-16 lg:flex-row lg:items-center lg:justify-between lg:gap-14 lg:py-20`}
-        >
-          <div className="max-w-md">
-            <h2 className={h2}>{t("Prêt à réviser ?")}</h2>
-            <p className="mt-3 text-[1.0625rem] leading-relaxed text-white/85">
-              {t("Choisis ta section, crée ton compte et retrouve ton tableau de bord.")}
+      <section className="bg-brand text-white">
+        <div className={`${container} grid gap-8 py-20 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:py-24`}>
+          <div>
+            <h2 className={h2}>{t("Conçu par des étudiants haïtiens, pour des étudiants.")}</h2>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
+              {t("Notre mission : ta réussite aux examens d'État. On transforme les longues heures de révision en une expérience motivante et interactive.")}
             </p>
           </div>
-          <Link href="/commencer" className={cta}>
-            {t("Commencer")}
-          </Link>
+          <div className="lg:justify-self-end">
+            <Link
+              href="/commencer"
+              className="inline-flex h-14 items-center justify-center rounded-md bg-white px-9 text-lg font-bold text-brand shadow-[0_4px_0_0_rgba(0,0,0,0.25)] transition-transform active:translate-y-[3px] active:shadow-[0_1px_0_0_rgba(0,0,0,0.25)]"
+            >
+              {t("Créer mon compte")}
+            </Link>
+          </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function ExamRow({ href, code, name }: { href: string; code: string; name: string }) {
+  return (
+    <li className="border-b border-ink/20">
+      <Link href={href} className="group grid grid-cols-[6.5rem_1fr] items-baseline gap-4 py-4 sm:grid-cols-[8rem_1fr]">
+        <span className="home-display text-4xl leading-none sm:text-5xl">{code}</span>
+        <span className="text-lg leading-snug text-ink/80 group-hover:underline group-hover:underline-offset-4">{name}</span>
+      </Link>
+    </li>
   );
 }

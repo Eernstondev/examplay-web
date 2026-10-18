@@ -5,7 +5,7 @@ import { useT } from "@/components/i18n-provider";
 
 const question = {
   subject: "SVT, NS4",
-  prompt: "Dans quel organite de la cellule se déroule la respiration cellulaire\u00a0?",
+  prompt: "Dans quel organite de la cellule se déroule la respiration cellulaire ?",
   choices: ["Le noyau", "La mitochondrie", "Le ribosome", "L'appareil de Golgi"],
   answer: 1,
   explanation:
@@ -14,79 +14,112 @@ const question = {
 
 const letters = ["A", "B", "C", "D"];
 
+// Copie d'examen de démonstration : l'élève répond, le « stylo rouge » corrige.
 export function SampleQuestion() {
   const t = useT();
   const [picked, setPicked] = useState<number | null>(null);
   const answered = picked !== null;
+  const correct = picked === question.answer;
 
   return (
-    <div className="rounded-3xl bg-surface p-5 text-ink shadow-[0_30px_60px_-30px_rgba(11,37,89,0.55)] ring-1 ring-ink/10 sm:p-7">
-      <div className="flex items-center justify-between gap-3 text-sm font-semibold">
-        <span className="text-brand-fg">{question.subject}</span>
-        <span className="text-ink/50">{t("Essaie une question")}</span>
-      </div>
-      <h2 className="mt-3 font-display text-xl font-semibold leading-snug sm:text-2xl">
-        {question.prompt}
-      </h2>
+    <div className="relative rounded-[3px] bg-surface text-ink shadow-[0_32px_60px_-34px_rgba(11,37,89,0.55)] ring-1 ring-ink/15">
+      {/* En-tête de la copie : cases Matière et Note */}
+      <dl className="grid grid-cols-[1fr_6.5rem] border-b-2 border-ink">
+        <div className="border-r border-ink/25 px-5 py-2.5">
+          <dt className="text-xs text-ink/60">{t("Matière")}</dt>
+          <dd className="font-semibold">{question.subject}</dd>
+        </div>
+        <div className="px-4 py-2.5">
+          <dt className="text-xs text-ink/60">{t("Note")}</dt>
+          <dd className="h-7">
+            {answered && (
+              <span
+                key={picked}
+                className="pen-note home-display text-pen inline-block origin-left text-3xl leading-7"
+              >
+                {correct ? "+10" : "0"}
+              </span>
+            )}
+          </dd>
+        </div>
+      </dl>
 
-      <ul className="mt-5 grid gap-2.5">
-        {question.choices.map((choice, i) => {
-          const isAnswer = i === question.answer;
-          const isPicked = i === picked;
-          const tone = !answered
-            ? "border-ink/15 hover:border-brand hover:bg-brand-soft"
-            : isAnswer
-              ? "border-success bg-success-soft"
-              : isPicked
-                ? "border-danger bg-danger-soft"
-                : "border-ink/10 text-ink/45";
-          const badge = !answered
-            ? "bg-brand-soft text-brand-fg"
-            : isAnswer
-              ? "bg-success text-white"
-              : isPicked
-                ? "bg-danger text-white"
-                : "bg-ink/5 text-ink/40";
-          return (
-            <li key={choice}>
+      <div className="notebook relative py-[var(--line)] pr-5 pl-14 sm:pr-7 sm:pl-16">
+        <span aria-hidden="true" className="margin-rule left-10 sm:left-12" />
+        <span
+          aria-hidden="true"
+          className="home-display text-pen absolute left-3 text-2xl leading-[var(--line)] sm:left-4"
+        >
+          1.
+        </span>
+
+        <p className="text-lg leading-[var(--line)] font-semibold sm:text-xl">{question.prompt}</p>
+
+        <ul className="mt-[var(--line)]">
+          {question.choices.map((choice, i) => {
+            const isAnswer = i === question.answer;
+            const isPicked = i === picked;
+            return (
+              <li key={choice}>
+                <button
+                  type="button"
+                  disabled={answered}
+                  onClick={() => setPicked(i)}
+                  className={`group flex h-[var(--line)] w-full items-center gap-3 text-left text-[1.0625rem] ${
+                    answered && !isAnswer && !isPicked ? "text-ink/45" : ""
+                  }`}
+                >
+                  <span className="relative grid size-8 shrink-0 place-items-center font-bold">
+                    {letters[i]}
+                    {answered && isAnswer && (
+                      <svg aria-hidden="true" viewBox="0 0 40 40" className="absolute -inset-1.5 size-11">
+                        <path
+                          className="pen-stroke"
+                          pathLength={1}
+                          strokeWidth={2.4}
+                          d="M23 5C33 6 38 13 37 21C36 30 28 36 19 35C10 34 4 27 5 19C6 11 13 5 25 7"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                  <span className="relative min-w-0 group-enabled:group-hover:underline group-enabled:group-hover:underline-offset-4">
+                    {choice}
+                    {answered && isPicked && !isAnswer && (
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 100 10"
+                        preserveAspectRatio="none"
+                        className="absolute top-1/2 -left-1 h-3 w-[calc(100%+0.5rem)] -translate-y-1/2"
+                      >
+                        <path className="pen-stroke" pathLength={1} strokeWidth={2} vectorEffect="non-scaling-stroke" d="M1 6C30 3 62 8 99 4" />
+                      </svg>
+                    )}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div aria-live="polite" className="mt-[var(--line)] min-h-[calc(var(--line)*3)] leading-[var(--line)]">
+          {answered ? (
+            <>
+              <p className="text-ink/80">
+                <strong className="text-pen">{correct ? t("Bonne réponse.") : t("Pas tout à fait.")}</strong>{" "}
+                {question.explanation}
+              </p>
               <button
                 type="button"
-                disabled={answered}
-                onClick={() => setPicked(i)}
-                className={`flex min-h-14 w-full items-center gap-3 rounded-xl border-2 px-3 py-2.5 text-left font-semibold transition-colors ${tone}`}
+                onClick={() => setPicked(null)}
+                className="font-semibold text-brand-fg underline underline-offset-4"
               >
-                <span
-                  className={`grid size-8 shrink-0 place-items-center rounded-lg text-sm font-bold ${badge}`}
-                >
-                  {letters[i]}
-                </span>
-                <span className="min-w-0 flex-1">{choice}</span>
+                {t("Rejouer la question")}
               </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <div aria-live="polite" className="mt-4 min-h-24 text-sm leading-relaxed text-ink/70">
-        {answered ? (
-          <>
-            <p>
-              <strong className="text-ink">
-                {picked === question.answer ? t("Bonne réponse.") : t("Pas tout à fait.")}
-              </strong>{" "}
-              {question.explanation}
-            </p>
-            <button
-              type="button"
-              onClick={() => setPicked(null)}
-              className="mt-1 min-h-11 font-semibold text-brand-fg underline underline-offset-4"
-            >
-              {t("Rejouer la question")}
-            </button>
-          </>
-        ) : (
-          <p>{t("Touche une réponse pour voir la correction.")}</p>
-        )}
+            </>
+          ) : (
+            <p className="text-ink/60">{t("Touche une réponse pour voir la correction.")}</p>
+          )}
+        </div>
       </div>
     </div>
   );

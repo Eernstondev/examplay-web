@@ -183,3 +183,93 @@ body {
     animation: none !important;
   }
 }
+
+/* Accueil : la copie d'examen (cahier réglé, marge rouge, correction au stylo rouge). */
+.home {
+  --rule: #d6e1f5;
+  --pen: #c8102e;
+  --line: 2.5rem;
+  font-family: "Archivo Variable", var(--font-sans);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .home {
+    --rule: #1d2b4b;
+    --pen: #ff6b7d;
+  }
+}
+:root[data-theme="dark"] .home {
+  --rule: #1d2b4b;
+  --pen: #ff6b7d;
+}
+.home-display {
+  font-stretch: 70%;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+}
+.text-pen {
+  color: var(--pen);
+}
+/* Lignes du cahier, alignées sur --line */
+.notebook {
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--line) - 1px),
+    var(--rule) calc(var(--line) - 1px)
+  );
+  background-size: 100% var(--line);
+}
+.margin-rule {
+  position: absolute;
+  inset-block: 0;
+  width: 2px;
+  background: var(--pen);
+  opacity: 0.55;
+}
+/* Trait de stylo qui se dessine (chemins SVG avec pathLength="1") */
+.pen-stroke {
+  fill: none;
+  stroke: var(--pen);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: pen-draw 0.45s ease-out forwards;
+}
+.pen-note {
+  animation: pen-note 0.3s 0.35s ease-out both;
+}
+@keyframes pen-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pen-note {
+  from {
+    opacity: 0;
+    transform: scale(1.4) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-6deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pen-stroke {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .pen-note {
+    animation: none;
+  }
+}
+/* Bouton principal de l'accueil : encre bleue, s'enfonce au toucher */
+.btn-ink {
+  background: var(--color-brand);
+  color: #fff;
+  box-shadow: 0 4px 0 0 var(--color-brand-dark);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.btn-ink:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 var(--color-brand-dark);
+}
