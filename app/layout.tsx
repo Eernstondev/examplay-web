@@ -6,7 +6,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { FooterGate } from "@/components/footer-gate";
 import { SiteFooter } from "@/components/site-footer";
-import { site } from "@/lib/site";
+import { site, socials } from "@/lib/site";
 import { I18nProvider } from "@/components/i18n-provider";
 import { getLang } from "@/lib/i18n/server";
 
@@ -31,6 +31,28 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+// Données structurées : aident Google à afficher « Examplay » comme nom du site,
+// y compris pour les recherches « examplayedu ».
+const jsonLd = JSON.stringify([
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: site.name,
+    alternateName: ["examplayedu", "Examplay Edu", "examplayedu.com"],
+    url: site.url,
+    inLanguage: ["fr", "ht"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: site.name,
+    url: site.url,
+    logo: `${site.url}/icon-512.png`,
+    email: site.email,
+    sameAs: socials.map((s) => s.href),
+  },
+]);
+
 // Applique le thème choisi avant le premier affichage (évite le flash clair).
 const themeScript = `try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}`;
 
@@ -40,6 +62,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang={lang} className="h-full antialiased" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       </head>
       <body className="flex min-h-full flex-col">
         <I18nProvider lang={lang}>

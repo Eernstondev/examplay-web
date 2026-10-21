@@ -2,7 +2,7 @@ export const site = {
   name: "Examplay",
   slogan: "Apprendre, Réviser, Réussir",
   description:
-    "Examplay prépare les élèves haïtiens aux examens d'État : NS4 et 9e année fondamentale. Bientôt sur vos écrans.",
+    "Examplay prépare les élèves haïtiens aux examens d'État avec des quiz corrigés tirés des annales officielles : NS4 et 9e année fondamentale. Gratuit, sur le web et sur mobile.",
   email: "examplay.officiel@gmail.com",
   whatsapp: "https://wa.me/message/3ZKPRYCMWKRSF1",
   url: process.env.NODE_ENV === "production" ? "https://examplayedu.com" : "http://localhost:3000",
