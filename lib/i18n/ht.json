@@ -1095,5 +1095,21 @@
   "Étape 2 sur 2. Cette action est définitive et ne peut pas être annulée.": "Etap 2 sou 2. Aksyon sa a definitif, ou pa ka anile l.",
   "Études": "Etid",
   "Évolution de tes scores": "Kijan nòt ou yo ap evolye",
-  "🔥 {days} jour{s} de suite à réviser sur Examplay ! Qui me rejoint pour préparer l'examen ?": "🔥 {days} jou youn dèyè lòt m ap revize sou Examplay ! Kiyès k ap vin jwenn mwen pou prepare egzamen an ?"
+  "🔥 {days} jour{s} de suite à réviser sur Examplay ! Qui me rejoint pour préparer l'examen ?": "🔥 {days} jou youn dèyè lòt m ap revize sou Examplay ! Kiyès k ap vin jwenn mwen pou prepare egzamen an ?",
+  "Dates estimées d'après le calendrier 2026. Elles seront mises à jour dès la publication du MENFP.": "Dat sa yo estime selon kalandriye 2026 la. N ap mete yo ajou depi MENFP pibliye kalandriye a.",
+  "Matières des examens d'État": "Matyè egzamen Leta yo",
+  "Choisis une matière pour voir ses chapitres et quelques questions corrigées. Tout le reste t'attend dans l'app, gratuitement.": "Chwazi yon matyè pou w wè chapit li yo ak kèk kesyon ki korije. Tout rès la ap tann ou nan aplikasyon an, gratis.",
+  "NS4 (bac haïtien)": "NS4 (bak ayisyen)",
+  "Les chapitres du programme et quelques questions corrigées pour réviser {name} avant l'examen d'État.": "Chapit pwogram nan ak kèk kesyon ki korije pou w revize {name} anvan egzamen Leta a.",
+  "Fil d'Ariane": "Chemen navigasyon",
+  "Chapitres": "Chapit",
+  "{count} questions dans l'app pour cette matière.": "{count} kesyon nan aplikasyon an pou matyè sa a.",
+  "Questions corrigées": "Kesyon ki korije",
+  "Question {n}": "Kesyon {n}",
+  "Examen {year}": "Egzamen {year}",
+  "Explication :": "Esplikasyon :",
+  "Continuer dans l'app": "Kontinye nan aplikasyon an",
+  "Quiz par chapitre, simulations d'examen chronométrées et suivi de tes points faibles. Gratuit, sur téléphone et sur le web.": "Quiz pa chapit, similasyon egzamen ak tan, epi swivi pwen fèb ou yo. Gratis, sou telefòn ak sou entènèt.",
+  "Autres matières": "Lòt matyè",
+  "Voir les matières et des questions corrigées": "Gade matyè yo ak kèk kesyon ki korije"
 }

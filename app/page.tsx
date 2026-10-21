@@ -69,9 +69,14 @@ export default async function Home() {
       <section className={`${container} py-14 sm:py-20 lg:py-28`}>
         <h2 className={h2}>{t("Pour quels examens ?")}</h2>
         <div className="mt-6 grid gap-8 sm:mt-10 sm:gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
-          <p className="max-w-sm leading-relaxed text-ink/75">
-            {t("Choisis ton examen : tu arrives directement sur la création de ton compte, avec les matières de ta section.")}
-          </p>
+          <div>
+            <p className="max-w-sm leading-relaxed text-ink/75">
+              {t("Choisis ton examen : tu arrives directement sur la création de ton compte, avec les matières de ta section.")}
+            </p>
+            <Link href="/matieres" className="mt-3 inline-block py-2 font-semibold text-brand-fg underline underline-offset-4">
+              {t("Voir les matières et des questions corrigées")}
+            </Link>
+          </div>
           <div>
             <h3 className="font-semibold text-ink/65">{t("9e année fondamentale")}</h3>
             <ul className="mt-2 border-t-2 border-ink">

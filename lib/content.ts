@@ -96,3 +96,28 @@ export const DEPARTMENTS = [
 export const ALL_SUBJECTS: { id: string; label: string }[] = Array.from(
   new Set(Object.values(SERIES).flatMap((s) => s.ids)),
 ).map((id) => ({ id, label: id.endsWith("9e") ? `${NAMES[id]} (9e)` : `${NAMES[id]} (NS4)` }));
+
+// Pages publiques /matieres (sans compte) : une page par matière et par groupe d'examen.
+export type PublicSubject = { slug: string; id: string; name: string; group: "9e" | "ns4"; series: string[] };
+
+const slugify = (s: string) =>
+  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+const NS4_LEVELS = LEVELS.filter((l) => l.id !== "9e");
+
+export const PUBLIC_SUBJECTS: PublicSubject[] = [
+  ...SERIES["9e"].ids.map((id) => ({
+    slug: `9e-${slugify(NAMES[id])}`,
+    id,
+    name: NAMES[id],
+    group: "9e" as const,
+    series: [],
+  })),
+  ...Array.from(new Set(NS4_LEVELS.flatMap((l) => SERIES[l.id].ids))).map((id) => ({
+    slug: `ns4-${slugify(NAMES[id])}`,
+    id,
+    name: NAMES[id],
+    group: "ns4" as const,
+    series: NS4_LEVELS.filter((l) => SERIES[l.id].ids.includes(id)).map((l) => l.label.replace("NS4-", "")),
+  })),
+];

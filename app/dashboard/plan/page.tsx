@@ -8,6 +8,7 @@ import { buildPlan, haitiToday, type AttemptRow } from "@/lib/revision-plan";
 import { createClient } from "@/lib/supabase/server";
 import { getLang, getT } from "@/lib/i18n/server";
 import { formatDate } from "@/lib/i18n/core";
+import { CALENDRIER_OFFICIEL } from "@/lib/exam-dates";
 
 export const metadata: Metadata = { title: "Plan de révision" };
 
@@ -49,6 +50,9 @@ export default async function Page() {
             <p className="mt-3 text-sm text-white/80">
               {tx("Les épreuves proches et tes points faibles passent en premier. 2 séances de 30 min par jour.")}
             </p>
+            {!CALENDRIER_OFFICIEL && (
+              <p className="mt-2 text-xs text-white/65">{tx("Dates estimées d'après le calendrier 2026. Elles seront mises à jour dès la publication du MENFP.")}</p>
+            )}
           </section>
 
           <ol className="mt-6 grid gap-5">

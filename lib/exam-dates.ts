@@ -1,8 +1,9 @@
-// Copie de l'app mobile (src/lib/examDates.ts) : garder les deux fichiers identiques.
-// Calendrier officiel des épreuves.
-// Seule ANNEE_EXAMEN doit être changée chaque année par le MENFP —
-// le jour et le mois de chaque épreuve restent les mêmes d'une année à l'autre.
+// Calendrier des épreuves 2027 (confirmé) : 9e AF du 28 juin au 1er juillet, NS4 du 12 au 15 juillet.
+// RAW_CALENDAR garde l'ordre des matières du calendrier MENFP 2026 ; chaque date est décalée de
+// 52 semaines (même jour de la semaine, les épreuves commencent un lundi).
+const BASE_ANNEE = 2026;
 const ANNEE_EXAMEN = 2027;
+export const CALENDRIER_OFFICIEL = true;
 
 export type ExamSession = { date: string; label: string; time: string; points?: number };
 type RawSession = { month: number; day: number; label: string; time: string; points?: number };
@@ -65,12 +66,19 @@ const RAW_CALENDAR: Record<string, RawSession[]> = {
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
+const WEEKS_52 = 364 * 86400000;
+
+function sessionDate(month: number, day: number): string {
+  const base = Date.UTC(BASE_ANNEE, month - 1, day);
+  const d = new Date(base + (ANNEE_EXAMEN - BASE_ANNEE) * WEEKS_52);
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+}
 
 function buildCalendar(): Record<string, ExamSession[]> {
   const out: Record<string, ExamSession[]> = {};
   for (const [level, sessions] of Object.entries(RAW_CALENDAR)) {
     out[level] = sessions.map((s) => ({
-      date: `${ANNEE_EXAMEN}-${pad(s.month)}-${pad(s.day)}`,
+      date: sessionDate(s.month, s.day),
       label: s.label,
       time: s.time,
       points: s.points,

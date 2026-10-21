@@ -3,9 +3,8 @@
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
-// Présence « en ligne » : un seul canal pour tout le monde, identique à l'app mobile
-// (lib/presence.ts). Ainsi un ami est visible même s'il est dans un autre département
-// ou un autre niveau ; le filtrage se fait ensuite à l'affichage.
+// Présence « en ligne », identique à l'app mobile (lib/presence.ts) : canal privé par groupe
+// d'examen, contrôlé côté serveur par les règles RLS de realtime.messages (20261033).
 export type OnlinePlayer = { id: string; name: string; department: string; level: string };
 export type Me = { id: string; name: string; department: string; level: string };
 
@@ -31,7 +30,6 @@ export type DuelRow = {
 };
 
 const SHOW_ONLINE_KEY = "examplay:showOnline";
-// Un canal par groupe d'examen (9e / NS4) : un élève de 9e ne reçoit jamais la présence des NS4.
 const presenceChannel = (level: string) => (level === "9e" ? "online:9e" : "online:ns4");
 let channel: RealtimeChannel | null = null;
 let current: OnlinePlayer[] = [];
@@ -95,7 +93,7 @@ export const syncPresence = (me: Me) =>
   enqueue(async () => {
     if (!getShowOnline()) return closeChannel();
     if (channel) return;
-    const ch = createClient().channel(presenceChannel(me.level), { config: { presence: { key: me.id } } });
+    const ch = createClient().channel(presenceChannel(me.level), { config: { private: true, presence: { key: me.id } } });
     channel = ch;
     ch.on("presence", { event: "sync" }, () => {
       const state = ch.presenceState() as Record<string, { name?: string; department?: string; level?: string }[]>;

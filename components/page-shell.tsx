@@ -29,13 +29,14 @@ export function PageShell({
 }
 
 // Bloc titre à gauche, contenu à droite : la grille commune des pages institutionnelles.
-export function Block({ title, children }: { title: string; children: ReactNode }) {
+// plain : sans le style de texte courant (listes de liens, cartes).
+export function Block({ title, children, plain }: { title: string; children: ReactNode; plain?: boolean }) {
   return (
     <section className="grid gap-3 border-t border-ink/10 py-8 first:border-t-0 first:pt-0 sm:py-10 lg:grid-cols-[1fr_2fr] lg:gap-12">
       <h2 className="font-display text-[1.375rem] font-semibold leading-snug tracking-tight sm:text-2xl">
         {title}
       </h2>
-      <div className="prose-block max-w-2xl">{children}</div>
+      <div className={plain ? "max-w-2xl" : "prose-block max-w-2xl"}>{children}</div>
     </section>
   );
 }

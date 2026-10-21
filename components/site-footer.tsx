@@ -6,6 +6,7 @@ import { getT } from "@/lib/i18n/server";
 
 const networks = [...socials, { label: "WhatsApp", href: site.whatsapp }];
 const links = [
+  { label: "Matières", href: "/matieres" },
   { label: "À propos", href: "/a-propos" },
   { label: "Nous contacter", href: "/contact" },
   { label: "Espace enseignants", href: "/contribuer" },
