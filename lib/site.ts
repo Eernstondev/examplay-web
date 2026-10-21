@@ -5,9 +5,7 @@ export const site = {
     "Examplay prépare les élèves haïtiens aux examens d'État : NS4 et 9e année fondamentale. Bientôt sur vos écrans.",
   email: "examplay.officiel@gmail.com",
   whatsapp: "https://wa.me/message/3ZKPRYCMWKRSF1",
-  url: process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000",
+  url: process.env.NODE_ENV === "production" ? "https://examplayedu.com" : "http://localhost:3000",
 } as const;
 
 export const socials = [
