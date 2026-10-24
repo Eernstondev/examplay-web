@@ -22,7 +22,7 @@ export async function SiteFooter() {
         <div>
           <Link href="/" className="inline-flex items-center gap-2.5">
             <Image src="/logo.png" alt="" width={36} height={36} className="rounded-[9px]" />
-            <span className="font-display text-lg font-bold tracking-tight">{site.name}</span>
+            <span className="text-lg font-semibold tracking-tight">{site.name}</span>
           </Link>
           <p className="mt-2 text-xs text-ink/55">
             © {new Date().getFullYear()}{t(" URBVEC Atelier. Tous droits réservés.")}
@@ -49,7 +49,7 @@ export async function SiteFooter() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t("{name} sur {label}", { name: site.name, label: n.label })}
-                className="grid size-11 place-items-center rounded-full bg-brand-soft text-brand-fg transition-colors hover:bg-brand hover:text-white"
+                className="grid size-11 place-items-center rounded-full bg-ink/[0.05] text-ink/70 transition-colors hover:bg-brand hover:text-white"
               >
                 <SocialIcon name={n.label} className="size-[18px]" />
               </a>

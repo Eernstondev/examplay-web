@@ -25,7 +25,7 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
       lead={
         <>
           {t("Section choisie : ")}<strong className="text-ink">{level.label}</strong>.{" "}
-          <Link href="/commencer" className="font-semibold text-brand-fg underline underline-offset-4">
+          <Link href="/commencer" className="font-medium text-brand-fg underline underline-offset-4">
             {t("Changer")}
           </Link>
         </>
@@ -41,7 +41,7 @@ export default async function Page({ searchParams }: PageProps<"/inscription">) 
         {t("Déjà un compte ?")}{" "}
         <Link
           href={`/connexion?niveau=${level.slug}`}
-          className="font-semibold text-brand-fg underline underline-offset-4"
+          className="font-medium text-brand-fg underline underline-offset-4"
         >
           {t("Connecte-toi")}
         </Link>

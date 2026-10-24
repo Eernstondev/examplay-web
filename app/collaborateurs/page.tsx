@@ -50,7 +50,7 @@ export default async function Page() {
         const rows = partners.filter((p) => p.category === category.id);
         return (
           <section key={category.id} className="border-t border-ink/10 py-10 first:border-t-0 first:pt-0">
-            <h2 className="font-display text-[clamp(1.5rem,5.5vw,2rem)] font-bold tracking-tight">
+            <h2 className="text-[clamp(1.5rem,5.5vw,2rem)] font-semibold tracking-tight">
               {category.label}
             </h2>
             {rows.length ? (
@@ -58,8 +58,8 @@ export default async function Page() {
                 {rows.map((p) => {
                   const website = p.website && safeUrl(p.website);
                   return (
-                    <li key={p.id} className="flex flex-col rounded-3xl bg-brand-soft p-6">
-                      <span className="grid size-20 place-items-center overflow-hidden rounded-2xl bg-surface font-display text-3xl font-bold text-brand-fg ring-1 ring-ink/10">
+                    <li key={p.id} className="flex flex-col rounded-3xl bg-ink/[0.035] p-6">
+                      <span className="grid size-20 place-items-center overflow-hidden rounded-2xl bg-surface text-3xl font-semibold text-brand-fg ring-1 ring-ink/10">
                         {p.logo_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={p.logo_url} alt={t("Logo {name}", { name: p.name })} loading="lazy" className="size-full object-contain p-2" />
@@ -67,7 +67,7 @@ export default async function Page() {
                           p.name.charAt(0).toUpperCase()
                         )}
                       </span>
-                      <h3 className="mt-4 font-display text-xl font-semibold leading-snug">{p.name}</h3>
+                      <h3 className="mt-4 text-xl font-semibold leading-snug">{p.name}</h3>
                       {p.description && (
                         <p className="mt-2 whitespace-pre-line leading-relaxed text-ink/70">{p.description}</p>
                       )}
@@ -92,7 +92,7 @@ export default async function Page() {
                             href={website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-bold text-brand-fg ring-1 ring-ink/10 hover:bg-brand hover:text-white"
+                            className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-semibold text-brand-fg ring-1 ring-ink/10 hover:bg-brand hover:text-white"
                           >
                             {t("Site web")}
                           </a>
@@ -105,7 +105,7 @@ export default async function Page() {
             ) : (
               <p className="mt-3 text-ink/70">
                 {t("Aucun nom annoncé pour le moment.")}{" "}
-                <Link href="/contact" className="font-semibold text-brand-fg underline underline-offset-4">
+                <Link href="/contact" className="font-medium text-brand-fg underline underline-offset-4">
                   {t("Contactez-nous pour rejoindre Examplay")}
                 </Link>
                 .

@@ -14,7 +14,7 @@ export default async function Page() {
         <ResetForm />
       </div>
       <p className="mt-6">
-        <Link href="/connexion" className="font-semibold text-brand-fg underline underline-offset-4">
+        <Link href="/connexion" className="font-medium text-brand-fg underline underline-offset-4">
           {t("Retour à la connexion")}
         </Link>
       </p>

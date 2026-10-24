@@ -11,10 +11,10 @@ import { useT } from "@/components/i18n-provider";
 const initialState: AuthState = { status: "idle", message: "", values: { email: "" } };
 
 const field =
-  "mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base text-ink placeholder:text-ink/40";
-const label = "block text-sm font-semibold";
+  "mt-1.5 h-13 w-full rounded-xl border border-ink/15 bg-surface px-4 text-base text-ink placeholder:text-ink/40";
+const label = "block text-sm font-medium";
 const submit =
-  "h-13 w-full rounded-xl bg-brand text-base font-bold text-white hover:bg-brand-dark disabled:opacity-60";
+  "h-12 w-full rounded-full bg-brand text-base font-medium text-white hover:bg-brand-dark disabled:opacity-60";
 
 function ErrorMessage({ state }: { state: AuthState }) {
   const t = useT();
@@ -62,7 +62,7 @@ export function SignInForm({ notice, success }: { notice?: string; success?: str
       <button type="submit" disabled={pending} className={submit}>
         {pending ? t("Connexion…") : t("Se connecter")}
       </button>
-      <Link href="/mot-de-passe-oublie" className="justify-self-center py-1 text-sm font-semibold text-brand-fg underline underline-offset-4">
+      <Link href="/mot-de-passe-oublie" className="justify-self-center py-1 text-sm font-medium text-brand-fg underline underline-offset-4">
         {t("Mot de passe oublié ?")}
       </Link>
     </form>
@@ -150,11 +150,11 @@ export function SignUpForm({ level, referral = "" }: { level: string; referral?:
         <input type="checkbox" name="terms" required className="mt-0.5 size-5 shrink-0 accent-brand" />
         <span>
           {t("J'accepte les")}{" "}
-          <Link href="/conditions" target="_blank" className="font-semibold text-brand-fg underline underline-offset-2">
+          <Link href="/conditions" target="_blank" className="font-medium text-brand-fg underline underline-offset-2">
             {t("conditions d'utilisation")}
           </Link>{" "}
           {t("et la")}{" "}
-          <Link href="/confidentialite" target="_blank" className="font-semibold text-brand-fg underline underline-offset-2">
+          <Link href="/confidentialite" target="_blank" className="font-medium text-brand-fg underline underline-offset-2">
             {t("politique de confidentialité")}
           </Link>
           .

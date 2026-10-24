@@ -4,7 +4,7 @@ import { useState, type ComponentPropsWithoutRef } from "react";
 import { useT } from "@/components/i18n-provider";
 
 const input =
-  "h-13 w-full rounded-xl border border-ink/20 bg-surface pl-4 pr-14 text-base text-ink placeholder:text-ink/40";
+  "h-13 w-full rounded-xl border border-ink/15 bg-surface pl-4 pr-14 text-base text-ink placeholder:text-ink/40";
 
 // Champ mot de passe avec bouton « afficher / masquer ».
 export function PasswordInput(props: Omit<ComponentPropsWithoutRef<"input">, "type" | "className">) {

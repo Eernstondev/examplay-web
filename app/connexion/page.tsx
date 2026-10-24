@@ -36,7 +36,7 @@ export default async function Page({ searchParams }: PageProps<"/connexion">) {
       </div>
       <p className="mt-6 text-ink/75">
         {t("Pas encore de compte ?")}{" "}
-        <Link href={signUpHref} className="font-semibold text-brand-fg underline underline-offset-4">
+        <Link href={signUpHref} className="font-medium text-brand-fg underline underline-offset-4">
           {t("Inscris-toi")}
         </Link>
       </p>

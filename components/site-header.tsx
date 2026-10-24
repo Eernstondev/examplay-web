@@ -22,7 +22,7 @@ export function SiteHeader() {
       <div className="flex items-center justify-between gap-6">
         <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
           <Image src="/logo.png" alt="" width={40} height={40} priority className="rounded-[10px]" />
-          <span className="font-display text-xl font-bold tracking-tight">{site.name}</span>
+          <span className="text-xl font-semibold tracking-tight">{site.name}</span>
         </Link>
 
         <nav aria-label={t("Navigation principale")} className="hidden items-center gap-6 xl:flex">

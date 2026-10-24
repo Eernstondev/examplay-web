@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Joindre l'équipe Examplay par WhatsApp, e-mail ou sur les réseaux sociaux.",
 };
 
-const link = "inline-block py-1.5 font-semibold text-brand-fg underline underline-offset-4";
+const link = "inline-block py-1.5 font-medium text-brand-fg underline underline-offset-4";
 
 export default async function Page() {
   const t = await getT();
@@ -18,8 +18,8 @@ export default async function Page() {
       lead={t("Une question, une suggestion ou besoin d'assistance ? Notre équipe est à votre écoute pour faire progresser l'éducation ensemble.")}
     >
       <ul className="grid gap-4 md:grid-cols-3">
-        <li className="flex flex-col rounded-3xl bg-brand-soft p-6 sm:p-7">
-          <h2 className="font-display text-xl font-semibold">{t("WhatsApp")}</h2>
+        <li className="flex flex-col rounded-3xl bg-ink/[0.035] p-6 sm:p-7">
+          <h2 className="text-xl font-semibold">{t("WhatsApp")}</h2>
           <p className="mt-2 leading-relaxed text-ink/70">
             {t("Le moyen le plus rapide pour nous joindre directement.")}
           </p>
@@ -29,8 +29,8 @@ export default async function Page() {
             </a>
           </p>
         </li>
-        <li className="flex flex-col rounded-3xl bg-brand-soft p-6 sm:p-7">
-          <h2 className="font-display text-xl font-semibold">{t("E-mail")}</h2>
+        <li className="flex flex-col rounded-3xl bg-ink/[0.035] p-6 sm:p-7">
+          <h2 className="text-xl font-semibold">{t("E-mail")}</h2>
           <p className="mt-2 leading-relaxed text-ink/70">
             {t("Pour vos demandes formelles, techniques ou partenariats.")}
           </p>
@@ -43,8 +43,8 @@ export default async function Page() {
             </a>
           </p>
         </li>
-        <li className="flex flex-col rounded-3xl bg-brand-soft p-6 sm:p-7">
-          <h2 className="font-display text-xl font-semibold">{t("Suivez-nous")}</h2>
+        <li className="flex flex-col rounded-3xl bg-ink/[0.035] p-6 sm:p-7">
+          <h2 className="text-xl font-semibold">{t("Suivez-nous")}</h2>
           <p className="mt-2 leading-relaxed text-ink/70">
             {t("Rejoignez notre communauté sur les réseaux sociaux.")}
           </p>

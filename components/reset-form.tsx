@@ -7,10 +7,10 @@ import { Turnstile } from "@/components/turnstile";
 import { useT } from "@/components/i18n-provider";
 
 const field =
-  "mt-1.5 h-13 w-full rounded-xl border border-ink/20 bg-surface px-4 text-base text-ink placeholder:text-ink/40";
-const label = "block text-sm font-semibold";
+  "mt-1.5 h-13 w-full rounded-xl border border-ink/15 bg-surface px-4 text-base text-ink placeholder:text-ink/40";
+const label = "block text-sm font-medium";
 const submit =
-  "h-13 w-full rounded-xl bg-brand text-base font-bold text-white hover:bg-brand-dark disabled:opacity-60";
+  "h-12 w-full rounded-full bg-brand text-base font-medium text-white hover:bg-brand-dark disabled:opacity-60";
 
 function ErrorMessage({ error }: { error: string }) {
   const t = useT();

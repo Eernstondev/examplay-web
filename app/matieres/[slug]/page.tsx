@@ -106,7 +106,7 @@ export default async function Page({ params }: PageProps<"/matieres/[slug]">) {
                         i === q.answer ? "bg-success-soft font-semibold text-success-fg" : "text-ink/75"
                       }`}
                     >
-                      <span className="w-4 shrink-0 font-bold">{letters[i]}</span>
+                      <span className="w-4 shrink-0 font-semibold">{letters[i]}</span>
                       <span>{choice}</span>
                     </li>
                   ))}
@@ -126,7 +126,7 @@ export default async function Page({ params }: PageProps<"/matieres/[slug]">) {
         </p>
         <Link
           href="/commencer"
-          className="btn-sun mt-5 inline-flex h-13 items-center justify-center rounded-xl px-8 font-bold"
+          className="mt-5 inline-flex h-12 items-center justify-center rounded-full bg-brand px-7 font-medium text-white transition-colors hover:bg-brand-dark"
         >
           {t("Commencer")}
         </Link>

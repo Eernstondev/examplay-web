@@ -13,12 +13,12 @@ export function AuthShell({
   children: ReactNode;
 }) {
   return (
-    <main className="flex-1 bg-brand-soft sm:mx-4 sm:mb-4 sm:rounded-[2.5rem] lg:mx-6 lg:mb-6">
-      <div className={`mx-auto w-full px-5 py-10 sm:px-8 sm:py-16 ${wide ? "max-w-3xl" : "max-w-md"}`}>
-        <h1 className="font-display text-[clamp(1.875rem,7.5vw,2.75rem)] font-bold leading-[1.08] tracking-tight">
+    <main className="flex-1">
+      <div className={`mx-auto w-full px-5 pt-12 pb-16 sm:px-8 sm:pt-20 sm:pb-24 ${wide ? "max-w-3xl" : "max-w-md"}`}>
+        <h1 className="text-[clamp(1.875rem,5vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
           {title}
         </h1>
-        {lead && <p className="mt-3 text-[1.0625rem] leading-relaxed text-ink/75">{lead}</p>}
+        {lead && <p className="mt-3 text-lg leading-relaxed text-ink/60">{lead}</p>}
         <div className="mt-7">{children}</div>
       </div>
     </main>

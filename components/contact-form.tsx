@@ -90,7 +90,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="h-12 justify-self-start rounded-lg bg-brand px-6 font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+        className="h-12 justify-self-start rounded-full bg-brand px-7 font-medium text-white hover:bg-brand-dark disabled:opacity-60"
       >
         {pending ? t("Envoi…") : t("Envoyer la demande")}
       </button>
