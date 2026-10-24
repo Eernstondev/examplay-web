@@ -53,14 +53,14 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/quiz"
           <li className="md:col-span-2">
             <Link href={examHref("general")} className={`${row} bg-brand text-white`}>
               <span>
-                <span className="block font-display text-lg font-semibold">{t("Simulation générale")}</span>
+                <span className="block text-lg font-semibold">{t("Simulation générale")}</span>
                 <span className="text-sm text-white/80">{t("Toutes les questions à choix multiples de la matière.")}</span>
               </span>
             </Link>
           </li>
           {annales.map((a) => (
             <li key={annaleKey(a)}>
-              <Link href={examHref(annaleKey(a))} className={`${row} bg-surface ring-1 ring-ink/10 hover:ring-2 hover:ring-brand`}>
+              <Link href={examHref(annaleKey(a))} className={`${row} bg-surface ring-1 ring-ink/[0.06] hover:ring-2 hover:ring-brand`}>
                 <span>
                   <span className="block font-semibold leading-snug">{a.session}</span>
                   <span className="text-sm text-ink/60">{t("Annale {year}", { year: a.year })}</span>

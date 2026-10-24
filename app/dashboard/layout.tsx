@@ -21,7 +21,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const contributor = await isContributor();
 
   return (
-    <div className="flex flex-1 flex-col bg-brand-soft">
+    <div className="flex flex-1 flex-col bg-ink/[0.035]">
       <OfflineSync
         userId={account.id}
         level={account.level}
@@ -36,7 +36,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
         <Link href="/dashboard" className="flex items-center gap-2.5">
           <Image src="/logo.png" alt="" width={40} height={40} priority className="rounded-[10px]" />
-          <span className="font-display text-xl font-bold tracking-tight">{site.name}</span>
+          <span className="text-xl font-semibold tracking-tight">{site.name}</span>
         </Link>
         <div className="flex items-center gap-1.5">
           {contributor && (
@@ -56,7 +56,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           <Link
             href="/dashboard/profil"
             aria-label={t("Mon profil")}
-            className="grid size-11 place-items-center rounded-full bg-brand font-display text-lg font-bold text-white"
+            className="grid size-11 place-items-center rounded-full bg-brand text-lg font-semibold text-white"
           >
             {account.name.charAt(0).toUpperCase()}
           </Link>

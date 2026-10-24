@@ -11,7 +11,7 @@ export function DeleteAccount() {
 
   return (
     <section className="mt-8 rounded-3xl bg-surface p-5 ring-1 ring-danger/30">
-      <h2 className="font-display text-lg font-bold text-danger-fg">{t("Supprimer mon compte")}</h2>
+      <h2 className="text-lg font-semibold text-danger-fg">{t("Supprimer mon compte")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-ink/70">
         {t("Cette action est définitive : ton compte, tes résultats, tes duels et tes badges sont effacés, sur le site comme dans l'app.")}
       </p>
@@ -32,10 +32,10 @@ export function DeleteAccount() {
             </p>
           )}
           <div className="grid grid-cols-2 gap-3">
-            <button type="button" onClick={() => setOpen(false)} className="h-12 rounded-xl font-bold ring-1 ring-ink/15">
+            <button type="button" onClick={() => setOpen(false)} className="h-12 rounded-xl font-semibold ring-1 ring-ink/15">
               {t("Annuler")}
             </button>
-            <button type="submit" disabled={pending} className="h-12 rounded-xl bg-danger font-bold text-white disabled:opacity-60">
+            <button type="submit" disabled={pending} className="h-12 rounded-xl bg-danger font-semibold text-white disabled:opacity-60">
               {pending ? t("Suppression…") : t("Supprimer")}
             </button>
           </div>
@@ -44,7 +44,7 @@ export function DeleteAccount() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-4 h-12 rounded-xl px-5 font-bold text-danger-fg ring-1 ring-danger/40"
+          className="mt-4 h-12 rounded-xl px-5 font-semibold text-danger-fg ring-1 ring-danger/40"
         >
           {t("Supprimer mon compte")}
         </button>

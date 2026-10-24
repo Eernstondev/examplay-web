@@ -144,13 +144,13 @@ export function NotificationBell({ userId }: { userId: string }) {
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
         {unread > 0 && (
-          <span className="absolute right-1.5 top-1.5 grid size-4 place-items-center rounded-full bg-danger text-[10px] font-bold text-white">
+          <span className="absolute right-1.5 top-1.5 grid size-4 place-items-center rounded-full bg-danger text-[10px] font-semibold text-white">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[90vw] rounded-2xl bg-surface p-2 shadow-xl ring-1 ring-ink/10">
+        <div className="absolute right-0 top-full z-20 mt-2 w-80 max-w-[90vw] rounded-2xl bg-surface p-2 shadow-xl ring-1 ring-ink/[0.06]">
           {items.length === 0 ? (
             <p className="p-4 text-center text-sm text-ink/60">{t("Aucune notification pour le moment.")}</p>
           ) : (
@@ -173,14 +173,14 @@ export function NotificationBell({ userId }: { userId: string }) {
                         <button
                           type="button"
                           onClick={() => answer(n, false)}
-                          className="h-10 rounded-xl text-sm font-bold ring-1 ring-ink/15"
+                          className="h-10 rounded-xl text-sm font-semibold ring-1 ring-ink/15"
                         >
                           {t("Refuser")}
                         </button>
                         <button
                           type="button"
                           onClick={() => answer(n, true)}
-                          className="h-10 rounded-xl bg-brand text-sm font-bold text-white"
+                          className="h-10 rounded-xl bg-brand text-sm font-semibold text-white"
                         >
                           {t("Accepter")}
                         </button>

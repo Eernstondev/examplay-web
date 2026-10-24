@@ -43,8 +43,8 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
   }
 
   return (
-    <fieldset className="mt-6 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
-      <legend className="px-1 text-sm font-bold">{t("Quel est le problème ?")}</legend>
+    <fieldset className="mt-6 rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
+      <legend className="px-1 text-sm font-semibold">{t("Quel est le problème ?")}</legend>
       <div className="grid gap-2">
         {REPORT_REASONS.map((r) => (
           <label
@@ -81,14 +81,14 @@ export function ReportQuestion({ questionId }: { questionId: string }) {
         </p>
       )}
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-xl text-sm font-bold ring-1 ring-ink/15">
+        <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-xl text-sm font-semibold ring-1 ring-ink/15">
           {t("Annuler")}
         </button>
         <button
           type="button"
           disabled={!reason || state === "sending"}
           onClick={send}
-          className="h-11 rounded-xl bg-brand text-sm font-bold text-white disabled:opacity-50"
+          className="h-11 rounded-full bg-brand text-sm font-semibold text-white disabled:opacity-50"
         >
           {state === "sending" ? t("Envoi…") : t("Envoyer")}
         </button>

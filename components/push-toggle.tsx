@@ -84,8 +84,8 @@ export function PushToggle() {
   if (state === "unsupported") return null;
 
   return (
-    <section className="mt-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
-      <h2 className="font-display text-lg font-semibold">{t("Notifications")}</h2>
+    <section className="mt-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/[0.06]">
+      <h2 className="text-lg font-semibold">{t("Notifications")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-ink/65">
         {t("Reçois une alerte sur ton téléphone quand on te défie en duel, quand un duel se termine ou quand ton signalement a une réponse.")}
       </p>

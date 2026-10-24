@@ -20,9 +20,9 @@ import { getT } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
 
-const card = "block rounded-3xl bg-surface p-5 ring-1 ring-ink/10 transition-transform active:scale-[0.98]";
+const card = "block rounded-3xl bg-surface p-5 ring-1 ring-ink/[0.06] transition-transform active:scale-[0.98]";
 const cardTitle = "text-sm font-semibold text-ink/60";
-const cardValue = "mt-1.5 font-display text-2xl font-bold leading-tight";
+const cardValue = "mt-1.5 text-2xl font-semibold leading-tight";
 
 const skeleton = "animate-pulse rounded-3xl";
 
@@ -45,11 +45,11 @@ async function StreakCard() {
   return (
     <section aria-label={t("Série de jours")} className="mt-6 rounded-3xl bg-brand p-5 text-white sm:p-7">
       <div className="flex items-center gap-4 sm:gap-6">
-        <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun font-display text-3xl font-extrabold text-sun-ink sm:size-20 sm:text-4xl">
+        <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-sun text-3xl font-semibold text-sun-ink sm:size-20 sm:text-4xl">
           {days}
         </span>
         <div>
-          <h2 className="font-display text-xl font-bold leading-snug sm:text-2xl">
+          <h2 className="text-xl font-semibold leading-snug sm:text-2xl">
             {days > 0 ? t("{days} jour{v1} de suite", { days, v1: days > 1 ? "s" : "" }) : t("Commence une série aujourd'hui !")}
           </h2>
           <p className="mt-1 text-sm leading-relaxed text-white/80 sm:text-base">
@@ -165,7 +165,7 @@ export default async function Page() {
   // L'en-tête et les boutons s'affichent tout de suite ; les données arrivent ensuite, en parallèle.
   return (
     <>
-      <h1 className="mt-3 font-display text-[clamp(1.75rem,7.5vw,2.75rem)] font-extrabold leading-[1.05] tracking-tight">
+      <h1 className="mt-3 text-[clamp(1.75rem,5vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
         {t("Bienvenue, ")}{account.name.split(" ")[0]} !
       </h1>
       <p className="mt-2 text-ink/70">
@@ -177,7 +177,7 @@ export default async function Page() {
       </Suspense>
 
       <section aria-labelledby="modes" className="mt-7">
-        <h2 id="modes" className="font-display text-xl font-bold tracking-tight">
+        <h2 id="modes" className="text-xl font-semibold tracking-tight">
           {t("Réviser")}
         </h2>
         <ul className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -186,10 +186,10 @@ export default async function Page() {
               <Link
                 href={mode.href}
                 className={`flex h-full min-h-28 flex-col justify-between gap-3 rounded-3xl p-4 transition-transform active:scale-[0.98] sm:p-5 ${
-                  i === 0 ? "bg-navy text-white" : "bg-surface ring-1 ring-ink/10"
+                  i === 0 ? "bg-brand text-white" : "bg-surface ring-1 ring-ink/[0.06]"
                 }`}
               >
-                <span className="font-display text-lg font-semibold leading-tight">{t(mode.title)}</span>
+                <span className="text-lg font-semibold leading-tight">{t(mode.title)}</span>
                 <span className={`text-sm leading-snug ${i === 0 ? "text-white/75" : "text-ink/60"}`}>
                   {t(mode.body)}
                 </span>
@@ -208,7 +208,7 @@ export default async function Page() {
       </Suspense>
 
       <section aria-labelledby="stats" className="mt-7">
-        <h2 id="stats" className="font-display text-xl font-bold tracking-tight">
+        <h2 id="stats" className="text-xl font-semibold tracking-tight">
           {t("Ton parcours")}
         </h2>
         <Suspense

@@ -43,9 +43,9 @@ export default async function Page() {
         <>
           <section className="rounded-3xl bg-brand p-6 text-white">
             <p className="text-sm font-semibold text-white/75">{tx("Première épreuve : ")}{plan.firstExam}</p>
-            <p className="mt-1 font-display text-6xl font-extrabold leading-none">
+            <p className="mt-1 text-6xl font-semibold leading-none">
               {plan.daysLeft}
-              <span className="text-2xl font-bold">{tx(" jour")}{plan.daysLeft > 1 ? tx("s") : ""}</span>
+              <span className="text-2xl font-semibold">{tx(" jour")}{plan.daysLeft > 1 ? tx("s") : ""}</span>
             </p>
             <p className="mt-3 text-sm text-white/80">
               {tx("Les épreuves proches et tes points faibles passent en premier. 2 séances de 30 min par jour.")}
@@ -58,11 +58,11 @@ export default async function Page() {
           <ol className="mt-6 grid gap-5">
             {plan.days.map((day, i) => (
               <li key={day.date.toISOString()}>
-                <h2 className="font-display text-lg font-bold first-letter:uppercase">
+                <h2 className="text-lg font-semibold first-letter:uppercase">
                   {i === 0 ? tx("Aujourd'hui") : i === 1 ? tx("Demain") : dayLabel(day.date)}
                   {i < 2 && <span className="font-normal text-ink/60"> · {dayLabel(day.date)}</span>}
                 </h2>
-                <ul className="mt-2 divide-y divide-ink/10 overflow-hidden rounded-2xl bg-surface ring-1 ring-ink/10">
+                <ul className="mt-2 divide-y divide-ink/10 overflow-hidden rounded-2xl bg-surface ring-1 ring-ink/[0.06]">
                   {day.tasks.map((t, j) => {
                     const href = t.subject
                       ? `/dashboard/quiz?subject=${t.subject.id}&mode=quiz${t.chapter ? `&chapter=${encodeURIComponent(t.chapter)}` : ""}`
@@ -75,7 +75,7 @@ export default async function Page() {
                             {t.chapter ? tx("Chapitre à reprendre : {chapter}", { chapter: t.chapter }) : tx("Quiz de révision")}{tx(" · 30 min")}
                           </span>
                         </span>
-                        {href && <span className="shrink-0 text-sm font-bold text-brand-fg">{tx("Réviser")}</span>}
+                        {href && <span className="shrink-0 text-sm font-semibold text-brand-fg">{tx("Réviser")}</span>}
                       </>
                     );
                     return (

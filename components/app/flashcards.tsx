@@ -76,7 +76,7 @@ export function Flashcards({ subject, chapter }: { subject: string; chapter?: st
   if (finished) {
     return (
       <div className="mx-auto max-w-md py-6 text-center">
-        <p className="font-display text-[clamp(3.5rem,18vw,5.5rem)] font-extrabold leading-none text-brand-fg">
+        <p className="text-[clamp(3rem,14vw,4.5rem)] font-semibold leading-none tracking-[-0.04em] text-brand-fg">
           {known} / {cards.length}
         </p>
         <p className="mt-3 text-ink/75">{t("fiches que tu savais déjà. ")}{cards.length - known}{t(" à revoir.")}</p>
@@ -110,13 +110,13 @@ export function Flashcards({ subject, chapter }: { subject: string; chapter?: st
         onClick={() => setFlipped(!flipped)}
         aria-live="polite"
         className={`mt-6 flex min-h-72 w-full flex-col justify-center rounded-3xl p-6 text-left transition-colors sm:p-8 ${
-          flipped ? "bg-brand text-white" : "bg-surface ring-1 ring-ink/10"
+          flipped ? "bg-brand text-white" : "bg-surface ring-1 ring-ink/[0.06]"
         }`}
       >
         <span className={`text-sm font-semibold ${flipped ? "text-white/70" : "text-ink/55"}`}>
           {flipped ? t("Réponse") : t("Question")}
         </span>
-        <span className="mt-2 font-display text-[clamp(1.25rem,5vw,1.625rem)] font-semibold leading-snug">
+        <span className="mt-2 text-[clamp(1.25rem,5vw,1.625rem)] font-semibold leading-snug">
           {flipped ? card.answer : card.q}
         </span>
         {flipped && card.explain && <span className="mt-3 text-white/85">{card.explain}</span>}

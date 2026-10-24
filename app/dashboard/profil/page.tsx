@@ -47,12 +47,12 @@ export default async function Page() {
   return (
     <>
       <SubHeader title={t("Mon profil")} />
-      <section className="flex items-center gap-4 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
-        <span className="grid size-16 shrink-0 place-items-center rounded-full bg-brand font-display text-2xl font-bold text-white">
+      <section className="flex items-center gap-4 rounded-3xl bg-surface p-5 ring-1 ring-ink/[0.06]">
+        <span className="grid size-16 shrink-0 place-items-center rounded-full bg-brand text-2xl font-semibold text-white">
           {account.name.charAt(0).toUpperCase()}
         </span>
         <div className="min-w-0">
-          <p className="truncate font-display text-xl font-bold">{account.name}</p>
+          <p className="truncate text-xl font-semibold">{account.name}</p>
           <p className="truncate text-sm text-ink/60">{account.email}</p>
           <p className="mt-1 text-sm font-semibold">
             {levelLabel(account.level)} · {account.department}
@@ -65,9 +65,9 @@ export default async function Page() {
 
       <dl className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3">
         {rows.map(([label, value]) => (
-          <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+          <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
             <dt className="text-sm font-semibold text-ink/60">{t(label)}</dt>
-            <dd className="mt-1 font-display text-2xl font-bold">{Number(value ?? 0)}</dd>
+            <dd className="mt-1 text-2xl font-semibold">{Number(value ?? 0)}</dd>
           </div>
         ))}
       </dl>
@@ -75,7 +75,7 @@ export default async function Page() {
       {account.referralCode && (
         <section className="mt-5 rounded-3xl bg-brand p-5 text-white">
           <p className="text-sm font-semibold text-white/75">{t("Ton code de parrainage")}</p>
-          <p className="mt-1 select-all font-display text-3xl font-extrabold tracking-wider">
+          <p className="mt-1 select-all text-3xl font-semibold tracking-wider">
             {account.referralCode}
           </p>
           <p className="mt-2 text-sm text-white/80">
@@ -93,9 +93,9 @@ export default async function Page() {
 
       <Link
         href="/contribuer"
-        className="mt-5 block rounded-3xl bg-surface p-5 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
+        className="mt-5 block rounded-3xl bg-surface p-5 ring-1 ring-ink/[0.06] transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
       >
-        <span className="font-display text-lg font-semibold">{t("Espace enseignants et experts")}</span>
+        <span className="text-lg font-semibold">{t("Espace enseignants et experts")}</span>
         <span className="mt-1 block text-sm leading-relaxed text-ink/65">
           {t("Tu es enseignant ou expert ? Demande l'accès pour proposer des questions et des corrections.")}
         </span>
@@ -104,7 +104,7 @@ export default async function Page() {
       <form action={signOut} className="mt-6">
         <button
           type="submit"
-          className="h-13 w-full rounded-xl bg-surface font-bold text-danger-fg ring-1 ring-ink/15 sm:w-auto sm:px-8"
+          className="h-12 w-full rounded-full bg-surface font-medium text-danger-fg ring-1 ring-ink/15 sm:w-auto sm:px-8"
         >
           {t("Se déconnecter")}
         </button>

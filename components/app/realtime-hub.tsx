@@ -120,21 +120,21 @@ export function RealtimeHub({ id, name, department, level }: Me) {
           role="alert"
           className="rounded-2xl bg-navy p-4 text-white shadow-[0_20px_40px_-16px_rgba(11,37,89,0.6)]"
         >
-          <p className="font-display text-lg font-bold leading-snug">{t(notice.title, notice.vars)}</p>
+          <p className="text-lg font-semibold leading-snug">{t(notice.title, notice.vars)}</p>
           <p className="text-sm text-white/75">{t(notice.subtitle, notice.vars)}</p>
           {notice.duelId ? (
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => respond(notice, true)}
-                className="h-11 rounded-xl bg-sun font-bold text-sun-ink"
+                className="h-11 rounded-xl bg-sun font-semibold text-sun-ink"
               >
                 {t("Accepter")}
               </button>
               <button
                 type="button"
                 onClick={() => respond(notice, false)}
-                className="h-11 rounded-xl bg-white/15 font-bold"
+                className="h-11 rounded-xl bg-white/15 font-semibold"
               >
                 {t("Refuser")}
               </button>

@@ -217,12 +217,12 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-3xl bg-navy p-5 text-white">
       <div>
         <p className="text-sm text-white/70">{t("Toi")}</p>
-        <p className="font-display text-4xl font-extrabold">{myScore}</p>
+        <p className="text-4xl font-semibold">{myScore}</p>
       </div>
       <p className="text-sm font-semibold text-white/60">{subjectName(duel.subject_id)}</p>
       <div className="text-right">
         <p className="truncate text-sm text-white/70">{oppName}</p>
-        <p className="font-display text-4xl font-extrabold">{oppScore}</p>
+        <p className="text-4xl font-semibold">{oppScore}</p>
       </div>
     </div>
   );
@@ -236,7 +236,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
   if (duel.status === "pending") {
     return (
       <div className="mx-auto max-w-md py-10 text-center">
-        <p className="font-display text-2xl font-bold">{t("En attente de ")}{oppName}…</p>
+        <p className="text-2xl font-semibold">{t("En attente de ")}{oppName}…</p>
         <p className="mt-2 text-ink/70">{t("Le duel démarre dès que ton adversaire accepte.")}</p>
         {backLink}
       </div>
@@ -246,7 +246,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
   if (duel.status === "declined" || duel.status === "cancelled") {
     return (
       <div className="mx-auto max-w-md py-10 text-center">
-        <p className="font-display text-2xl font-bold">
+        <p className="text-2xl font-semibold">
           {duel.status === "declined" ? t("Défi refusé") : t("Duel annulé")}
         </p>
         {backLink}
@@ -266,7 +266,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
             : t("Défaite");
     return (
       <div className="mx-auto max-w-md py-4">
-        <p className="mb-5 text-center font-display text-[clamp(2rem,9vw,3rem)] font-extrabold leading-tight">
+        <p className="mb-5 text-center text-[clamp(2rem,9vw,3rem)] font-semibold leading-tight">
           {title}
         </p>
         {scoreboard}
@@ -280,7 +280,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     return (
       <div className="mx-auto max-w-md py-4">
         {scoreboard}
-        <p className="mt-6 text-center font-display text-xl font-bold">
+        <p className="mt-6 text-center text-xl font-semibold">
           {oppDone ? t("Calcul du résultat…") : t("{oppName} joue encore…", { oppName })}
         </p>
         {sendErr && (
@@ -318,7 +318,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
     return (
       <div className="mx-auto max-w-md py-4">
         {scoreboard}
-        <p className="mt-6 text-center font-display text-xl font-bold">{oppName}{t(" joue encore…")}</p>
+        <p className="mt-6 text-center text-xl font-semibold">{oppName}{t(" joue encore…")}</p>
       </div>
     );
   }
@@ -332,7 +332,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
         </span>
         {sel === null && <Countdown key={idx} seconds={TIME_PER_QUESTION} onExpire={() => pick(-1)} />}
       </div>
-      <h2 className="mt-4 font-display text-[clamp(1.25rem,5vw,1.625rem)] font-semibold leading-snug">{q.q}</h2>
+      <h2 className="mt-4 text-[clamp(1.25rem,5vw,1.625rem)] font-semibold leading-snug">{q.q}</h2>
       <ul className="mt-5 grid gap-2.5">
         {q.choices.map((c, i) => {
           const stateClass =
@@ -340,7 +340,7 @@ export function DuelPlayer({ id, me }: { id: string; me: string }) {
           return (
             <li key={`${idx}-${i}`}>
               <button type="button" disabled={sel !== null} onClick={() => pick(i)} className={choiceClass(stateClass)}>
-                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-bold text-brand-fg">
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-semibold text-brand-fg">
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span className="min-w-0 flex-1">{c}</span>

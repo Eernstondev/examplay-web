@@ -39,7 +39,7 @@ export function LanguageButton() {
       disabled={pending}
       aria-label={next === "ht" ? "Pase an kreyòl" : "Passer en français"}
       title={t("Langue")}
-      className="grid size-11 place-items-center rounded-lg border border-ink/15 text-sm font-bold text-ink/80 hover:text-brand-fg disabled:opacity-60"
+      className="grid size-11 place-items-center rounded-lg border border-ink/15 text-sm font-semibold text-ink/80 hover:text-brand-fg disabled:opacity-60"
     >
       {next === "ht" ? "KR" : "FR"}
     </button>
@@ -52,8 +52,8 @@ export function LanguageSwitch() {
   const t = useT();
   const [set, pending] = useSetLang();
   return (
-    <section className="mt-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/10">
-      <p className="font-display text-lg font-semibold">{t("Langue")}</p>
+    <section className="mt-5 rounded-3xl bg-surface p-5 ring-1 ring-ink/[0.06]">
+      <p className="text-lg font-semibold">{t("Langue")}</p>
       <p className="mt-1 text-sm text-ink/65">
         {t("Les questions et les leçons restent en français, comme aux examens officiels.")}
       </p>
@@ -66,7 +66,7 @@ export function LanguageSwitch() {
             aria-checked={lang === o.id}
             disabled={pending}
             onClick={() => set(o.id)}
-            className="h-11 rounded-xl text-sm font-bold text-ink/70 aria-checked:bg-brand aria-checked:text-white"
+            className="h-11 rounded-xl text-sm font-semibold text-ink/70 aria-checked:bg-brand aria-checked:text-white"
           >
             {o.label}
           </button>

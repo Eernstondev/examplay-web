@@ -38,7 +38,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
               <Link
                 href={`/dashboard/matieres?mode=${m.id}`}
                 aria-current={m.id === mode.id ? "page" : undefined}
-                className="grid h-11 place-items-center whitespace-nowrap rounded-full bg-surface px-4 text-sm font-bold text-ink/70 ring-1 ring-ink/10 aria-[current=page]:bg-brand aria-[current=page]:text-white aria-[current=page]:ring-0"
+                className="grid h-11 place-items-center whitespace-nowrap rounded-full bg-surface px-4 text-sm font-semibold text-ink/70 ring-1 ring-ink/[0.06] aria-[current=page]:bg-brand aria-[current=page]:text-white aria-[current=page]:ring-0"
               >
                 {t(m.label)}
               </Link>
@@ -59,9 +59,9 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
           const body = (
             <>
               <div className="flex items-baseline justify-between gap-3">
-                <span className="font-display text-lg font-semibold">
+                <span className="text-lg font-semibold">
                   {s.name}
-                  {s.heavy && <span className="ml-2 text-sm font-bold text-brand-fg">{t("×2")}</span>}
+                  {s.heavy && <span className="ml-2 text-sm font-semibold text-brand-fg">{t("×2")}</span>}
                 </span>
                 {count > 0 && <span className="shrink-0 text-sm font-semibold text-ink/60">{progress}%</span>}
               </div>
@@ -80,12 +80,12 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/matie
               {count ? (
                 <Link
                   href={href}
-                  className="block rounded-2xl bg-surface p-4 ring-1 ring-ink/10 transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
+                  className="block rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06] transition-transform hover:ring-2 hover:ring-brand active:scale-[0.98]"
                 >
                   {body}
                 </Link>
               ) : (
-                <div className="rounded-2xl bg-surface/60 p-4 ring-1 ring-ink/10">{body}</div>
+                <div className="rounded-2xl bg-surface/60 p-4 ring-1 ring-ink/[0.06]">{body}</div>
               )}
             </li>
           );

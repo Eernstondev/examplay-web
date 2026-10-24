@@ -45,7 +45,7 @@ const levelGroup = (level: string) => (level === "9e" ? "9e" : "ns4");
 function Avatar({ name, online }: { name: string; online: boolean }) {
   const tx = useT();
   return (
-    <span className="relative grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-display font-bold text-brand-fg">
+    <span className="relative grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft font-semibold text-brand-fg">
       {name.charAt(0).toUpperCase()}
       {online && (
         <span
@@ -234,14 +234,14 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
   // Un seul bouton par ligne : on ne défie que ses amis ; sinon on envoie (ou on accepte) une demande d'ami.
   const action = (id: string) => {
-    const secondary = "h-11 shrink-0 rounded-xl px-3 text-sm font-bold text-brand-fg ring-1 ring-ink/15 disabled:text-ink/50";
+    const secondary = "h-11 shrink-0 rounded-xl px-3 text-sm font-semibold text-brand-fg ring-1 ring-ink/15 disabled:text-ink/50";
     if (friendIds.has(id)) {
       return (
         <button
           type="button"
           disabled={status[id] === "sent"}
           onClick={() => challenge(id)}
-          className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
+          className="h-11 shrink-0 rounded-full bg-brand px-4 text-sm font-semibold text-white disabled:bg-ink/15 disabled:text-ink/60"
         >
           {status[id] === "sent" ? tx("Envoyé") : status[id] === "declined" ? tx("Refusé, relancer") : tx("Défier")}
         </button>
@@ -253,7 +253,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <button
           type="button"
           onClick={() => answerRequest(received, true)}
-          className="h-11 shrink-0 rounded-xl bg-brand px-4 text-sm font-bold text-white"
+          className="h-11 shrink-0 rounded-full bg-brand px-4 text-sm font-semibold text-white"
         >
           {tx("Accepter")}
         </button>
@@ -267,7 +267,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
   };
 
   const playerRow = (p: { id: string; name: string }) => (
-    <li key={p.id} className="flex items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
+    <li key={p.id} className="flex items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/[0.06]">
       <Avatar name={p.name} online={onlineIds.has(p.id)} />
       <div className="min-w-0 flex-1">
         <p className="truncate font-semibold">{p.name}</p>
@@ -283,7 +283,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div role="tablist" aria-label={tx("Communauté")} className="grid grid-cols-4 gap-1 rounded-2xl bg-surface p-1 ring-1 ring-ink/10">
+      <div role="tablist" aria-label={tx("Communauté")} className="grid grid-cols-4 gap-1 rounded-2xl bg-surface p-1 ring-1 ring-ink/[0.06]">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -291,7 +291,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`relative h-11 rounded-xl text-[0.8125rem] font-bold sm:text-sm ${tab === t.id ? "bg-brand text-white" : "text-ink/70"}`}
+            className={`relative h-11 rounded-xl text-[0.8125rem] font-semibold sm:text-sm ${tab === t.id ? "bg-brand text-white" : "text-ink/70"}`}
           >
             {tx(t.label)}
             {t.id === "friends" && requests.length > 0 && (
@@ -326,7 +326,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
       {tab === "online" && (
         <div className="mt-5">
-          <label className="flex items-center justify-between gap-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+          <label className="flex items-center justify-between gap-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
             <span>
               <span className="block font-semibold">{tx("Apparaître en ligne")}</span>
               <span className="block text-sm text-ink/60">
@@ -349,7 +349,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
             {tx("Tu peux défier uniquement tes amis. Pour défier un élève, envoie-lui d'abord une demande d'ami.")}
           </p>
 
-          <h2 className="mt-6 font-display text-lg font-bold">{tx("Amis en ligne (")}{onlineFriends.length})</h2>
+          <h2 className="mt-6 text-lg font-semibold">{tx("Amis en ligne (")}{onlineFriends.length})</h2>
           {onlineFriends.length ? (
             <ul className="mt-3 grid gap-2.5">{onlineFriends.map(playerRow)}</ul>
           ) : (
@@ -360,7 +360,7 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
             </p>
           )}
 
-          <h2 className="mt-7 font-display text-lg font-bold">
+          <h2 className="mt-7 text-lg font-semibold">
             {tx("Autres élèves de ton département (")}{onlineOthers.length})
           </h2>
           {onlineOthers.length ? (
@@ -394,15 +394,15 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <div className="mt-5">
           {requests.length > 0 && (
             <>
-              <h2 className="font-display text-lg font-bold">{tx("Demandes reçues")}</h2>
+              <h2 className="text-lg font-semibold">{tx("Demandes reçues")}</h2>
               <ul className="mb-7 mt-3 grid gap-2.5">
                 {requests.map((r) => (
-                  <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
+                  <li key={r.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/[0.06]">
                     <p className="min-w-0 flex-1 basis-32 truncate font-semibold">{r.name}</p>
-                    <button type="button" onClick={() => answerRequest(r.id, false)} className="h-11 rounded-xl px-4 text-sm font-bold ring-1 ring-ink/15">
+                    <button type="button" onClick={() => answerRequest(r.id, false)} className="h-11 rounded-xl px-4 text-sm font-semibold ring-1 ring-ink/15">
                       {tx("Refuser")}
                     </button>
-                    <button type="button" onClick={() => answerRequest(r.id, true)} className="h-11 rounded-xl bg-brand px-4 text-sm font-bold text-white">
+                    <button type="button" onClick={() => answerRequest(r.id, true)} className="h-11 rounded-full bg-brand px-4 text-sm font-semibold text-white">
                       {tx("Accepter")}
                     </button>
                   </li>
@@ -411,24 +411,24 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
             </>
           )}
 
-          <h2 className="font-display text-lg font-bold">{tx("Mes amis (")}{friends.length})</h2>
+          <h2 className="text-lg font-semibold">{tx("Mes amis (")}{friends.length})</h2>
           {friends.length ? (
             <ul className="mt-3 grid gap-2.5">
               {sortedFriends.map((f) => (
-                <li key={f.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/10">
+                <li key={f.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-3 ring-1 ring-ink/[0.06]">
                   <Avatar name={f.name} online={onlineIds.has(f.id)} />
                   <div className="min-w-0 flex-1 basis-24">
                     <p className="truncate font-semibold">{f.name}</p>
                     {onlineIds.has(f.id) && <p className="text-sm font-semibold text-success-fg">{tx("En ligne")}</p>}
                   </div>
-                  <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-bold text-danger-fg ring-1 ring-ink/15">
+                  <button type="button" onClick={() => removeFriend(f.id, f.name)} className="h-11 rounded-xl px-3 text-sm font-semibold text-danger-fg ring-1 ring-ink/15">
                     {tx("Retirer")}
                   </button>
                   <button
                     type="button"
                     disabled={status[f.id] === "sent"}
                     onClick={() => challenge(f.id)}
-                    className="h-11 rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:bg-ink/15 disabled:text-ink/60"
+                    className="h-11 rounded-full bg-brand px-4 text-sm font-semibold text-white disabled:bg-ink/15 disabled:text-ink/60"
                   >
                     {status[f.id] === "sent" ? tx("Envoyé") : tx("Défier")}
                   </button>
@@ -443,17 +443,17 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
 
           {ranking.length > 1 && (
             <>
-              <h2 className="mt-7 font-display text-lg font-bold">{tx("Classement entre amis")}</h2>
+              <h2 className="mt-7 text-lg font-semibold">{tx("Classement entre amis")}</h2>
               <ol className="mt-3 grid gap-2">
                 {ranking.map((r, i) => (
                   <li
                     key={r.user_id}
-                    className={`flex items-center gap-3 rounded-2xl bg-surface p-3 ${r.is_me ? "ring-2 ring-brand" : "ring-1 ring-ink/10"}`}
+                    className={`flex items-center gap-3 rounded-2xl bg-surface p-3 ${r.is_me ? "ring-2 ring-brand" : "ring-1 ring-ink/[0.06]"}`}
                   >
-                    <span className="w-8 shrink-0 text-center font-display text-lg font-bold">{i + 1}</span>
+                    <span className="w-8 shrink-0 text-center text-lg font-semibold">{i + 1}</span>
                     <p className="min-w-0 flex-1 truncate font-semibold">
                       {r.name}
-                      {r.is_me && <span className="ml-2 text-sm font-bold text-brand-fg">{tx("Toi")}</span>}
+                      {r.is_me && <span className="ml-2 text-sm font-semibold text-brand-fg">{tx("Toi")}</span>}
                     </p>
                     <span className="shrink-0 font-semibold tabular-nums">{r.points}{tx(" pts")}</span>
                   </li>
@@ -468,15 +468,15 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
         <div className="mt-5">
           {active.length > 0 && (
             <>
-              <h2 className="font-display text-lg font-bold">{tx("En cours")}</h2>
+              <h2 className="text-lg font-semibold">{tx("En cours")}</h2>
               <ul className="mt-3 grid gap-2.5">
                 {active.map((d) => (
-                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
                     <div className="min-w-0">
                       <p className="truncate font-semibold">{tx("Contre ")}{d.opp}</p>
                       <p className="text-sm text-ink/60">{d.subject}</p>
                     </div>
-                    <Link href={`/dashboard/duel?id=${d.id}`} className="grid h-11 shrink-0 place-items-center rounded-xl bg-brand px-4 text-sm font-bold text-white">
+                    <Link href={`/dashboard/duel?id=${d.id}`} className="grid h-11 shrink-0 place-items-center rounded-full bg-brand px-4 text-sm font-semibold text-white">
                       {tx("Reprendre")}
                     </Link>
                   </li>
@@ -484,20 +484,20 @@ export function Community({ me, subjects, points, history, initialTab }: Props) 
               </ul>
             </>
           )}
-          <h2 className={`font-display text-lg font-bold ${active.length ? "mt-7" : ""}`}>{tx("Historique")}</h2>
+          <h2 className={`text-lg font-semibold ${active.length ? "mt-7" : ""}`}>{tx("Historique")}</h2>
           {history.length ? (
             <ul className="mt-3 grid gap-2.5">
               {history.map((d) => {
                 const outcome = d.me > d.them ? "Victoire" : d.me < d.them ? "Défaite" : "Nul";
                 const tone = d.me > d.them ? "text-success-fg" : d.me < d.them ? "text-danger-fg" : "text-ink/60";
                 return (
-                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+                  <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
                     <div className="min-w-0">
                       <p className="truncate font-semibold">{tx("Contre ")}{d.opp}</p>
                       <p className="text-sm text-ink/60">{d.subject}</p>
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className="font-display text-lg font-bold tabular-nums">
+                      <p className="text-lg font-semibold tabular-nums">
                         {d.me} – {d.them}
                       </p>
                       <p className={`text-sm font-semibold ${tone}`}>{tx(outcome)}</p>

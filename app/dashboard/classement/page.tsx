@@ -32,7 +32,7 @@ function daysLeftInWeek() {
   return day === 0 ? 0 : 7 - day;
 }
 
-const tab = "flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold";
+const tab = "flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-semibold";
 
 const select =
   "mt-1.5 h-12 w-full rounded-xl border border-ink/20 bg-surface px-3 text-base text-ink";
@@ -68,7 +68,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
   return (
     <>
       <SubHeader title={t("Classement")} />
-      <nav className="flex gap-2 rounded-2xl bg-surface p-1.5 ring-1 ring-ink/10" aria-label={t("Période")}>
+      <nav className="flex gap-2 rounded-2xl bg-surface p-1.5 ring-1 ring-ink/[0.06]" aria-label={t("Période")}>
         <Link href={query("")} className={`${tab} ${weekly ? "text-ink/70" : "bg-brand text-white"}`}>
           {t("Général")}
         </Link>
@@ -89,7 +89,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
           <ol className="mt-3 grid grid-cols-3 gap-3 text-center">
             {podium.map((p) => (
               <li key={p.id} className="rounded-2xl bg-white/10 p-3">
-                <p className="font-display text-2xl font-extrabold text-sun">{p.rank}</p>
+                <p className="text-2xl font-semibold text-sun">{p.rank}</p>
                 <p className="truncate font-semibold">{p.name}</p>
                 <p className="text-sm text-white/70">{p.points}{t(" pts")}</p>
               </li>
@@ -125,7 +125,7 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
         )}
         <button
           type="submit"
-          className="h-12 rounded-xl bg-brand px-6 text-base font-bold text-white hover:bg-brand-dark"
+          className="h-12 rounded-full bg-brand px-6 text-base font-semibold text-white hover:bg-brand-dark"
         >
           {t("Afficher")}
         </button>
@@ -139,12 +139,12 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
         <section className="mt-3 flex items-center justify-between gap-4 rounded-3xl bg-brand p-5 text-white">
           <div>
             <p className="text-sm font-semibold text-white/75">{t("Ta place")}</p>
-            <p className="font-display text-4xl font-extrabold leading-none">
+            <p className="text-4xl font-semibold leading-none">
               {board.me.rank}
               <span className="text-lg font-semibold text-white/70"> / {board.total}</span>
             </p>
           </div>
-          <p className="font-display text-2xl font-bold">{board.me.points}{t(" pts")}</p>
+          <p className="text-2xl font-semibold">{board.me.points}{t(" pts")}</p>
         </section>
       )}
 
@@ -158,19 +158,19 @@ export default async function Page({ searchParams }: PageProps<"/dashboard/class
               <li
                 key={p.id}
                 className={`flex items-center gap-3 rounded-2xl p-3 ${
-                  p.me ? "bg-surface ring-2 ring-brand" : "bg-surface ring-1 ring-ink/10"
+                  p.me ? "bg-surface ring-2 ring-brand" : "bg-surface ring-1 ring-ink/[0.06]"
                 }`}
               >
-                <span className="w-9 shrink-0 text-center font-display text-lg font-bold tabular-nums">{p.rank}</span>
+                <span className="w-9 shrink-0 text-center text-lg font-semibold tabular-nums">{p.rank}</span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold">
                     {p.name}
-                    {p.me && <span className="ml-2 text-sm font-bold text-brand-fg">{t("Toi")}</span>}
+                    {p.me && <span className="ml-2 text-sm font-semibold text-brand-fg">{t("Toi")}</span>}
                   </p>
                   {dep === ALL && <p className="truncate text-xs text-ink/60">{p.department}</p>}
                 </div>
                 {m && (
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${m.className}`}>{t(m.label)}</span>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${m.className}`}>{t(m.label)}</span>
                 )}
                 <span className="shrink-0 font-semibold tabular-nums">{p.points}{t(" pts")}</span>
               </li>

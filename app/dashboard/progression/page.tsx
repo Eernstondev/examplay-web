@@ -31,7 +31,7 @@ export default async function Page() {
       <SubHeader title={t("Progression")} />
       <section className="rounded-3xl bg-brand p-6 text-white">
         <p className="text-sm font-semibold text-white/75">{t("Progression globale")}</p>
-        <p className="mt-1 font-display text-6xl font-extrabold leading-none">{global}%</p>
+        <p className="mt-1 text-6xl font-semibold leading-none">{global}%</p>
         <div className="mt-4">
           <ProgressBar value={global} tone="sun" />
         </div>
@@ -46,24 +46,24 @@ export default async function Page() {
           ["Bonnes réponses", totalCorrect],
           ["Jours actifs", activeDays],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+          <div key={label} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
             <dt className="text-xs font-semibold leading-tight text-ink/60 sm:text-sm">{t(String(label))}</dt>
-            <dd className="mt-1 font-display text-2xl font-bold">{value}</dd>
+            <dd className="mt-1 text-2xl font-semibold">{value}</dd>
           </div>
         ))}
       </dl>
 
-      <h2 className="mt-7 font-display text-xl font-bold">{t("Par matière")}</h2>
+      <h2 className="mt-7 text-xl font-semibold">{t("Par matière")}</h2>
       <ul className="mt-3 grid gap-2.5 md:grid-cols-2">
         {subjects.map((s) => {
           const count = results.filter((r) => r.subjectId === s.id).length;
           const progress = subjectProgress(results, s.id);
           return (
-            <li key={s.id} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+            <li key={s.id} className="rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
               <div className="flex items-baseline justify-between gap-3">
                 <p className="font-semibold">
                   {s.name}
-                  {s.heavy && <span className="ml-2 text-sm font-bold text-brand-fg">{t("×2")}</span>}
+                  {s.heavy && <span className="ml-2 text-sm font-semibold text-brand-fg">{t("×2")}</span>}
                 </p>
                 <p className="shrink-0 text-sm font-semibold tabular-nums">{progress}%</p>
               </div>
@@ -78,18 +78,18 @@ export default async function Page() {
         })}
       </ul>
 
-      <h2 className="mt-7 font-display text-xl font-bold">{t("Derniers résultats")}</h2>
+      <h2 className="mt-7 text-xl font-semibold">{t("Derniers résultats")}</h2>
       {results.length ? (
         <ul className="mt-3 grid gap-2.5">
           {results.slice(0, 10).map((r) => (
-            <li key={r.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+            <li key={r.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
               <div className="min-w-0">
                 <p className="truncate font-semibold">{r.subjectName}</p>
                 <p className="text-sm text-ink/60">
                   {t(MODE_LABEL[r.mode] ?? r.mode)} · {dateFormat.format(r.date)}
                 </p>
               </div>
-              <p className="shrink-0 font-display text-lg font-bold tabular-nums">
+              <p className="shrink-0 text-lg font-semibold tabular-nums">
                 {r.correct} / {r.total}
                 <span className="ml-2 text-sm font-semibold text-ink/60">{pct(r)}%</span>
               </p>

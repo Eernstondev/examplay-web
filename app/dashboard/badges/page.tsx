@@ -33,12 +33,12 @@ export default async function Page() {
 
       {earned.length > 0 && (
         <>
-          <h2 className="mt-6 font-display text-xl font-bold">{t("Obtenus")}</h2>
+          <h2 className="mt-6 text-xl font-semibold">{t("Obtenus")}</h2>
           <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
             {earned.map((b) => (
-              <li key={b.id} className="rounded-3xl bg-surface p-4 text-center ring-1 ring-ink/10">
+              <li key={b.id} className="rounded-3xl bg-surface p-4 text-center ring-1 ring-ink/[0.06]">
                 <span aria-hidden="true" className="text-4xl">{b.emoji}</span>
-                <p className="mt-2 font-display font-semibold leading-tight">{t(b.title, b.vars)}</p>
+                <p className="mt-2 font-semibold leading-tight">{t(b.title, b.vars)}</p>
                 <p className="mt-1 text-sm leading-snug text-ink/60">{t(b.desc, b.vars)}</p>
               </li>
             ))}
@@ -46,10 +46,10 @@ export default async function Page() {
         </>
       )}
 
-      <h2 className="mt-7 font-display text-xl font-bold">{t("À débloquer")}</h2>
+      <h2 className="mt-7 text-xl font-semibold">{t("À débloquer")}</h2>
       <ul className="mt-3 grid gap-2.5 md:grid-cols-2">
         {locked.map((b) => (
-          <li key={b.id} className="flex items-center gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
+          <li key={b.id} className="flex items-center gap-3 rounded-2xl bg-surface p-4 ring-1 ring-ink/[0.06]">
             <span aria-hidden="true" className="text-3xl opacity-40 grayscale">{b.emoji}</span>
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline justify-between gap-2">
