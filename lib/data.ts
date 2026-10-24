@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { annaleKey, type Annale } from "@/lib/annales";
 import { getSubjects, resolveLevel, subjectName, type LevelId } from "@/lib/content";
 import type { DuelSummary, Result } from "@/lib/stats";
 import { createClient } from "@/lib/supabase/server";
@@ -208,6 +209,26 @@ export const getQuestionCounts = cache(async (): Promise<Record<string, number>>
     counts[r.subject_id] = Number(r.total) || 0;
   });
   return counts;
+});
+
+// Annales disponibles pour une matière, avec leur nombre de questions jouables en simulation.
+export const getAnnales = cache(async (subject: string): Promise<(Annale & { count: number })[]> => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("questions")
+    .select("year, session")
+    .eq("subject_id", subject)
+    .eq("active", true)
+    .not("year", "is", null)
+    .not("session", "is", null);
+  const byKey = new Map<string, Annale & { count: number }>();
+  (data ?? []).forEach((r) => {
+    const a = { year: r.year as number, session: (r.session as string).trim() };
+    if (!a.session) return;
+    const key = annaleKey(a);
+    byKey.set(key, { ...a, count: (byKey.get(key)?.count ?? 0) + 1 });
+  });
+  return [...byKey.values()].sort((a, b) => b.year - a.year || a.session.localeCompare(b.session));
 });
 
 export const getReferralCount = cache(async (): Promise<number> => {

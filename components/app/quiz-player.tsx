@@ -8,6 +8,7 @@ import { isAnswerClose } from "@/lib/fuzzy";
 import { addToBank, enqueueResult, getUid, pickFromBank, toOfflineQuestion } from "@/lib/offline";
 import { shuffle } from "@/lib/seeded";
 import { playFeedback } from "@/lib/sound";
+import type { Annale } from "@/lib/annales";
 import { createClient } from "@/lib/supabase/client";
 import { useT } from "@/components/i18n-provider";
 
@@ -77,9 +78,13 @@ type Props = {
   // Partage WhatsApp du résultat : lien d'inscription et code de parrainage de l'élève.
   shareUrl?: string;
   referralCode?: string | null;
+  // Simulation d'une annale : toutes ses questions, dans l'ordre de l'épreuve (QCM, puis réponses courtes, puis rédactions).
+  annale?: Annale;
 };
 
-export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter, beforeAd, afterAd, shareUrl, referralCode }: Props) {
+const TYPE_ORDER: Record<QType, number> = { qcm: 0, short_answer: 1, essay: 2 };
+
+export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapter, beforeAd, afterAd, shareUrl, referralCode, annale }: Props) {
   const t = useT();
   const [pool, setPool] = useState<Question[] | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -96,7 +101,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
   const startedAt = useRef(0);
 
   const pick = (all: Question[]) => {
-    const shuffled = shuffle(all);
+    const shuffled = annale ? all : shuffle(all);
     setQuestions(mode === "quiz" ? shuffled.slice(0, 5) : shuffled);
     startedAt.current = Date.now();
     // Pour mesurer le décrochage (quiz commencés vs terminés). Les fiches ont leur
@@ -141,14 +146,15 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
         }
       } else {
         // Simulation, réponse courte, rédaction : toutes les questions du type sont jouées.
+        // Annale : toutes les questions de l'épreuve, quel que soit leur type.
+        let query = supabase
+          .from("questions")
+          .select("id, chapter_id, type, question, choices, answer, answer_text, explain")
+          .eq("subject_id", subject)
+          .eq("active", true);
+        query = annale ? query.eq("year", annale.year).eq("session", annale.session) : query.eq("type", WANTED[mode]);
         const [qRes, cRes] = await Promise.all([
-          supabase
-            .from("questions")
-            .select("id, chapter_id, type, question, choices, answer, answer_text, explain")
-            .eq("subject_id", subject)
-            .eq("active", true)
-            .eq("type", WANTED[mode])
-            .order("id", { ascending: true }),
+          query.order("id", { ascending: true }),
           supabase.from("chapters").select("id, title").eq("subject_id", subject),
         ]);
         if (qRes.error) {
@@ -167,7 +173,8 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
               explain: (r.explain as string | null) ?? "",
               chapterTitle: r.chapter_id ? (titles.get(r.chapter_id) ?? null) : null,
             }))
-            .filter((q) => !chapter || (q.chapterTitle ?? "Général") === chapter);
+            .filter((q) => !chapter || (q.chapterTitle ?? "Général") === chapter)
+            .sort((a, b) => (annale ? TYPE_ORDER[a.type] - TYPE_ORDER[b.type] : 0));
         }
       }
 
@@ -180,7 +187,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
     };
     // pick ne dépend que du mode, déjà dans la liste ; `round` relance un tirage serveur.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject, mode, chapter, round]);
+  }, [subject, mode, chapter, round, annale?.year, annale?.session]);
 
   const save = async (all: DetailedAnswer[]) => {
     const supabase = createClient();
@@ -377,7 +384,9 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
 
   const feedback = mode === "quiz" && q.type === "qcm" && selected !== null;
   const last = idx + 1 >= questions.length;
-  const shortOk = revealed && q.type === "short_answer" && isAnswerClose(typed, q.answerText);
+  // Annale : les réponses courtes sont souvent longues, l'élève compare lui-même avec le corrigé.
+  const selfGraded = q.type === "essay" || (!!annale && q.type === "short_answer");
+  const shortOk = revealed && q.type === "short_answer" && !selfGraded && isAnswerClose(typed, q.answerText);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -446,7 +455,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
           </label>
           {revealed && (
             <div className="mt-4 rounded-2xl bg-surface p-4 ring-1 ring-ink/10">
-              {q.type === "short_answer" && (
+              {q.type === "short_answer" && !selfGraded && (
                 <p className={`font-semibold ${shortOk ? "text-success-fg" : "text-danger-fg"}`}>
                   {shortOk ? t("Bonne réponse") : t("Pas tout à fait")}
                 </p>
@@ -482,6 +491,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
           </button>
         )}
         {q.type === "short_answer" &&
+          !selfGraded &&
           (revealed ? (
             <button type="button" onClick={() => commit(shortOk, null, typed.trim())} className={primaryButton}>
               {last ? t("Terminer") : t("Suivant")}
@@ -499,7 +509,7 @@ export function QuizPlayer({ subject, subjectName, mode, level, backHref, chapte
               {t("Valider")}
             </button>
           ))}
-        {q.type === "essay" &&
+        {selfGraded &&
           (revealed ? (
             <div className="grid grid-cols-2 gap-3">
               <button type="button" onClick={() => commit(false, null, typed.trim())} className={secondaryButton}>

@@ -39,12 +39,15 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <LanguageButton />
-          <ThemeButton />
+          {/* Langue et thème : dans la barre sur grand écran, dans le menu sinon. */}
+          <div className="hidden items-center gap-2 xl:flex">
+            <LanguageButton />
+            <ThemeButton />
+          </div>
           <Link
             href="/commencer"
             onClick={() => setOpen(false)}
-            className="hidden whitespace-nowrap rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark sm:block"
+            className="hidden whitespace-nowrap rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark sm:block"
           >
             {t("Commencer")}
           </Link>
@@ -52,10 +55,17 @@ export function SiteHeader() {
             type="button"
             aria-expanded={open}
             aria-controls="menu-mobile"
+            aria-label={open ? t("Fermer") : t("Menu")}
             onClick={() => setOpen((v) => !v)}
-            className="min-h-11 rounded-lg border border-ink/15 px-4 text-sm font-semibold xl:hidden"
+            className="grid size-11 place-items-center rounded-lg text-ink/80 hover:text-brand-fg xl:hidden"
           >
-            {open ? t("Fermer") : t("Menu")}
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              {open ? (
+                <path d="M6 6l12 12M18 6L6 18" />
+              ) : (
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              )}
+            </svg>
           </button>
         </div>
       </div>
@@ -77,10 +87,18 @@ export function SiteHeader() {
               {t(link.label)}
             </Link>
           ))}
+          <div className="flex items-center justify-between border-b border-ink/10 py-2.5">
+            <span className="font-medium">{t("Langue")}</span>
+            <LanguageButton />
+          </div>
+          <div className="flex items-center justify-between border-b border-ink/10 py-2.5">
+            <span className="font-medium">{t("Changer de thème")}</span>
+            <ThemeButton />
+          </div>
           <Link
             href="/commencer"
             onClick={() => setOpen(false)}
-            className="mt-4 rounded-lg bg-brand px-4 py-3 text-center font-semibold text-white sm:hidden"
+            className="mt-4 rounded-full bg-brand px-4 py-3 text-center font-medium text-white sm:hidden"
           >
             {t("Commencer")}
           </Link>

@@ -3,12 +3,21 @@
 -- Questions avec schéma, carte ou formule illisible dans le PDF : non reprises.
 -- Relancer ce fichier n'ajoute pas de doublons.
 
+-- Auteur : un admin qui a un profil (submissions.author référence profiles), sinon un contributeur.
 do $$ begin
-  if not exists (select 1 from public.admins) then raise exception 'Aucun compte admin trouvé'; end if;
+  if not exists (
+    select 1 from public.profiles p
+    where p.id in (select user_id from public.admins union select user_id from public.contributors)
+  ) then raise exception 'Aucun admin ni contributeur avec un profil'; end if;
 end $$;
 
 insert into public.submissions (author, kind, status, subject_id, payload, note)
-select (select user_id from public.admins limit 1), 'question', 'pending', v.subject_id, v.payload,
+select (
+         select p.id from public.profiles p
+         where p.id in (select user_id from public.admins union select user_id from public.contributors)
+         order by (p.id in (select user_id from public.admins)) desc
+         limit 1
+       ), 'question', 'pending', v.subject_id, v.payload,
        'Import annales : texte modèle MENFP 2026'
 from (values
   ('sciences_exp9e', $q${"type": "qcm", "question": "Le fémur est un os :", "choices": ["de la jambe", "de la cuisse", "de l'avant-bras", "du bras"], "answer": 1, "answer_text": null, "explain": "Le fémur est l'os de la cuisse, le plus long du corps. La jambe contient le tibia et le péroné.", "chapter_id": null, "year": 2026, "session": "Texte modèle mai 2026", "source": "MENFP – Bureau national des examens d'État, texte modèle 9e AF 2026"}$q$::jsonb),
