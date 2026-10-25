@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { PUBLIC_SUBJECTS } from "@/lib/content";
 import { site } from "@/lib/site";
 
-const pages = ["", "/matieres", "/a-propos", "/remerciements", "/collaborateurs", "/investisseurs", "/contact", "/commencer", "/confidentialite", "/conditions"];
+const pages = ["", "/matieres", "/a-propos", "/remerciements", "/collaborateurs", "/investisseurs", "/contact", "/commencer", "/confidentialite", "/conditions", "/suppression-compte"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

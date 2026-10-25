@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPage } from "@/components/legal-page";
 import { site } from "@/lib/site";
 
@@ -261,7 +262,8 @@ export default function Page() {
         <li>corriger son nom ou son email, dans Profil &gt; Sécurité ;</li>
         <li>
           supprimer définitivement son compte et ses données, dans Profil &gt; Confidentialité &gt;
-          Supprimer mon compte ;
+          Supprimer mon compte, ou en suivant les étapes de la page{" "}
+          <Link href="/suppression-compte">Supprimer son compte</Link> ;
         </li>
         <li>demander une copie de ses données en nous écrivant (voir Contact).</li>
       </ul>

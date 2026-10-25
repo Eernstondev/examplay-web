@@ -57,8 +57,15 @@ export default async function Page() {
               <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {rows.map((p) => {
                   const website = p.website && safeUrl(p.website);
+                  // Toute la carte ouvre le site web, sinon le premier réseau renseigné.
+                  const main = website || networks.map(([key]) => p[key] && safeUrl(p[key])).find(Boolean) || null;
                   return (
-                    <li key={p.id} className="flex flex-col rounded-3xl bg-ink/[0.035] p-6">
+                    <li
+                      key={p.id}
+                      className={`relative flex flex-col rounded-3xl bg-ink/[0.035] p-6 ring-1 ring-transparent transition ${
+                        main ? "hover:ring-brand/40 active:scale-[0.98]" : ""
+                      }`}
+                    >
                       <span className="grid size-20 place-items-center overflow-hidden rounded-2xl bg-surface text-3xl font-semibold text-brand-fg ring-1 ring-ink/10">
                         {p.logo_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
@@ -67,11 +74,19 @@ export default async function Page() {
                           p.name.charAt(0).toUpperCase()
                         )}
                       </span>
-                      <h3 className="mt-4 text-xl font-semibold leading-snug">{p.name}</h3>
+                      <h3 className="mt-4 text-xl font-semibold leading-snug">
+                        {main ? (
+                          <a href={main} target="_blank" rel="noopener noreferrer" className="after:absolute after:inset-0 after:rounded-3xl">
+                            {p.name}
+                          </a>
+                        ) : (
+                          p.name
+                        )}
+                      </h3>
                       {p.description && (
                         <p className="mt-2 whitespace-pre-line leading-relaxed text-ink/70">{p.description}</p>
                       )}
-                      <div className="mt-auto flex flex-wrap items-center gap-2 pt-5">
+                      <div className="relative z-10 mt-auto flex flex-wrap items-center gap-2 pt-5">
                         {networks.map(([key, label]) => {
                           const href = p[key] && safeUrl(p[key]);
                           return href ? (
@@ -92,7 +107,7 @@ export default async function Page() {
                             href={website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-semibold text-brand-fg ring-1 ring-ink/10 hover:bg-brand hover:text-white"
+                            className="grid h-11 place-items-center rounded-full bg-surface px-4 text-sm font-medium text-brand-fg ring-1 ring-ink/10 hover:bg-brand hover:text-white"
                           >
                             {t("Site web")}
                           </a>
